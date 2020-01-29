@@ -10,6 +10,7 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.Window.Type;
 
 public class RimuoviDalCarrelloFrame extends JFrame {
 	private SupermercatoController Controller;
@@ -17,6 +18,8 @@ public class RimuoviDalCarrelloFrame extends JFrame {
 
 	
 	public RimuoviDalCarrelloFrame(SupermercatoController ctrl) {
+		setAlwaysOnTop(true);
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		Controller = ctrl;
 		setTitle("Rimuovi dal Carrello");
 		setBounds(100, 100, 450, 300);
@@ -27,7 +30,7 @@ public class RimuoviDalCarrelloFrame extends JFrame {
 		
 			JComboBox <String> ArticoloBox  = new JComboBox();
 			ArticoloBox.setBounds(200, 6, 211, 27);
-			Controller.RiempiComboRimozione(ArticoloBox);
+			Controller.RiempiComboRimuoviDalCarrello(ArticoloBox);
 			contentPanel.add(ArticoloBox);
 			
 		
@@ -66,7 +69,8 @@ public class RimuoviDalCarrelloFrame extends JFrame {
 						QuantitaSelezionata = (int) comboBox.getSelectedItem();
 						 System.out.println("Hai selezionato: " + QuantitaSelezionata);
 		
-			   Controller.RimuoviArticoloDalCarrello(ArticoloSelezionato, QuantitaSelezionata);
+			   Controller.RimuoviArticoliDalCarrello(ArticoloSelezionato, QuantitaSelezionata);
+			  setVisible(false);
 			         //  System.out.println("Frame " + ArticoloSelezionato);
 					}
 				});

@@ -11,6 +11,7 @@ import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JLabel;
+import javax.swing.ImageIcon;
 
 public class SchermataCarrello extends JFrame {
 
@@ -24,7 +25,7 @@ public class SchermataCarrello extends JFrame {
 		setTitle("Carrello Acquisti");
 		Controller=ctrl;
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 450, 300);
+		setBounds(100, 100, 719, 470);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -36,7 +37,7 @@ public class SchermataCarrello extends JFrame {
 				Controller.openAggiungiAlCarrello();
 			}
 		});
-		btnAggiungiAlCarrello.setBounds(6, 231, 167, 29);
+		btnAggiungiAlCarrello.setBounds(6, 413, 167, 29);
 		contentPane.add(btnAggiungiAlCarrello);
 		
 		
@@ -46,8 +47,25 @@ public class SchermataCarrello extends JFrame {
 				Controller.openRimuoviDalCarrello();
 			}
 		});
-		RimuoviDalCarrellobutton.setBounds(277, 231, 167, 29);
+		RimuoviDalCarrellobutton.setBounds(221, 413, 167, 29);
 		contentPane.add(RimuoviDalCarrellobutton);
+		
+		JLabel Totale = new JLabel("New label");
+		Totale.setBounds(438, 418, 120, 16);
+		double Total = Controller.EseguiTotale();
+		Totale.setText("Totale: " + Total);
+		
+		contentPane.add(Totale);
+		
+		JLabel lblNewLabel_1 = new JLabel("");
+		lblNewLabel_1.setIcon(new ImageIcon("/Users/valentinaperotta/Desktop/GFX/carrello.png"));
+		lblNewLabel_1.setBounds(161, 6, 457, 127);
+		contentPane.add(lblNewLabel_1);
+		
+		JButton btnNewButton = new JButton("");
+		btnNewButton.setIcon(new ImageIcon("/Users/valentinaperotta/Desktop/GFX/BottonePagamento.png"));
+		btnNewButton.setBounds(567, 358, 146, 90);
+		contentPane.add(btnNewButton);
 		
 		JLabel lblNewLabel = new JLabel("Elenco articoli: ");
 		 lblNewLabel.setBounds(40, 34, 365, 185);

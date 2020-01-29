@@ -1,11 +1,20 @@
 
 import java.awt.Graphics;
+import java.io.File;
+import java.sql.Connection;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.sql.DriverManager;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Vector;
 
 import javax.swing.JComboBox;
 import javax.swing.JEditorPane;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -24,80 +33,121 @@ import javax.swing.UIManager;
 public class SupermercatoController {
 
 	ArrayList<Articolo> Magazzino;
+	ArrayList<Articolo> CarrelloComboBox;
 	ArrayList<Articolo> CarrelloUtente;
-	
 	SchermataCarrello CarrelloFrame;
 	AggiungiAlCarrelloFrame AggiungiAlCarrelloFrame;
 	RimuoviDalCarrelloFrame RimuoviDalCarrelloFrame;
+	Connection con;
 	
 	
 	
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
 		SupermercatoController TheController = new SupermercatoController();
-		InserimentoArticoloFrame frame = new InserimentoArticoloFrame(TheController);
+		InserimentoArticoloInMagazzinoFrame frame = new InserimentoArticoloInMagazzinoFrame(TheController);
 		frame.setVisible(true);
 		AggiungiAlCarrelloFrame AggiungiAlCarrelloFrame = new AggiungiAlCarrelloFrame(TheController);
 		RimuoviDalCarrelloFrame RimuoviDalCarrelloFrame = new RimuoviDalCarrelloFrame(TheController);
+		
+	
 
 	}
 	
+
 	
-	public SupermercatoController() {
+	public SupermercatoController()  {
+		con = getConnection();
 		Magazzino = new ArrayList<Articolo>();
+		CarrelloUtente = new ArrayList <Articolo>();
 		CarrelloFrame = new SchermataCarrello(this);
-		CarrelloUtente = new ArrayList<Articolo>();
-		// RimuoviDalCarrelloFrame = new RimuoviDalCarrelloFrame(this);
-		 //AggiungiAlCarrelloFrame = new AggiungiAlCarrelloFrame(this);
+		CarrelloComboBox = new ArrayList<Articolo>();
+		
+		
 	}
 	
+	public static Connection getConnection() {
+		try {
+			String driver = "com.mysql.jdbc.Driver";
+			String url = "jdbc:mysql://localhost:3306/giraffe";
+			String username = "root";
+			String password = "password";
+			Class.forName(driver);
+			
+			Connection conn = DriverManager.getConnection(url, username, password);
+			System.out.println ("connected");
+			return conn;
+		} catch (Exception e) { System.out.println(e); }
+		
+	
+		
+		return null;
+		
+	}
 	
 	public void AggiungiArticolo(String Nome, String Codice, String prezzo) {
+		try {
 		Double d = new Double(prezzo);
-		Articolo tmp = new Articolo(Nome, Codice, d);
-		Magazzino.add(tmp);
-		System.out.println("Ho aggiunto in magazzino un oggetto di nome "+tmp.getName());
+		Articolo ArticoloDaAggiungere = new Articolo(Nome, Codice, d);
+		int IdArtDaAgg = Integer.parseInt(ArticoloDaAggiungere.getId());
+		Magazzino.add(ArticoloDaAggiungere);
 		AggiungiAlCarrelloFrame = new AggiungiAlCarrelloFrame(this);
+		}
+		catch (Exception e) {
+			JOptionPane.showMessageDialog(new JFrame(), "Inserire codice valido", "Inserire codice valido",
+			        JOptionPane.ERROR_MESSAGE);
+		}
+		
 		
 		
 	}
 	
-	public void RimuoviArticoloDalCarrello (String s, int quantita) {
+	public void RimuoviArticoliDalCarrello (String s, int quantita) {
 		while(quantita>0) {
-		Articolo a = new Articolo (s, " - ", 0);
-			AggiornaLabelArticolo();
-		for(Articolo art: CarrelloUtente) {
-	if(art.getName() == a.getName()) {
-			if(CarrelloUtente.remove(art)) {
-			System.out.println("Ho eliminato un oggetto di nome "+ a.getName());
-			quantita--;
-			AggiornaLabelArticolo();
-			break; } }
-		} }
-		if(CarrelloVuoto())
-			RimuoviDalCarrelloFrame.setVisible(false);
+			RimuoviArticoloFantasma(s);
+			Articolo ArticoloDaRimuovere = new Articolo (s, " - ", 0);
+			if(EliminaArticoloDalCarrelloCombobox(ArticoloDaRimuovere)) quantita--;
+			if(CarrelloVuoto()) RimuoviDalCarrelloFrame.setVisible(false);
+		
 	}
+		AggiornaFrameCarrello();
+}
+	
+	
+	public boolean EliminaArticoloDalCarrelloCombobox (Articolo a) {
+		for(Articolo art: CarrelloComboBox) {
+			if(art.getName() == a.getName()) {
+					if(CarrelloComboBox.remove(art)) {
+						AggiornaLabelArticolo();
+						
+						break; } }
+	} return true; 
+}
 		
 
 	public boolean CarrelloVuoto () {
-		if (CarrelloUtente.isEmpty()) {
+		if (CarrelloComboBox.isEmpty()) {
 			JOptionPane.showMessageDialog(new JFrame(), "Carrello Vuoto", "Carrello vuoto",
 			        JOptionPane.ERROR_MESSAGE);
+			RimuoviDalCarrelloFrame.setVisible(false);
+			AggiungiAlCarrelloFrame.setVisible(true);
+			CarrelloFrame.setVisible(true);
+			return true;
 		}
-		return (CarrelloUtente.isEmpty());
+		else return false;
 		
 	}
 		
 	
 	
-	public void RiempiCombo (JComboBox<String> ArticoloBox) {
+	public void RiempiComboAggiungiAlCarrello (JComboBox<String> ArticoloBox) {
 		for (Articolo a: Magazzino) {
-			ArticoloBox.addItem(a.getName() + " - " + a.getPrice() + " - " + a.getId());
+			ArticoloBox.addItem(a.getName() + "-" + a.getPrice() + "-" + a.getId());
 		}		
 	}
 	
-	public void RiempiComboRimozione (JComboBox <String> ArticoloBox) {
-		for (Articolo a: CarrelloUtente) {
+	public void RiempiComboRimuoviDalCarrello (JComboBox <String> ArticoloBox) {
+		for (Articolo a: CarrelloComboBox) {
 			ArticoloBox.addItem(a.getName());
 		}
 	}
@@ -113,58 +163,131 @@ public class SupermercatoController {
 	
 	public void TerminaInserimentoArticoli() {
 		CarrelloFrame.setVisible(true);
+	}
+	
+	public void AggiungiAlCarrello (String articolo, int quantita){
+		Articolo a = new Articolo (articolo, " ", 0);
+		while(quantita>0) {
+		CarrelloFrame.setVisible(false);
+		AggiungiArticoloAlCarrelloUtente (articolo);
+		CarrelloComboBox.add(a);
+		AggiornaLabelArticolo();
+		quantita--;
+		}
+		CarrelloFrame.setVisible(true);
+	}
+	
+	
+	public Articolo CreaElementoPerCarrelloUtente (String articolo) {
+		String[] CampiArticolo = new String [3];
+		if (articolo.contains("-"))
+		CampiArticolo =  articolo.split("-");
+		String Nome = new String (CampiArticolo[0]);
+		Double d = new Double(CampiArticolo[1]);
+		String Codice = new String (CampiArticolo[2]);
+		Articolo tmp = new Articolo(Nome, Codice, d);
+		return tmp;
 		
 	}
 	
-	public void AggiungiAlCarrello (String s, int q) {
-		
-		Articolo a = new Articolo (s, " - ", 0);
-		while(q>0) {
-		CarrelloUtente.add(a);
-		AggiornaLabelArticolo();
-		q--;
-		StampaCarrelloUtente();
+	public void AggiungiArticoloAlCarrelloUtente (String articolo) {
+		if(CheckCarrelloPieno()) {
+		Articolo tmp = CreaElementoPerCarrelloUtente(articolo);
+		CarrelloUtente.add(tmp);
 		}
+	}
+	
+	public void RimuoviArticoloFantasma (String articolo) {
+	Articolo tmp=CreaElementoPerCarrelloUtente(articolo);
+			for(Articolo art: CarrelloUtente) {
+				int i = Integer.parseInt(art.getId());
+				int j = Integer.parseInt(tmp.getId());
+					if((int)i==(int)j) {
+						if(CarrelloUtente.remove(art)) 
+							break; } } 
+	}
 		
+		
+	public double EseguiTotale () {
+		double Totale=0.0;
+		for (Articolo a: CarrelloUtente) {
+			Double PrezzoSingolo = new Double(a.getPrice());
+			Totale = Totale + PrezzoSingolo;
+		}
+	return Totale;
 	}
 	
 	
 	public void AggiornaLabelArticolo () {
 		CarrelloFrame.setVisible(false);
-		CarrelloFrame = new SchermataCarrello(this);
-		int i=3;
-		int max=150;
-		int j=1;
+	CarrelloFrame = new SchermataCarrello(this);
+	CreaLabelTabella();
+	int i=107, max=350, j=1; 
 	for(Articolo a: CarrelloUtente) {
-	if(i>=max) {
-				i=3;
-				j=j+100;
-				}
-		CreaLabelArticolo (i, j, a);
-			i=i+13;
+		if(i>=max){
+			i=107;
+			j=j+150; 
 			}
+		CreaLabelArticolo (i, j, a);
+		i=i+17;
 		}
+	AggiornaFrameCarrello();
+	
+	}
+	
+	public void CreaLabelTabella () {
+		int i=90;
+		for (int j=1; j<700; j=j+150) {
+		JLabel LabelNome = new JLabel();
+		LabelNome.setText("Nome ");
+		LabelNome.setBounds(j, i, 360, 18);
+		CarrelloFrame.contentPane.add(LabelNome);
+		
+		JLabel LabelPrezzo = new JLabel();
+		LabelPrezzo.setText(" -  £");
+		LabelPrezzo.setBounds(j+80, i, 360, 18);
+		CarrelloFrame.contentPane.add(LabelPrezzo);
+		
+		}
+		
+	}
+	
+	public void AggiornaFrameCarrello () {
+		CarrelloFrame.setVisible(false);
+		CarrelloFrame.setVisible(true);
+	}
 		
 	
 	
 	
 	
 	public void CreaLabelArticolo (int i, int j, Articolo a) {
-		CarrelloFrame.setVisible(false);
-		JLabel NewLabel = new JLabel();
-		NewLabel.setText(a.getName());
-		NewLabel.setBounds(j, i, 360, 18);
-		CarrelloFrame.contentPane.add(NewLabel);
+		
+		JLabel LabelNome = new JLabel();
+		LabelNome.setText(a.getName());
+		LabelNome.setBounds(j, i, 360, 18);
+		CarrelloFrame.contentPane.add(LabelNome);
+		
+		JLabel LabelPrezzo = new JLabel();
+		Double d = new Double(a.getPrice());
+		String prezzo = Double.toString(d);
+		LabelPrezzo.setText(" - " +prezzo);
+		LabelPrezzo.setBounds(j+80, i, 360, 18);
+		CarrelloFrame.contentPane.add(LabelPrezzo);
+		
 		SwingUtilities.updateComponentTreeUI(CarrelloFrame);
-		CarrelloFrame.setVisible(true);
 		
 	}
 	
-	public void StampaCarrelloUtente () {
-		for(Articolo a: CarrelloUtente)
-		System.out.println(a.getName());
+	public boolean CheckCarrelloPieno () {
+		if ( CarrelloUtente.size() >= 75) {
+			JOptionPane.showMessageDialog(new JFrame(), "Carrello Pieno", "Carrello Pieno",
+			        JOptionPane.ERROR_MESSAGE);
+			return false;
+		}
+		return true;
+			
 	}
-	
 	
 	
 }

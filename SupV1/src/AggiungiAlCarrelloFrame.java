@@ -10,12 +10,15 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.Font;
 
 public class AggiungiAlCarrelloFrame extends JFrame {
 	private SupermercatoController Controller;
 	private final JPanel contentPanel = new JPanel();
 
 	public AggiungiAlCarrelloFrame(SupermercatoController ctrl) {
+		setFont(new Font(".AppleSystemUIFont", Font.PLAIN, 12));
+		setAlwaysOnTop(true);
 		Controller = ctrl;
 		setTitle("Aggiungi al Carrello");
 		setBounds(100, 100, 450, 300);
@@ -26,7 +29,7 @@ public class AggiungiAlCarrelloFrame extends JFrame {
 		
 			JComboBox <String> ArticoloBox  = new JComboBox();
 			ArticoloBox.setBounds(200, 6, 211, 27);
-			Controller.RiempiCombo(ArticoloBox);
+			Controller.RiempiComboAggiungiAlCarrello(ArticoloBox);
 			contentPanel.add(ArticoloBox);
 			
 		
@@ -63,7 +66,7 @@ public class AggiungiAlCarrelloFrame extends JFrame {
 						ArticoloSelezionato = (String) ArticoloBox.getSelectedItem();
 						int QuantitaSelezionata=0;
 						QuantitaSelezionata = (int) comboBox.getSelectedItem();
-						 System.out.println("Hai selezionato: " + QuantitaSelezionata);
+						 System.out.println("Hai selezionato la quantità: " + QuantitaSelezionata);
 		
 			   Controller.AggiungiAlCarrello(ArticoloSelezionato, QuantitaSelezionata);
 			          System.out.println("Ho aggiunto al tuo carrello l'elemento " + ArticoloSelezionato);
