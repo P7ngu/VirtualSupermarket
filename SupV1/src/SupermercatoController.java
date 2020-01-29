@@ -1,20 +1,13 @@
 
 import java.awt.Graphics;
+import java.awt.event.ActionListener;
 import java.io.File;
-import java.sql.Connection;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.util.ArrayList;
-import java.sql.DriverManager;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Vector;
 
 import javax.swing.JComboBox;
 import javax.swing.JEditorPane;
-import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -38,57 +31,32 @@ public class SupermercatoController {
 	SchermataCarrello CarrelloFrame;
 	AggiungiAlCarrelloFrame AggiungiAlCarrelloFrame;
 	RimuoviDalCarrelloFrame RimuoviDalCarrelloFrame;
-	Connection con;
 	
 	
 	
 	
-	public static void main(String[] args) throws Exception {
+	public static void main(String[] args) {
 		SupermercatoController TheController = new SupermercatoController();
 		InserimentoArticoloInMagazzinoFrame frame = new InserimentoArticoloInMagazzinoFrame(TheController);
 		frame.setVisible(true);
 		AggiungiAlCarrelloFrame AggiungiAlCarrelloFrame = new AggiungiAlCarrelloFrame(TheController);
 		RimuoviDalCarrelloFrame RimuoviDalCarrelloFrame = new RimuoviDalCarrelloFrame(TheController);
-		
-	
 
 	}
 	
-
 	
-	public SupermercatoController()  {
-		con = getConnection();
+	public SupermercatoController() {
 		Magazzino = new ArrayList<Articolo>();
 		CarrelloUtente = new ArrayList <Articolo>();
 		CarrelloFrame = new SchermataCarrello(this);
 		CarrelloComboBox = new ArrayList<Articolo>();
-		
-		
 	}
 	
-	public static Connection getConnection() {
-		try {
-			String driver = "com.mysql.jdbc.Driver";
-			String url = "jdbc:mysql://localhost:3306/giraffe";
-			String username = "root";
-			String password = "password";
-			Class.forName(driver);
-			
-			Connection conn = DriverManager.getConnection(url, username, password);
-			System.out.println ("connected");
-			return conn;
-		} catch (Exception e) { System.out.println(e); }
-		
-	
-		
-		return null;
-		
-	}
-	
-	public void AggiungiArticolo(String Nome, String Codice, String prezzo) {
+	//File file
+	public void AggiungiArticolo(String Nome, String Codice, String prezzo, String fotoPath, String Taglia, String Colore) {
 		try {
 		Double d = new Double(prezzo);
-		Articolo ArticoloDaAggiungere = new Articolo(Nome, Codice, d);
+		Articolo ArticoloDaAggiungere = new Articolo(Nome, Codice, fotoPath, Taglia, Colore);
 		int IdArtDaAgg = Integer.parseInt(ArticoloDaAggiungere.getId());
 		Magazzino.add(ArticoloDaAggiungere);
 		AggiungiAlCarrelloFrame = new AggiungiAlCarrelloFrame(this);
@@ -288,8 +256,10 @@ public class SupermercatoController {
 		return true;
 			
 	}
-	
-	
+
 }
+	
+	
+
 
 

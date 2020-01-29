@@ -2,12 +2,44 @@ public class Articolo {
 	private String name;
 	private String id;
 	private double price;
+	private String pathFoto;
+	private String Taglia;
+	private String Colore;
+	
+	
+	
+	public String getTaglia() {
+		return Taglia;
+	}
+
+	public void setTaglia(String taglia) {
+		Taglia = taglia;
+	}
+
+	public String getColore() {
+		return Colore;
+	}
+
+	public void setColore(String colore) {
+		Colore = colore;
+	}
+
+	public Articolo(String name, String id, String pathFoto, String taglia, String colore) {
+		this.setName(name);
+		this.setId(id);
+		this.setPrice(price);
+		this.setPathFoto(pathFoto);
+		this.setTaglia(taglia);
+		this.setColore(colore);
+	}
 	
 	public Articolo(String name, String id, double price) {
 		this.setName(name);
 		this.setId(id);
 		this.setPrice(price);
+		
 	}
+
 
 	public String getName() {
 		return name;
@@ -31,6 +63,23 @@ public class Articolo {
 
 	public void setPrice(double price) {
 		this.price = price;
+	}
+
+	@Override
+	public String toString() {
+		String nome = this.getName();
+		String id = this.getId();
+		double prezzo = this.getPrice();
+		
+		return (nome+id+prezzo);
+	}
+
+	public String getPathFoto() {
+		return pathFoto;
+	}
+
+	public void setPathFoto(String pathFoto) {
+		this.pathFoto = pathFoto;
 	}
 
 

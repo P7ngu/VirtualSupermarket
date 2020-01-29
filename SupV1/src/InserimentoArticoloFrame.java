@@ -106,7 +106,7 @@ public class InserimentoArticoloFrame extends JFrame {
 	
 	private void ControllaCorrettezzaPerInserimento() {
 		if ((Nome_textField.getText().length()>0)&&(Codice_textField.getText().length()>0)&&(Prezzo_textField.getText().length()>0)){
-			Controller.AggiungiArticolo(Nome_textField.getText(), Codice_textField.getText(), Prezzo_textField.getText());
+			Controller.AggiungiArticolo(Nome_textField.getText(), Codice_textField.getText(), Prezzo_textField.getText(), "", "", "");
 			Nome_textField.setText("");
 			Codice_textField.setText("");
 			Prezzo_textField.setText("");					

@@ -70,8 +70,7 @@ public class RimuoviDalCarrelloFrame extends JFrame {
 						 System.out.println("Hai selezionato: " + QuantitaSelezionata);
 		
 			   Controller.RimuoviArticoliDalCarrello(ArticoloSelezionato, QuantitaSelezionata);
-			  setVisible(false);
-			         //  System.out.println("Frame " + ArticoloSelezionato);
+			      
 					}
 				});
 				
