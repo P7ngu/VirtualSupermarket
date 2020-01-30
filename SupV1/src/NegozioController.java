@@ -49,6 +49,7 @@ public class NegozioController {
 	VetrinaFrame VetrinaFrame;
 	PagamentoFrame PagamentoFrame;
 	static Connection connessione;
+	static MagazzinoDAO MagazzinoDAO;
 	
 	
 	
@@ -57,13 +58,13 @@ public class NegozioController {
 		NegozioController TheController = new NegozioController();
 		HomePage = new HomePage(TheController);
 		HomePage.setVisible(true);
+		MagazzinoDAO = new MagazzinoDAO(connessione);
 		InserimentoArticoloInMagazzinoFrame InserimentoArticoloInMagazzinoFrame = new InserimentoArticoloInMagazzinoFrame(TheController);
 		EliminaDaMagazzinoFrame EliminaDaMagazzinoFrame = new EliminaDaMagazzinoFrame (TheController);
 		MagazzinoFrame MagazzinoFrame = new MagazzinoFrame(TheController);
 		RimuoviDalCarrelloFrame RimuoviDalCarrelloFrame = new RimuoviDalCarrelloFrame(TheController);
 		VetrinaFrame VetrinaFrame= new VetrinaFrame(TheController);
 		AggiungiAlCarrelloFrame AggiungiAlCarrelloFrame = new AggiungiAlCarrelloFrame(TheController);
-		CarrelloFrame CarrelloFrame = new CarrelloFrame(TheController);
 
 	}
 	
@@ -92,16 +93,17 @@ public class NegozioController {
 		CarrelloUtente = new ArrayList <Articolo>();
 		
 		connessione = getConnection();
-		creaTabellaMagazzinoSQL();
+		MagazzinoDAO MagazzinoDAO = new MagazzinoDAO(connessione);
+		MagazzinoDAO.creaTabellaMagazzinoSQL();
 		RiempiMagazzinoDaDB();
 		
 		MagazzinoTemporaneo = MagazzinoTransazionale;
 		
 		EliminaDaMagazzinoFrame = new EliminaDaMagazzinoFrame(this);
 		AggiungiAlCarrelloFrame= new AggiungiAlCarrelloFrame(this);
+		CarrelloFrame = new CarrelloFrame(this);
 		VetrinaFrame = new VetrinaFrame(this);
 		MagazzinoFrame = new MagazzinoFrame(this);
-		//CarrelloFrame = new CarrelloFrame(this);
 		
 		
 		
@@ -153,9 +155,8 @@ public class NegozioController {
 		Double d = new Double(prezzo);
 		Articolo ArticoloDaAggiungere = new Articolo(Nome, Codice, d, fotoPath, Taglia, Colore);
 		try {
-			if(checkQuantitaArticoloMagazzinoSQL(ArticoloDaAggiungere)==null) {
-				System.out.println("Nuovo articolo, non presente in magazzino");
-			if(AggiungiArticoloAlMagazzinoSQL(ArticoloDaAggiungere)) {
+			if(MagazzinoDAO.checkQuantitaArticoloMagazzinoSQL(ArticoloDaAggiungere)==null) {
+			if(MagazzinoDAO.AggiungiArticoloAlMagazzinoSQL(ArticoloDaAggiungere)) {
 			MagazzinoTransazionale.add(ArticoloDaAggiungere);
 			 JFrame parent = new JFrame();
 			 JOptionPane.showMessageDialog(parent, "Articoli aggiunti correttamente");
@@ -163,7 +164,7 @@ public class NegozioController {
 			AggiungiAlCarrelloFrame = new AggiungiAlCarrelloFrame(this);
 		}
 			else {
-				incrementaQuantitaArticoloMagazzinoDB(ArticoloDaAggiungere);
+				MagazzinoDAO.incrementaQuantitaArticoloMagazzinoDB(ArticoloDaAggiungere);
 				JFrame parent = new JFrame();
 				JOptionPane.showMessageDialog(parent, "Quantità aggiornata!");
 			}
@@ -177,44 +178,7 @@ public class NegozioController {
 	
 	}
 		
-		
-	public boolean AggiungiArticoloAlMagazzinoSQL(Articolo ArticoloDaAggiungere) throws SQLException{
-			ArticoloDAO a = new ArticoloDAO(connessione);
-			a.InserisciArticoloInMagazzino(ArticoloDaAggiungere);
-			return true;
-		}
-		
-	public static void creaTabellaMagazzinoSQL() throws Exception {
-		try {
-			PreparedStatement create = connessione.prepareStatement("CREATE TABLE IF NOT EXISTS Magazzino (nome varchar(255),"
-					+ "id int NOT NULL AUTO_INCREMENT, prezzo double, pathfoto varchar(200), taglia char(2),"
-					+ "colore varchar(10), quantita int NOT NULL, PRIMARY KEY (id))");
-			create.executeUpdate();	
-		} catch (Exception e) {System.out.println(e);}
-		finally{System.out.println("Function Completed");}
-	}
-	
-	public void incrementaQuantitaArticoloMagazzinoDB (Articolo a) throws SQLException {
-		String ID = a.getId();
-		int quantitaPrecedente = checkQuantitaArticoloMagazzinoSQL(a);
-		String sql = "UPDATE Magazzino SET quantita=? WHERE id = ?";
-		
-		PreparedStatement updateQuantita = connessione.prepareStatement(sql);
-		updateQuantita.setLong(1, (quantitaPrecedente+1));
-		updateQuantita.setString(2, ID);
-		updateQuantita.executeUpdate();
-	}
-	
-	public void decrementaQuantitaArticoloMagazzinoDB (Articolo a) throws SQLException {
-		String ID = a.getId();
-		String sql = "UPDATE Magazzino"
-				+ "set quantita=quantita-1"
-				+ "where id =?";
-		
-		PreparedStatement updateQuantita = connessione.prepareStatement(sql);
-		updateQuantita.setString(1, ID);
-		updateQuantita.executeUpdate();
-	}
+
 	
 	public void RimuoviArticoliDalCarrello (Articolo ArticoloDaRimuovere, int quantita) {
 		while(quantita>0) {
@@ -272,7 +236,7 @@ public class NegozioController {
 	}
 	
 	public void AggiungiAlCarrello (Articolo articoloSelezionato, int quantita) throws SQLException{
-		int quantitaDisponibileInMagazzino = checkQuantitaArticoloMagazzinoSQL(articoloSelezionato);
+		int quantitaDisponibileInMagazzino = MagazzinoDAO.checkQuantitaArticoloMagazzinoSQL(articoloSelezionato);
 		if(quantitaDisponibileInMagazzino>= quantita && MagazzinoTemporaneo.contains(articoloSelezionato)) {
 		while(quantita>0) {
 		CarrelloFrame.setVisible(false);
@@ -431,11 +395,11 @@ public class NegozioController {
 	public void effettuaTransazione() {
 		for (Articolo a: CarrelloUtente) {
 			try {
-				int quantita = checkQuantitaArticoloMagazzinoSQL(a);
+				int quantita = MagazzinoDAO.checkQuantitaArticoloMagazzinoSQL(a);
 				if(quantita>1) {
-					decrementaQuantitaArticoloMagazzinoDB(a);
+					MagazzinoDAO.decrementaQuantitaArticoloMagazzinoDB(a);
 				}
-				eliminaArticoloDalMagazzinoSQL(a.getId());
+				MagazzinoDAO.eliminaArticoloDalMagazzinoSQL(a.getId());
 			} catch (SQLException e) {
 			
 		}
@@ -453,36 +417,6 @@ public class NegozioController {
 	
 }
 	 
-	public Integer checkQuantitaArticoloMagazzinoSQL (Articolo articoloDaControllare) throws SQLException {
-		String sql = "SELECT quantita FROM Magazzino where id =? AND nome=? AND prezzo=? AND taglia=? AND colore=?";
-		PreparedStatement getQuantita = connessione.prepareStatement(sql);
-		getQuantita.setString(1, articoloDaControllare.getId());
-		getQuantita.setString(2, articoloDaControllare.getName());
-		getQuantita.setLong(3, (long) articoloDaControllare.getPrice());
-		getQuantita.setString(4, articoloDaControllare.getTaglia());
-		getQuantita.setString(5, articoloDaControllare.getColore());
-		
-		
-		ResultSet result = getQuantita.executeQuery();
-		while(result.next()) {
-			Integer quantita = new Integer(result.getString(1));
-			System.out.println(quantita);
-			return quantita;
-			}
-		return null;
-	}
-	
-
-	public static void eliminaArticoloDalMagazzinoSQL(String Id) throws SQLException {
-		try {
-		PreparedStatement st = connessione.prepareStatement("DELETE FROM Magazzino WHERE id = ?");
-        st.setString(1, Id);
-        st.executeUpdate(); 
-		}
-		catch(Exception e) {
-			e.printStackTrace();
-			}
-		}
 	
 		public void ChiudiProgramma() {
 		System.exit(0);
@@ -490,19 +424,6 @@ public class NegozioController {
 	}
 
 
-		public void CancellaDatiMagazzino() throws SQLException {
-		if(MagazzinoTransazionale.size()==0) 
-			JOptionPane.showMessageDialog(new JFrame(), "Magazzino Vuoto", "Il magazzino è vuoto",
-		        JOptionPane.ERROR_MESSAGE);
-			else {
-				for (Articolo a: MagazzinoTransazionale) {
-					eliminaArticoloDalMagazzinoSQL(a.getId());
-					}
-				MagazzinoTransazionale.clear();
-				JFrame parent = new JFrame();
-				JOptionPane.showMessageDialog(parent, "Magazzino resettato con successo!");
-			}
-	}
 
 
 		protected ImageIcon createImageIcon(String path, String description) {
@@ -567,6 +488,21 @@ public class NegozioController {
 			
 		}
 	
+		
+		public void CancellaDatiMagazzino() throws SQLException {
+			if(MagazzinoTransazionale.size()==0) 
+				JOptionPane.showMessageDialog(new JFrame(), "Magazzino Vuoto", "Il magazzino è vuoto",
+			        JOptionPane.ERROR_MESSAGE);
+				else {
+					for (Articolo a: MagazzinoTransazionale) {
+						MagazzinoDAO.eliminaArticoloDalMagazzinoSQL(a.getId());
+						}
+					MagazzinoTransazionale.clear();
+					JFrame parent = new JFrame();
+					JOptionPane.showMessageDialog(parent, "Magazzino resettato con successo!");
+				}
+			}
+		
 		private void chiudiTutteLeFinestre() {
 			java.awt.Window win[] = java.awt.Window.getWindows(); 
 			for(int i=0;i<win.length;i++){ 
@@ -594,7 +530,7 @@ public class NegozioController {
 		public void RimuoviArticoloDalMagazzino(Articolo articoloSelezionato) throws SQLException {
 			if(MagazzinoTransazionale.remove(articoloSelezionato)) {
 				MagazzinoTemporaneo.remove(articoloSelezionato);
-					eliminaArticoloDalMagazzinoSQL(articoloSelezionato.getId());
+					MagazzinoDAO.eliminaArticoloDalMagazzinoSQL(articoloSelezionato.getId());
 					}
 				else if(MagazzinoTemporaneo.isEmpty()) {
 					JOptionPane.showMessageDialog(new JFrame(), "Magazzino Vuoto", "Il magazzino è vuoto",

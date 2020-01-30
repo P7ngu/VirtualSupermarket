@@ -14,7 +14,7 @@ public class ArticoloDAO {
 
 	
 	public Articolo getArticoloById (String Id) throws SQLException {
-		String sql = "SELECT * FROM articolo where Id =?";
+		String sql = "SELECT * FROM Articolo where Id =?";
 	
 		PreparedStatement getArticolo = con.prepareStatement(sql);
 		getArticolo.setString(1, Id);
@@ -47,6 +47,35 @@ public class ArticoloDAO {
 		
 		return null;
 	}
+	
+	public Articolo CreaArticolo (Articolo a) throws SQLException{
+		String sql = "INSERT INTO Articolo VALUES (?, ?, ?, ?, ?, ?)";
+		
+		PreparedStatement inserisciArticolo = con.prepareStatement(sql);
+		inserisciArticolo.setString(1, a.getName());
+		inserisciArticolo.setString(2, a.getId());
+		inserisciArticolo.setLong(3, (long) a.getPrice());
+		inserisciArticolo.setString(4, a.getPathFoto());
+		inserisciArticolo.setString(5, a.getTaglia());
+		inserisciArticolo.setString(6, a.getColore());
+		
+		inserisciArticolo.executeUpdate();
+		
+		return null;
+	}
+	
+	public static void creaTabellaArticoloSQL() throws Exception {
+		try {
+			PreparedStatement create = con.prepareStatement("CREATE TABLE IF NOT EXISTS Articolo (nome varchar(255),"
+					+ "id int NOT NULL AUTO_INCREMENT, prezzo double, pathfoto varchar(200), taglia char(2),"
+					+ "colore varchar(10), PRIMARY KEY (id))");
+			create.executeUpdate();	
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+	}
+
 
 
 	
