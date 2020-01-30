@@ -35,6 +35,8 @@ public class InserimentoArticoloInMagazzinoFrame extends JFrame {
 	private String pathFoto;
 
 	public InserimentoArticoloInMagazzinoFrame(NegozioController ctrl) {
+		setResizable(false);
+		setAlwaysOnTop(true);
 		Controller = ctrl;
 		setTitle("Aggiunta Articoli al Magazzino");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -106,7 +108,7 @@ public class InserimentoArticoloInMagazzinoFrame extends JFrame {
 		JButton btnNewButton_1 = new JButton("Termina");
 		btnNewButton_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				Controller.TerminaInserimentoArticoli();
+				Controller.terminaInserimentoArticoli();
 				setVisible(false);
 			}
 		});
@@ -134,8 +136,7 @@ public class InserimentoArticoloInMagazzinoFrame extends JFrame {
 		JButton btnSelezionaImmagine = new JButton("Seleziona Immagine");
 		btnSelezionaImmagine.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
-			pathFoto = 	SelezionaImmagine(fileChooser);
+		pathFoto = 	SelezionaImmagine(fileChooser);
 			}
 		});
 		btnSelezionaImmagine.setBounds(102, 272, 224, 29);
@@ -167,10 +168,8 @@ public class InserimentoArticoloInMagazzinoFrame extends JFrame {
 			public void actionPerformed(ActionEvent arg0) {
 				int QuantitaSelezionata=0;
 				QuantitaSelezionata = (int) QuantitaBox.getSelectedItem();
-				System.out.println("Hai selezionato: " + QuantitaSelezionata);
 			 for (int i=0; i<QuantitaSelezionata; i++) {
-				ControllaCorrettezzaPerInserimento(TagliaBox, ColoreBox, pathFoto);
-					
+				ControllaCorrettezzaPerInserimento(TagliaBox, ColoreBox, pathFoto);		
 			}
 			}
 		});
@@ -188,10 +187,8 @@ public class InserimentoArticoloInMagazzinoFrame extends JFrame {
 		int result = fileChooser.showOpenDialog(null);
 		if (result == JFileChooser.APPROVE_OPTION) {
 		    File selectedFile = fileChooser.getSelectedFile();
-		    System.out.println("Selected file: " + selectedFile.getAbsolutePath());
 		    
 		    return selectedFile.getAbsolutePath();
-		//   Articolo.setpathFoto( selectedFile.getAbsolutePath() );
 		   
 		}
 		return null;
@@ -202,21 +199,18 @@ public class InserimentoArticoloInMagazzinoFrame extends JFrame {
 				try {
 					String Taglia = (String)TagliaBox.getSelectedItem();
 					String Colore = (String)ColoreBox.getSelectedItem();
-					System.out.println( Taglia + Colore);
 					
-	  Controller.AggiungiArticoloAlMagazzino( Nome_textField.getText(), Codice_textField.getText(), Prezzo_textField.getText(),
+	  Controller.aggiungiArticoloAlMagazzino( Nome_textField.getText(), Codice_textField.getText(), Prezzo_textField.getText(),
             	path, Taglia, Colore);
 				 
 			}
 			catch (Exception e) {
-				JOptionPane.showMessageDialog(new JFrame(), "Inserire Valori Validi", "Errore Inserimento",
-				        JOptionPane.ERROR_MESSAGE);
+				Controller.creaMessaggioErroreDuranteOperazione("Inserire Valori Validi", "Errore Inserimento");
 				e.printStackTrace();
 				}
 						
 		}
 		else
-			JOptionPane.showMessageDialog(new JFrame(), "Inserire Valori", "Errore Inserimento",
-			        JOptionPane.ERROR_MESSAGE);
+			Controller.creaMessaggioErroreDuranteOperazione("Inserire Valori", "Errore Inserimento");
 	}
 }

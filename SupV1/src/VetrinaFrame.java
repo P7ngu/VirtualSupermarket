@@ -17,13 +17,14 @@ public class VetrinaFrame extends JFrame {
 
 
 	
-public void AggiungiInVetrina(JLabel fotoLabel, JLabel articoloLabel, JButton BottoneAggiungi) {
+public void aggiungiInVetrina(JLabel fotoLabel, JLabel articoloLabel, JButton BottoneAggiungi) {
 	contentPane.add(fotoLabel);
 	contentPane.add(articoloLabel);
 	contentPane.add(BottoneAggiungi);
 }
 	
 	public VetrinaFrame(NegozioController controller) {
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	
 		setResizable(false);
 		setTitle("Vetrina");
@@ -40,7 +41,7 @@ public void AggiungiInVetrina(JLabel fotoLabel, JLabel articoloLabel, JButton Bo
 		JButton btnNewButton = new JButton("Visualizza Carrello");
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				Controller.AggiornaFrameCarrello();
+				Controller.aggiornaFrameCarrello();
 			}
 		});
 		btnNewButton.setBounds(21, 523, 192, 29);

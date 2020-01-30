@@ -8,16 +8,30 @@ public ArrayList <Articolo> getElencoArticoli() {
 	return ElencoArticoli;
 }
 
+public Magazzino() {
+	ElencoArticoli = new ArrayList <Articolo>();
+}
 public void setElencoArticoli(ArrayList <Articolo> elencoArticoli) {
 	ElencoArticoli = elencoArticoli;
 }
 
-public void addToElencoArticoli(Articolo a) {
-	ElencoArticoli.add(a);
+public boolean add(Articolo a) {
+	return ElencoArticoli.add(a);
 }
 
-public void removeFromElencoArticoli(Articolo a) {
-	ElencoArticoli.remove(a);
+public boolean remove(Articolo a) {
+	return ElencoArticoli.remove(a);	
 }
 
+public boolean contains(Articolo a) {
+	return ElencoArticoli.contains(a); 
+}
+
+public int getSize() {
+	return ElencoArticoli.size();
+}
+
+public void clear() {
+	ElencoArticoli.clear();
+}
 }

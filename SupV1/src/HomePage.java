@@ -16,12 +16,13 @@ public class HomePage extends JFrame {
 
 	private JPanel contentPane;
 	private NegozioController Controller;
+	
 	public HomePage(NegozioController ctrl) {
+		Controller=ctrl;
+		
 		setResizable(false);
 		setTitle("Home");
-		
-		Controller=ctrl;
-		setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 991, 590);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -29,7 +30,8 @@ public class HomePage extends JFrame {
 		contentPane.setLayout(null);
 		
 		JLabel lblNewLabel = new JLabel("");
-		lblNewLabel.setIcon(new ImageIcon("/Users/valentinaperotta/Desktop/GFX/welcome.png"));
+		ImageIcon icon = Controller.createImageIcon("welcome.png", "");
+		lblNewLabel.setIcon(icon);
 		lblNewLabel.setBounds(39, 0, 946, 101);
 		contentPane.add(lblNewLabel);
 		
@@ -40,7 +42,8 @@ public class HomePage extends JFrame {
 			}
 		});
 		visualizzaVetrinabtn.setBackground(Color.WHITE);
-		visualizzaVetrinabtn.setIcon(new ImageIcon("/Users/valentinaperotta/Desktop/GFX/visualizzavetrina2.png"));
+		ImageIcon iconVetrina = Controller.createImageIcon("visualizzavetrina2.png", "");
+		visualizzaVetrinabtn.setIcon(iconVetrina);
 		visualizzaVetrinabtn.setBounds(61, 392, 170, 120);
 		contentPane.add(visualizzaVetrinabtn);
 		
@@ -50,7 +53,8 @@ public class HomePage extends JFrame {
 				Controller.apriSchermataCarrello();
 			}
 		});
-		visualizzaCarrellobtn.setIcon(new ImageIcon("/Users/valentinaperotta/Desktop/GFX/visualizzacarrello2.png"));
+		ImageIcon visualizzaCarrelloicon = Controller.createImageIcon("visualizzacarrello2.png", "");
+		visualizzaCarrellobtn.setIcon(visualizzaCarrelloicon);
 		visualizzaCarrellobtn.setBackground(Color.WHITE);
 		visualizzaCarrellobtn.setBounds(61, 218, 170, 120);
 		contentPane.add(visualizzaCarrellobtn);
@@ -61,7 +65,8 @@ public class HomePage extends JFrame {
 				Controller.apriSchermataMagazzino();
 			}
 		});
-		visualizzaMagazzinobtn.setIcon(new ImageIcon("/Users/valentinaperotta/Desktop/GFX/visualizzamagazzino2.png"));
+		ImageIcon iconVisualizzaMagazzino = Controller.createImageIcon("visualizzamagazzino2.png", "");
+		visualizzaMagazzinobtn.setIcon(iconVisualizzaMagazzino);
 		visualizzaMagazzinobtn.setBackground(Color.WHITE);
 		visualizzaMagazzinobtn.setBounds(479, 218, 170, 120);
 		contentPane.add(visualizzaMagazzinobtn);
@@ -70,13 +75,14 @@ public class HomePage extends JFrame {
 		resettaMagazzinobtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-					Controller.CancellaDatiMagazzino();
+					Controller.cancellaDatiMagazzino();
 				} catch (SQLException e1) {
-					e1.printStackTrace();
+					Controller.creaMessaggioErroreDuranteOperazione("ERRORE", "RIPROVARE");
 				}
 			}
 		});
-		resettaMagazzinobtn.setIcon(new ImageIcon("/Users/valentinaperotta/Desktop/GFX/resettamagazzino2.png"));
+		ImageIcon iconResettaMagazzino = Controller.createImageIcon("resettamagazzino2.png", "");
+		resettaMagazzinobtn.setIcon(iconResettaMagazzino);
 		resettaMagazzinobtn.setBackground(Color.WHITE);
 		resettaMagazzinobtn.setBounds(739, 218, 170, 120);
 		contentPane.add(resettaMagazzinobtn);
@@ -87,7 +93,8 @@ public class HomePage extends JFrame {
 				Controller.apriSchermataAggiungiAlMagazzino();
 			}
 		});
-		aggiungiAMagazzinobtn.setIcon(new ImageIcon("/Users/valentinaperotta/Desktop/GFX/aggiungiamagazzino2.png"));
+		ImageIcon iconAggiungiMagazzino = Controller.createImageIcon("aggiungiamagazzino2.png", "");
+		aggiungiAMagazzinobtn.setIcon(iconAggiungiMagazzino);
 		aggiungiAMagazzinobtn.setBackground(Color.WHITE);
 		aggiungiAMagazzinobtn.setBounds(479, 392, 170, 120);
 		contentPane.add(aggiungiAMagazzinobtn);
@@ -98,38 +105,43 @@ public class HomePage extends JFrame {
 				Controller.apriSchermataEliminaDaMagazzino();
 			}
 		});
-		eliminaDaMagazzinobtn.setIcon(new ImageIcon("/Users/valentinaperotta/Desktop/GFX/eliminadamagazzino1.png"));
+		ImageIcon iconEliminaDaMag = Controller.createImageIcon("eliminadamagazzino1.png", "");
+		eliminaDaMagazzinobtn.setIcon(iconEliminaDaMag);
 		eliminaDaMagazzinobtn.setBackground(Color.WHITE);
 		eliminaDaMagazzinobtn.setBounds(739, 392, 170, 120);
 		contentPane.add(eliminaDaMagazzinobtn);
 		
 		JLabel lblNewLabel_1 = new JLabel("New label");
-		lblNewLabel_1.setIcon(new ImageIcon("/Users/valentinaperotta/Desktop/GFX/pannelloutente1.png"));
+		ImageIcon iconPannelloUt = Controller.createImageIcon("pannelloutente1.png", "");
+		lblNewLabel_1.setIcon(iconPannelloUt);
 		lblNewLabel_1.setBounds(-12, 95, 310, 91);
 		contentPane.add(lblNewLabel_1);
 		
 		JLabel label = new JLabel("New label");
-		label.setIcon(new ImageIcon("/Users/valentinaperotta/Desktop/GFX/pannelloadmin.png"));
+		ImageIcon iconPannelloAdm = Controller.createImageIcon("pannelloadmin.png", "");
+		label.setIcon(iconPannelloAdm);
 		label.setBounds(529, 95, 310, 91);
 		contentPane.add(label);
 		
 		JLabel lblNewLabel_2 = new JLabel("New label");
-		lblNewLabel_2.setIcon(new ImageIcon("/Users/valentinaperotta/Desktop/GFX/barra1.png"));
+		ImageIcon iconBarra = Controller.createImageIcon("barra1.png", "");
+		lblNewLabel_2.setIcon(iconBarra);
 		lblNewLabel_2.setBounds(-23, 83, 128, 452);
 		contentPane.add(lblNewLabel_2);
 		
 		JLabel label_1 = new JLabel("New label");
-		label_1.setIcon(new ImageIcon("/Users/valentinaperotta/Desktop/GFX/barra1.png"));
+		label_1.setIcon(iconBarra);
 		label_1.setBounds(235, 83, 93, 452);
 		contentPane.add(label_1);
 		
 		JLabel label_3 = new JLabel("New label");
-		label_3.setIcon(new ImageIcon("/Users/valentinaperotta/Desktop/GFX/barrarossaverticale.png"));
+		ImageIcon iconBarraRossaVerticale = Controller.createImageIcon("barrarossaverticale.png", "");
+		label_3.setIcon(iconBarraRossaVerticale);
 		label_3.setBounds(374, 83, 93, 452);
 		contentPane.add(label_3);
 		
 		JLabel label_4 = new JLabel("New label");
-		label_4.setIcon(new ImageIcon("/Users/valentinaperotta/Desktop/GFX/barrarossaverticale.png"));
+		label_4.setIcon(iconBarraRossaVerticale);
 		label_4.setBounds(921, 83, 93, 452);
 		contentPane.add(label_4);
 	}

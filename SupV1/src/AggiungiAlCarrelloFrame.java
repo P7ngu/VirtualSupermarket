@@ -19,6 +19,7 @@ public class AggiungiAlCarrelloFrame extends JFrame {
 	private JComboBox articoloBox;
 
 	public AggiungiAlCarrelloFrame(NegozioController ctrl) {
+		setResizable(false);
 		setFont(new Font(".AppleSystemUIFont", Font.PLAIN, 12));
 		setAlwaysOnTop(true);
 		Controller = ctrl;
@@ -31,7 +32,7 @@ public class AggiungiAlCarrelloFrame extends JFrame {
 		
 			JComboBox <Articolo> ArticoloBox  = new JComboBox();
 			ArticoloBox.setBounds(200, 6, 211, 27);
-			Controller.RiempiComboAggiungiAlCarrello(ArticoloBox);
+			Controller.riempiComboAggiungiAlCarrello(ArticoloBox);
 			articoloBox=ArticoloBox;
 			contentPanel.add(ArticoloBox);
 			
@@ -70,15 +71,12 @@ public class AggiungiAlCarrelloFrame extends JFrame {
 						ArticoloSelezionato =  (Articolo) ArticoloBox.getSelectedItem();
 						int QuantitaSelezionata=0;
 						QuantitaSelezionata = (int) comboBox.getSelectedItem();
-						 System.out.println("Hai selezionato la quantità: " + QuantitaSelezionata);
 		
 			   try {
-				Controller.AggiungiAlCarrello(ArticoloSelezionato, QuantitaSelezionata);
+				Controller.aggiungiAlCarrello(ArticoloSelezionato, QuantitaSelezionata);
 			} catch (SQLException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
+				Controller.creaMessaggioErroreDuranteOperazione("ERRORE", "RIPROVARE");
 			}
-			          System.out.println("Ho aggiunto al tuo carrello l'elemento " + ArticoloSelezionato);
 					}
 				});
 				

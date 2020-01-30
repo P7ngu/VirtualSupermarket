@@ -17,8 +17,8 @@ private static Connection connessione;
 	
 	
 public boolean AggiungiArticoloAlMagazzinoSQL(Articolo ArticoloDaAggiungere) throws SQLException{
-		ArticoloDAO a = new ArticoloDAO(connessione);
-		a.InserisciArticoloInMagazzino(ArticoloDaAggiungere);
+		ArticoloDAO ArticoloDAO = new ArticoloDAO(connessione);
+		ArticoloDAO.InserisciArticoloInMagazzino(ArticoloDaAggiungere);
 		return true;
 	}
 	
@@ -36,9 +36,9 @@ public static void creaTabellaMagazzinoSQL() throws Exception {
 
 
 
-public void incrementaQuantitaArticoloMagazzinoDB (Articolo a) throws SQLException {
-	String ID = a.getId();
-	int quantitaPrecedente = checkQuantitaArticoloMagazzinoSQL(a);
+public void incrementaQuantitaArticoloMagazzinoDB (Articolo articoloSelezionato) throws SQLException {
+	String ID = articoloSelezionato.getId();
+	int quantitaPrecedente = checkQuantitaArticoloMagazzinoSQL(articoloSelezionato);
 	String sql = "UPDATE Magazzino SET quantita=? WHERE id = ?";
 	
 	PreparedStatement updateQuantita = connessione.prepareStatement(sql);
@@ -49,29 +49,23 @@ public void incrementaQuantitaArticoloMagazzinoDB (Articolo a) throws SQLExcepti
 
 public void decrementaQuantitaArticoloMagazzinoDB (Articolo a) throws SQLException {
 	String ID = a.getId();
-	String sql = "UPDATE Magazzino"
-			+ "set quantita=quantita-1"
-			+ "where id =?";
+	String sql = "UPDATE Magazzino SET quantita=? WHERE id =?";
 	
 	PreparedStatement updateQuantita = connessione.prepareStatement(sql);
-	updateQuantita.setString(1, ID);
+	int quantitaPrecedente = checkQuantitaArticoloMagazzinoSQL(a);
+	updateQuantita.setLong(1, quantitaPrecedente-1);
+	updateQuantita.setString(2, ID);
 	updateQuantita.executeUpdate();
 }
 
 public Integer checkQuantitaArticoloMagazzinoSQL (Articolo articoloDaControllare) throws SQLException {
-	String sql = "SELECT quantita FROM Magazzino where id =? AND nome=? AND prezzo=? AND taglia=? AND colore=?";
+	String id = articoloDaControllare.getId();
+	String sql = "SELECT quantita FROM Magazzino WHERE id=?";
 	PreparedStatement getQuantita = connessione.prepareStatement(sql);
-	getQuantita.setString(1, articoloDaControllare.getId());
-	getQuantita.setString(2, articoloDaControllare.getName());
-	getQuantita.setLong(3, (long) articoloDaControllare.getPrice());
-	getQuantita.setString(4, articoloDaControllare.getTaglia());
-	getQuantita.setString(5, articoloDaControllare.getColore());
-	
-	
+	getQuantita.setString(1, id);
 	ResultSet result = getQuantita.executeQuery();
 	while(result.next()) {
-		Integer quantita = new Integer(result.getString(1));
-		System.out.println(quantita);
+		Integer quantita = new Integer(result.getString(2));
 		return quantita;
 		}
 	return null;
@@ -80,9 +74,11 @@ public Integer checkQuantitaArticoloMagazzinoSQL (Articolo articoloDaControllare
 
 public static void eliminaArticoloDalMagazzinoSQL(String Id) throws SQLException {
 	try {
-	PreparedStatement st = connessione.prepareStatement("DELETE FROM Magazzino WHERE id = ?");
-    st.setString(1, Id);
-    st.executeUpdate(); 
+		ArticoloDAO ArticoloDAO = new ArticoloDAO(connessione);
+		//ArticoloDAO.eliminaArticolo(Id);
+		PreparedStatement st = connessione.prepareStatement("DELETE FROM Magazzino WHERE id = ?");
+		st.setString(1, Id);
+		st.executeUpdate(); 
 	}
 	catch(Exception e) {
 		e.printStackTrace();

@@ -22,14 +22,10 @@ import javax.swing.JScrollPane;
 public class CarrelloFrame extends JFrame {
 
 	static JPanel contentPane;
-	static JScrollPane ScrollPane;
 	private NegozioController Controller;
 
-	/**
-	 * Create the frame.
-	 * @throws IOException 
-	 */
 	public CarrelloFrame(NegozioController ctrl)  {
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 1000, 650);
 		setResizable(false);
 		setTitle("Carrello Acquisti");
@@ -61,7 +57,7 @@ public class CarrelloFrame extends JFrame {
 		
 		  JLabel Totale = new JLabel("New label");
 		  Totale.setBounds(731, 568, 120, 16);
-		  double Total = Controller.EseguiTotale();
+		  double Total = Controller.eseguiTotale();
 		  Totale.setText("Totale: " + Total);
 		  contentPane.add(Totale);
 		
@@ -75,22 +71,13 @@ public class CarrelloFrame extends JFrame {
 		JButton btnNewButton = new JButton("");
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				Controller.ApriSchermataPagamento();
+				Controller.apriSchermataPagamento();
 			}
 		});
 		btnNewButton.setBounds(823, 514, 146, 90);
 		ImageIcon pagaImg = Controller.createImageIcon("BottonePagamento.png", "");
 		btnNewButton.setIcon(pagaImg);
 		contentPane.add(btnNewButton);
-		
-		JButton btnNewButton_1 = new JButton("Torna in home");
-		btnNewButton_1.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				Controller.apriSchermataHome();
-			}
-		});
-		btnNewButton_1.setBounds(514, 563, 192, 29);
-		contentPane.add(btnNewButton_1);
 		
 		
 		JLabel lblNewLabel = new JLabel("Elenco articoli: ");

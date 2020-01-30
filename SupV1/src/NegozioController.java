@@ -3,6 +3,11 @@ import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -11,6 +16,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -35,12 +42,11 @@ import java.awt.Component;
 import javax.swing.UIManager;
 
 public class NegozioController {
-
-	static ArrayList<Articolo> MagazzinoTransazionale;
-	ArrayList <Articolo> MagazzinoTemporaneo;
-	ArrayList<Articolo> CarrelloUtente;
+	static Magazzino MagazzinoTransazionale;
+	static Magazzino MagazzinoTemporaneo;
+	CarrelloUtente CarrelloUtente;
 	CarrelloFrame CarrelloFrame;
-	static HomePage HomePage;
+	static HomePage HomePageFrame;
 	MagazzinoFrame MagazzinoFrame;
 	EliminaDaMagazzinoFrame EliminaDaMagazzinoFrame;
 	InserimentoArticoloInMagazzinoFrame InserimentoArticoloInMagazzinoFrame;
@@ -50,15 +56,40 @@ public class NegozioController {
 	PagamentoFrame PagamentoFrame;
 	static Connection connessione;
 	static MagazzinoDAO MagazzinoDAO;
+	static ArticoloDAO ArticoloDAO;
 	
 	
-	
+
+	public NegozioController() throws Exception {
+		MagazzinoTransazionale = new Magazzino();
+		MagazzinoTemporaneo = new Magazzino();
+		CarrelloUtente = new CarrelloUtente();
+		
+		connessione = getConnection();
+		MagazzinoDAO MagazzinoDAO = new MagazzinoDAO(connessione);
+		ArticoloDAO ArticoloDAO = new ArticoloDAO(connessione);
+		
+		MagazzinoDAO.creaTabellaMagazzinoSQL();
+		ArticoloDAO.creaTabellaArticoloSQL();
+		riempiMagazzinoDaDB();
+		
+		MagazzinoTemporaneo = MagazzinoTransazionale;
+		
+		EliminaDaMagazzinoFrame = new EliminaDaMagazzinoFrame(this);
+		AggiungiAlCarrelloFrame = new AggiungiAlCarrelloFrame(this);
+		CarrelloFrame = new CarrelloFrame(this);
+		VetrinaFrame = new VetrinaFrame(this);
+		MagazzinoFrame = new MagazzinoFrame(this);
+		
+		
+	}
 	
 	public static void main(String[] args) throws Exception {
 		NegozioController TheController = new NegozioController();
-		HomePage = new HomePage(TheController);
-		HomePage.setVisible(true);
+		HomePageFrame = new HomePage(TheController);
+		HomePageFrame.setVisible(true);
 		MagazzinoDAO = new MagazzinoDAO(connessione);
+		ArticoloDAO = new ArticoloDAO(connessione);
 		InserimentoArticoloInMagazzinoFrame InserimentoArticoloInMagazzinoFrame = new InserimentoArticoloInMagazzinoFrame(TheController);
 		EliminaDaMagazzinoFrame EliminaDaMagazzinoFrame = new EliminaDaMagazzinoFrame (TheController);
 		MagazzinoFrame MagazzinoFrame = new MagazzinoFrame(TheController);
@@ -70,46 +101,30 @@ public class NegozioController {
 	
 	
 
-	private static void RiempiMagazzinoDaDB() throws SQLException {
+	private static void riempiMagazzinoDaDB() throws SQLException, IOException {
+		ArticoloDAO = new ArticoloDAO(connessione);
 		String sql = "SELECT * FROM Magazzino";
 		PreparedStatement getArticolo = connessione.prepareStatement(sql);
 		ResultSet result = getArticolo.executeQuery();
 		while(result.next()) {
-			String nome = (result.getString(1));
-			String id = (result.getString(2));
-			Double prezzo = new Double(result.getString(3));
-			String pathfoto = (result.getString(4));
-			String taglia = (result.getString(5));
-			String colore = (result.getString(6));
-			Articolo ArticoloTrovato = new Articolo (nome, id, prezzo, pathfoto, taglia, colore);
-			MagazzinoTransazionale.add(ArticoloTrovato);
+			Integer quantita = new Integer(result.getString(7));
+			while(quantita>0) {
+				String nome = (result.getString(1));
+				String id = (result.getString(2));
+				Double prezzo = new Double(result.getString(3));
+				String pathfoto = "";
+				String taglia = (result.getString(5));
+				String colore = (result.getString(6));
+				Articolo ArticoloTrovato = new Articolo (nome, id, prezzo, pathfoto, taglia, colore);
+				ArticoloDAO.JdbcReadImage(ArticoloTrovato);
+				MagazzinoTransazionale.add(ArticoloTrovato);
+				MagazzinoTemporaneo.add(ArticoloTrovato);
+				quantita--;
 			}
+		}
 	}
 
 
-	public NegozioController() throws Exception {
-		MagazzinoTransazionale = new ArrayList<Articolo>();
-		MagazzinoTemporaneo = new ArrayList<Articolo>();
-		CarrelloUtente = new ArrayList <Articolo>();
-		
-		connessione = getConnection();
-		MagazzinoDAO MagazzinoDAO = new MagazzinoDAO(connessione);
-		MagazzinoDAO.creaTabellaMagazzinoSQL();
-		RiempiMagazzinoDaDB();
-		
-		MagazzinoTemporaneo = MagazzinoTransazionale;
-		
-		EliminaDaMagazzinoFrame = new EliminaDaMagazzinoFrame(this);
-		AggiungiAlCarrelloFrame= new AggiungiAlCarrelloFrame(this);
-		CarrelloFrame = new CarrelloFrame(this);
-		VetrinaFrame = new VetrinaFrame(this);
-		MagazzinoFrame = new MagazzinoFrame(this);
-		
-		
-		
-	
-		
-	}
 	
 	public static Connection getConnectionLocale() throws Exception{
 		try {
@@ -126,265 +141,266 @@ public class NegozioController {
 		
 	}
 	
+
 	public static Connection getConnection() throws Exception{
-
-		    System.out.println("----MySQL JDBC Connection Testing -------");
-		     try {
-		        Class.forName("com.mysql.jdbc.Driver");
-		    } catch (ClassNotFoundException e) {
-		        System.out.println("JDBC Driver non trovato");
-		        e.printStackTrace();
-		        return null;
-		    }
-		     System.out.println("Driver registrato");
-		    Connection connection = null;
-		    try {
-		        connection = DriverManager.getConnection("jdbc:mysql://" + "sql7.freesqldatabase.com" 
-		        + ":" + 3306 + "/" + "sql7317801", "sql7317801" ,"JSfK3lPNgq");
-		        if(connection!=null) System.out.println("connessione effettuata");
-		    } catch (SQLException e) {
-		        System.out.println("Connessione fallita!:\n" + e.getMessage());
-		    }
-			return connection;
-
-		}
-		
-
-	
-	public void AggiungiArticoloAlMagazzino(String Nome, String Codice, String prezzo, String fotoPath, String Taglia, String Colore) {
-		Double d = new Double(prezzo);
-		Articolo ArticoloDaAggiungere = new Articolo(Nome, Codice, d, fotoPath, Taglia, Colore);
-		try {
-			if(MagazzinoDAO.checkQuantitaArticoloMagazzinoSQL(ArticoloDaAggiungere)==null) {
-			if(MagazzinoDAO.AggiungiArticoloAlMagazzinoSQL(ArticoloDaAggiungere)) {
-			MagazzinoTransazionale.add(ArticoloDaAggiungere);
-			 JFrame parent = new JFrame();
-			 JOptionPane.showMessageDialog(parent, "Articoli aggiunti correttamente");
-			}
-			AggiungiAlCarrelloFrame = new AggiungiAlCarrelloFrame(this);
-		}
-			else {
-				MagazzinoDAO.incrementaQuantitaArticoloMagazzinoDB(ArticoloDaAggiungere);
-				JFrame parent = new JFrame();
-				JOptionPane.showMessageDialog(parent, "Quantità aggiornata!");
-			}
-		}
-		catch (Exception e) {
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(new JFrame(), "ERRORE: ID NON VALIDO", "Riprovare",
-			        JOptionPane.ERROR_MESSAGE);
-		}
-	
-	
+	     try{ 
+	    	 String driver = "com.mysql.cj.jdbc.Driver";
+	    	 Class.forName(driver);
+	    	 	try{
+	    	 		String url ="jdbc:mysql://sql7.freesqldatabase.com:3306/sql7317801";
+	    	 		String username = "sql7317801";
+	    	 		String password = "JSfK3lPNgq";
+	    	 		Connection connection = DriverManager.getConnection(url, username ,password);
+	    	 		return connection;
+	    	 	}
+	    	 	catch (SQLException e) {
+	    	 		creaMessaggioErroreDuranteOperazione("CONNESSIONE AL DATABASE FALLITA", "RIPROVARE");
+	    	 		chiudiProgramma();
+	    	 	}
+	     } 
+	     catch(ClassNotFoundException e) {
+	     	creaMessaggioErroreDuranteOperazione("CONNESSIONE AL DATABASE FALLITA", "JDBC DRIVER NON TROVATO");
+	     	chiudiProgramma();
+	     	return null;
+	     } 
+	return null;
 	}
 		
 
 	
-	public void RimuoviArticoliDalCarrello (Articolo ArticoloDaRimuovere, int quantita) {
+	public void aggiungiArticoloAlMagazzino(String Nome, String Codice, String prezzo, String fotoPath, String Taglia, String Colore) throws SQLException {
+		Double Prezzo = new Double(prezzo);
+		Articolo ArticoloDaAggiungere = new Articolo(Nome, Codice, Prezzo, fotoPath, Taglia, Colore);
+		try{ 
+			ArticoloDAO.CreaArticolo(ArticoloDaAggiungere);
+			try {
+				if(MagazzinoDAO.checkQuantitaArticoloMagazzinoSQL(ArticoloDaAggiungere)==null 
+						&& (MagazzinoDAO.AggiungiArticoloAlMagazzinoSQL(ArticoloDaAggiungere))) {
+					creaMessaggioOperazioneEffettuataConSuccesso("Articoli aggiunti correttamente");
+				} else { 
+					MagazzinoDAO.incrementaQuantitaArticoloMagazzinoDB(ArticoloDaAggiungere);
+					creaMessaggioOperazioneEffettuataConSuccesso("Quantità articolo incrementata di 1!");
+				}
+				MagazzinoTransazionale.add(ArticoloDaAggiungere);
+			} catch (Exception e) { //catch per creazione articolo nel database
+				creaMessaggioErroreDuranteOperazione("ERRORE: ID DUPLICATO", "RIPROVARE"); 
+			}
+		} catch (Exception e) { //catch per inserimento articolo in magazzino
+			creaMessaggioErroreDuranteOperazione("ERRORE: ID NON VALIDO, INSERIRE SOLO NUMERI", "RIPROVARE"); 
+		}
+		if(fotoPath!=null)ArticoloDAO.JdbcWriteImage(fotoPath, Codice);
+	}
+		
+	public static void creaMessaggioErroreDuranteOperazione(String testoDaMostrare, String titolo) {
+		JOptionPane.showMessageDialog(new JFrame(), testoDaMostrare, titolo,
+		        JOptionPane.ERROR_MESSAGE);
+		
+	}
+	public void creaMessaggioOperazioneEffettuataConSuccesso(String testoDaMostrare) {
+		JFrame parent = new JFrame();
+		JOptionPane.showMessageDialog(parent, testoDaMostrare);
+	}
+	
+	public void rimuoviArticoliDalCarrello (Articolo ArticoloDaRimuovere, int quantita) {
 		while(quantita>0) {
 			if(CarrelloUtente.remove(ArticoloDaRimuovere)) {
-				quantita--;
 				MagazzinoTemporaneo.add(ArticoloDaRimuovere);
-				AggiornaLabelCarrello();
-			}
-			if(CarrelloVuoto()) {
+				aggiornaLabelCarrello();
+				AggiungiAlCarrelloFrame = new AggiungiAlCarrelloFrame(this);
+				quantita--;
+				}
+			if(isCarrelloEmpty()) {
 				chiudiTutteLeFinestre();
 				CarrelloFrame = new CarrelloFrame(this);
-			}
-		
-	}
-		AggiornaFrameCarrello();
-}
-	
-	public boolean CarrelloVuoto () {
-		if (CarrelloUtente.isEmpty()) {
-			JOptionPane.showMessageDialog(new JFrame(), "Carrello Vuoto", "Carrello vuoto",
-			      JOptionPane.ERROR_MESSAGE);
-			AggiungiAlCarrelloFrame.setVisible(true);
-			CarrelloFrame.setVisible(true);
-			return true;
-			
+				CarrelloFrame.setVisible(true);
+			}	
 		}
-		return false;
-		
+		RimuoviDalCarrelloFrame = new RimuoviDalCarrelloFrame(this);
+	}
+	
+	public boolean isCarrelloEmpty () {
+		if (CarrelloUtente.isEmpty()) {
+			creaMessaggioErroreDuranteOperazione("Carrello Vuoto", "Carrello vuoto");
+			CarrelloFrame.setVisible(true);
+		}
+		return CarrelloUtente.isEmpty();
 	}
 		
-	public void RiempiComboAggiungiAlCarrello (JComboBox<Articolo> articoloBox) {
-		for (Articolo a: MagazzinoTemporaneo) {
+	public void riempiComboAggiungiAlCarrello (JComboBox<Articolo> articoloBox) {
+		for (Articolo a: MagazzinoTemporaneo.getElencoArticoli()) {
 			articoloBox.addItem(a);
 		}		
 	}
 	
-	public void RiempiComboRimuoviDalCarrello (JComboBox<Articolo> articoloBox) {
-		for (Articolo a: CarrelloUtente) {
+	public void riempiComboRimuoviDalCarrello (JComboBox<Articolo> articoloBox) {
+		for (Articolo a: CarrelloUtente.getElencoArticoli()) {
 			articoloBox.addItem(a);
 		}
 	}
 	
 	public void openAggiungiAlCarrello () {
-	 AggiungiAlCarrelloFrame.setVisible(true);
+		AggiungiAlCarrelloFrame = new AggiungiAlCarrelloFrame(this);
+		AggiungiAlCarrelloFrame.setVisible(true);
 	}
 	
 	public void openRimuoviDalCarrello() {
-		RimuoviDalCarrelloFrame = new RimuoviDalCarrelloFrame(this);
-		RimuoviDalCarrelloFrame.setVisible(true);
+		if(!isCarrelloEmpty()) {
+			RimuoviDalCarrelloFrame = new RimuoviDalCarrelloFrame(this);
+			RimuoviDalCarrelloFrame.setVisible(true);
+		}
 	}
 	
-	public void TerminaInserimentoArticoli() {
-		CreaVetrina();
-		HomePage.setVisible(true);
+	public void terminaInserimentoArticoli() {
+		creaVetrina();
+		VetrinaFrame.setVisible(false);
+		HomePageFrame.setVisible(true);
 	}
 	
-	public void AggiungiAlCarrello (Articolo articoloSelezionato, int quantita) throws SQLException{
+	public void aggiungiAlCarrello (Articolo articoloSelezionato, int quantitaSelezionata) throws SQLException{
 		int quantitaDisponibileInMagazzino = MagazzinoDAO.checkQuantitaArticoloMagazzinoSQL(articoloSelezionato);
-		if(quantitaDisponibileInMagazzino>= quantita && MagazzinoTemporaneo.contains(articoloSelezionato)) {
-		while(quantita>0) {
-		CarrelloFrame.setVisible(false);
-		AggiungiArticoloAlCarrelloUtente(articoloSelezionato);
-		AggiornaLabelCarrello();
-		quantita--;
-		MagazzinoTemporaneo.remove(articoloSelezionato);
-		
-		}
-		CarrelloFrame.setVisible(true);
-	}
-		else JOptionPane.showMessageDialog(new JFrame(), "Quantita in magazzino non disponibile", "Riduci la quantita",
-		        JOptionPane.ERROR_MESSAGE);
+		if(quantitaDisponibileInMagazzino >= quantitaSelezionata && MagazzinoTemporaneo.contains(articoloSelezionato)) {
+			while(quantitaSelezionata>0) {
+				CarrelloFrame.setVisible(false);
+				aggiungiArticoloAlCarrelloUtente(articoloSelezionato);
+				aggiornaLabelCarrello();
+				quantitaSelezionata--;
+				MagazzinoTemporaneo.remove(articoloSelezionato);
+			}
+			CarrelloFrame.setVisible(true);
+			AggiungiAlCarrelloFrame.setVisible(false);
+			AggiungiAlCarrelloFrame = new AggiungiAlCarrelloFrame(this);
+		} else creaMessaggioErroreDuranteOperazione("Quantità in magazzino non disponibile",
+				"Riduci la quantità");
 	}
 	
-	public void AggiungiArticoloAlCarrelloUtente (Articolo articoloSelezionato) {
-		if(CheckCarrelloPieno()) {
-		CarrelloUtente.add(articoloSelezionato);
+	public void aggiungiArticoloAlCarrelloUtente (Articolo articoloSelezionato) {
+		if(!checkCarrelloPieno()) {
+			CarrelloUtente.add(articoloSelezionato);
 		}
 	}
 		
-	public double EseguiTotale () {
+	public double eseguiTotale () {
 		double Totale=0.0;
-		for (Articolo a: CarrelloUtente) {
+		for (Articolo a: CarrelloUtente.getElencoArticoli())
 			Totale = Totale + a.getPrice();
-		}
-		return Totale;
 		
-
+		return Totale;
 	}
 	
-	public void AggiornaLabelCarrello () {
+	public void aggiornaLabelCarrello () {
 		CarrelloFrame.setVisible(false);
 		CarrelloFrame = new CarrelloFrame(this);
-		CreaLabelTabella();
-		int i=107, max=450, j=1; 
-		for(Articolo a: CarrelloUtente) {
-			if(i>=max){
-				i=107;
-				j=j+300; 
-				}
-			CreaLabelArticoloCarrello (i, j, a);
-			i=i+17;
+		creaLabelTabella();
+		int y=107, max=450, x=1; 
+		for(Articolo a: CarrelloUtente.getElencoArticoli()) {
+			if(y>=max){
+				y=107;
+				x=x+300; 
 			}
-		AggiornaFrameCarrello();
-	
-	}
-	
-	public void CreaLabelTabella () {
-		int i=90;
-		for (int j=1; j<900; j=j+300) {
-		JLabel LabelNome = new JLabel();
-		LabelNome.setText("Nome ");
-		LabelNome.setBounds(j, i, 360, 18);
-		CarrelloFrame.contentPane.add(LabelNome);
-		
-		JLabel LabelPrezzo = new JLabel();
-		LabelPrezzo.setText(" -  $");
-		LabelPrezzo.setBounds(j+80, i, 360, 18);
-		CarrelloFrame.contentPane.add(LabelPrezzo);
-		
+			creaLabelArticoloCarrello (x, y, a);
+			y=y+17;
 		}
-		
+		aggiornaFrameCarrello();
 	}
 	
-	public void AggiornaFrameCarrello () {
+	public void creaLabelTabella () {
+		int y=90;
+		int max=900;
+		for (int x=1; x<max; x=x+300) {
+			JLabel LabelNome = new JLabel();
+			LabelNome.setText("Nome ");
+			LabelNome.setBounds(x, y, 360, 18);
+			CarrelloFrame.contentPane.add(LabelNome);
+		
+			JLabel LabelPrezzo = new JLabel();
+			LabelPrezzo.setText(" -  $");
+			LabelPrezzo.setBounds(x+80, y, 360, 18);
+			CarrelloFrame.contentPane.add(LabelPrezzo);
+		}	
+	}
+	
+	public void aggiornaFrameCarrello () {
 		CarrelloFrame.setVisible(false);
 		CarrelloFrame.setVisible(true);
 	}
 	
-	public void AggiornaFrameVetrina() {
+	public void aggiornaFrameVetrina() {
 		VetrinaFrame.setVisible(false);
 		VetrinaFrame.setVisible(true);
 	}
 		
-	public void CreaLabelArticoloCarrello (int i, int j, Articolo a) {
-
+	public void creaLabelArticoloCarrello (int x, int y, Articolo a) {
 		JLabel LabelNome = new JLabel();
 		LabelNome.setText(a.getName());
-		LabelNome.setBounds(j, i, 360, 18);
+		LabelNome.setBounds(x, y, 360, 18);
 		CarrelloFrame.contentPane.add(LabelNome);
 		
 		JLabel LabelPrezzo = new JLabel();
 		Double d = new Double(a.getPrice());
 		String prezzo = Double.toString(d);
 		LabelPrezzo.setText(" - " +prezzo);
-		LabelPrezzo.setBounds(j+80, i, 360, 18);
-		CarrelloFrame.contentPane.add(LabelPrezzo);
+		LabelPrezzo.setBounds(x+80, y, 360, 18);
 		
-		CreaPulsanteVisualizzaArticolo(i, j, a);
+		CarrelloFrame.contentPane.add(LabelPrezzo);
+		creaPulsanteVisualizzaArticolo(x, y, a);
 		
 		SwingUtilities.updateComponentTreeUI(CarrelloFrame);
 		
 	}
 	
-	public void CreaPulsanteVisualizzaArticolo(int i, int j,Articolo a){
+	public void creaPulsanteVisualizzaArticolo(int x, int y,Articolo articoloCliccato){
 		JButton btnVisualizzaArticolo = new JButton("Visualizza");
-		ArticoloDaVisualizzare articoloVisualizzato = new ArticoloDaVisualizzare(a, this);
+		ArticoloDaVisualizzare articoloVisualizzato = new ArticoloDaVisualizzare(articoloCliccato, this);
 		btnVisualizzaArticolo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				articoloVisualizzato.setVisible(true);
 			}
 		});
-		btnVisualizzaArticolo.setBounds(j+130, i, 169, 29);
+		btnVisualizzaArticolo.setBounds(x+147, y+2, 130, 15);
 		CarrelloFrame.contentPane.add(btnVisualizzaArticolo);
 	}
 	
-	public void CreaArticoloPerVetrina(int i, int j, Articolo a) {
-		ArticoloDaVisualizzare ArticoloVisualizzato = new ArticoloDaVisualizzare (a, this);
+	public void creaArticoloPerVetrina(int x, int y, Articolo articoloCliccato) {
+		ArticoloDaVisualizzare ArticoloVisualizzato = new ArticoloDaVisualizzare (articoloCliccato, this);
 		JLabel fotoLabel = ArticoloVisualizzato.getFotoLabel();
-		JLabel articoloLabel = ArticoloVisualizzato.getArticoloLabel();
+		JLabel articoloLabel = new JLabel(articoloCliccato.getName()+"-"+ articoloCliccato.getTaglia() +"-"+
+			articoloCliccato.getPrice()+"$");
 		JButton BottoneAggiungi = ArticoloVisualizzato.getBottone();
-		fotoLabel.setBounds(j, i, 100, 100);
-		articoloLabel.setBounds(j, i+105, 360, 18);
-		BottoneAggiungi.setBounds(j, i+125, 100, 15);
-		VetrinaFrame.AggiungiInVetrina(fotoLabel, articoloLabel, BottoneAggiungi);
+		fotoLabel.setBounds(x, y, 100, 100);
+		articoloLabel.setBounds(x, y+105, 360, 18);
+		BottoneAggiungi.setBounds(x, y+125, 100, 15);
+		VetrinaFrame.aggiungiInVetrina(fotoLabel, articoloLabel, BottoneAggiungi);
 		
 		SwingUtilities.updateComponentTreeUI(VetrinaFrame);
 		
 	}
 	
-	public void CreaVetrina() {
-		int i=30, max=350, j=30; 
-		for(Articolo a: MagazzinoTransazionale) {
-			if(i>=max){
-				i=30;
-				j=j+115; 
+	public void creaVetrina() {
+		int x=30, max=350, y=30; 
+		for(Articolo a: MagazzinoTransazionale.getElencoArticoli()) {
+			if(y>=max){
+				y=30;
+				x=x+115; 
 				}
-			CreaArticoloPerVetrina(i, j, a);
-			i=i+150;
+			creaArticoloPerVetrina(x, y, a);
+			y=y+150;
 			}
-		AggiornaFrameVetrina();
+		aggiornaFrameVetrina();
 	}
 	
-	public boolean CheckCarrelloPieno () {
-		if ( CarrelloUtente.size() >= 63) {
-			JOptionPane.showMessageDialog(new JFrame(), "Carrello Pieno", "Carrello Pieno",
-			        JOptionPane.ERROR_MESSAGE);
-			return false;
+	public boolean checkCarrelloPieno () {
+		if (CarrelloUtente.getSize() >= 63) {
+			creaMessaggioErroreDuranteOperazione("Carrello Pieno!", "Carrello Pieno!");
+			return true;
 		}
-		return true;
+		return false;
 			
 	}
 
 
-	public void ApriSchermataPagamento() {
-		if (CarrelloUtente.size()==0) JOptionPane.showMessageDialog(new JFrame(), "Carrello Vuoto", "Carrello Vuoto",
-		        JOptionPane.ERROR_MESSAGE);
+	public void apriSchermataPagamento() {
+		if (CarrelloUtente.getSize()==0) 
+			creaMessaggioErroreDuranteOperazione("Il carrello è vuoto!", "Carrello vuoto!");
 		else {	
 		PagamentoFrame = new PagamentoFrame(this);
 		PagamentoFrame.setVisible(true);
@@ -392,188 +408,148 @@ public class NegozioController {
 	}
 
 
-	public void effettuaTransazione() {
-		for (Articolo a: CarrelloUtente) {
-			try {
-				int quantita = MagazzinoDAO.checkQuantitaArticoloMagazzinoSQL(a);
-				if(quantita>1) {
-					MagazzinoDAO.decrementaQuantitaArticoloMagazzinoDB(a);
-				}
-				MagazzinoDAO.eliminaArticoloDalMagazzinoSQL(a.getId());
-			} catch (SQLException e) {
-			
-		}
-			MagazzinoTransazionale.remove(a);
-			AggiungiAlCarrelloFrame.rimuoviArticoloBox(a);
-			CarrelloFrame.setVisible(false);
-			
-			JFrame parent = new JFrame();
-			 JOptionPane.showMessageDialog(parent, "Pagamento Effettuato Correttamente");
-			 	ChiudiProgramma();
-	
+	public void effettuaTransazione() throws SQLException {
+		for (Articolo a: CarrelloUtente.getElencoArticoli())
+		rimuoviArticoloDalMagazzino(a);
+		
+		creaMessaggioOperazioneEffettuataConSuccesso("Pagamento effettuato!");
+		chiudiProgramma();
 	}
-
-
-	
-}
 	 
 	
-		public void ChiudiProgramma() {
-		System.exit(0);
-		
+	public static void chiudiProgramma() {
+		System.exit(0);	
 	}
 
 
 
 
-		protected ImageIcon createImageIcon(String path, String description) {
-			java.net.URL imgURL = getClass().getResource(path);
-				return new ImageIcon(imgURL, description);
-			
+	protected ImageIcon createImageIcon(String path, String description) {
+		java.net.URL imgURL = getClass().getResource(path);
+		return new ImageIcon(imgURL, description);		
 	}
 
 
-		public void apriSchermataVetrina() {
-			chiudiTutteLeFinestre();
-			VetrinaFrame=new VetrinaFrame(this);
-			CreaVetrina();
+	public void apriSchermataVetrina() {
+		chiudiTutteLeFinestre();
+		VetrinaFrame = new VetrinaFrame(this);
+		creaVetrina();
 		VetrinaFrame.setVisible(true);
-			
-		}
+	}
 
 
-		public void apriSchermataCarrello() {
+	public void apriSchermataCarrello() {
+		if(MagazzinoTransazionale.getSize()!=0) {
 			chiudiTutteLeFinestre();
 			CarrelloFrame = new CarrelloFrame(this);
 			CarrelloFrame.setVisible(true);
-			
 		}
+		else creaMessaggioErroreDuranteOperazione("Il magazzino è vuoto, inserire un articolo", "Riprovare");
+	}
 
 
-		public void apriSchermataMagazzino() {
-			if(MagazzinoTransazionale.size()==0) 
-				JOptionPane.showMessageDialog(new JFrame(), "Magazzino Vuoto", "Il magazzino è vuoto",
-			        JOptionPane.ERROR_MESSAGE);
-				else {
+	public void apriSchermataMagazzino() {
+		if(MagazzinoTransazionale.getSize()==0) 
+			creaMessaggioErroreDuranteOperazione("Magazzino vuoto!", "Magazzino vuoto!");
+			else {
 				chiudiTutteLeFinestre();
 				MagazzinoFrame = new MagazzinoFrame(this);
+				riempiMagazzinoFrame();
 				MagazzinoFrame.setVisible(true);
-				}
-		}
-
-
-		public void apriSchermataAggiungiAlMagazzino() {
-			InserimentoArticoloInMagazzinoFrame = new InserimentoArticoloInMagazzinoFrame(this);
-			InserimentoArticoloInMagazzinoFrame.setVisible(true);
-			
-		}
-
-
-		public void apriSchermataEliminaDaMagazzino() {
-			try {
-				if(MagazzinoTransazionale.size()==0) 
-					JOptionPane.showMessageDialog(new JFrame(), "Magazzino Vuoto", "Il magazzino è vuoto",
-				        JOptionPane.ERROR_MESSAGE);
-					else {
-						EliminaDaMagazzinoFrame = new EliminaDaMagazzinoFrame(this);
-						EliminaDaMagazzinoFrame.setVisible(true);
-					}
 			}
-			catch(Exception e) {
-				e.printStackTrace();
-	JOptionPane.showMessageDialog(new JFrame(), "ERRORE MAGAZZINO", "ERRORE MAGAZZINO",
-				        JOptionPane.ERROR_MESSAGE);
-	
-			}
-			
-		}
-	
-		
-		public void CancellaDatiMagazzino() throws SQLException {
-			if(MagazzinoTransazionale.size()==0) 
-				JOptionPane.showMessageDialog(new JFrame(), "Magazzino Vuoto", "Il magazzino è vuoto",
-			        JOptionPane.ERROR_MESSAGE);
-				else {
-					for (Articolo a: MagazzinoTransazionale) {
-						MagazzinoDAO.eliminaArticoloDalMagazzinoSQL(a.getId());
-						}
-					MagazzinoTransazionale.clear();
-					JFrame parent = new JFrame();
-					JOptionPane.showMessageDialog(parent, "Magazzino resettato con successo!");
-				}
-			}
-		
-		private void chiudiTutteLeFinestre() {
-			java.awt.Window win[] = java.awt.Window.getWindows(); 
-			for(int i=0;i<win.length;i++){ 
-			win[i].dispose(); 
-			} 
-		}
+	}
 
 
-		public void apriSchermataHome() {
-			chiudiTutteLeFinestre();
-			HomePage = new HomePage(this);
-			HomePage.setVisible(true);
-			
-		}
+	public void apriSchermataAggiungiAlMagazzino() {
+		InserimentoArticoloInMagazzinoFrame = new InserimentoArticoloInMagazzinoFrame(this);
+		InserimentoArticoloInMagazzinoFrame.setVisible(true);
+	}
 
 
-		public void RiempiComboEliminaDaMagazzino(JComboBox<Articolo> articoloBox) {
-			for (Articolo a: MagazzinoTemporaneo) {
-				articoloBox.addItem(a);
+	public void apriSchermataEliminaDaMagazzino() {
+		if(MagazzinoTransazionale.getSize()==0)
+			creaMessaggioErroreDuranteOperazione("Magazzino vuoto!", "Magazzino vuoto!");
+			else{
+				EliminaDaMagazzinoFrame = new EliminaDaMagazzinoFrame(this);
+				EliminaDaMagazzinoFrame.setVisible(true);
 			}	
-			
-		}
-
-
-		public void RimuoviArticoloDalMagazzino(Articolo articoloSelezionato) throws SQLException {
-			if(MagazzinoTransazionale.remove(articoloSelezionato)) {
-				MagazzinoTemporaneo.remove(articoloSelezionato);
-					MagazzinoDAO.eliminaArticoloDalMagazzinoSQL(articoloSelezionato.getId());
-					}
-				else if(MagazzinoTemporaneo.isEmpty()) {
-					JOptionPane.showMessageDialog(new JFrame(), "Magazzino Vuoto", "Il magazzino è vuoto",
-					        JOptionPane.ERROR_MESSAGE);
-				}
-
-				EliminaDaMagazzinoFrame.setVisible(false);
-				HomePage.setVisible(true);
-			
+	}
+	
 		
-			
-			
-			
-		}
-
-
-		public void riempiMagazzinoFrame() {
-			int i=30, max=350, j=30; 
-			for(Articolo a: MagazzinoTransazionale) {
-				if(i>=max){
-					i=30;
-					j=j+115; 
-					}
-				CreaLabelArticoloMagazzino(i, j, a);
-				i=i+150;
+	public void cancellaDatiMagazzino() throws SQLException {
+		if(MagazzinoTransazionale.getSize()==0) creaMessaggioErroreDuranteOperazione("Magazzino vuoto!", "Magazzino vuoto!");
+			else {
+				for (Articolo a: MagazzinoTransazionale.getElencoArticoli()) {
+					MagazzinoDAO.eliminaArticoloDalMagazzinoSQL(a.getId());
 				}
-			MagazzinoFrame.setVisible(false);
-			MagazzinoFrame.setVisible(true);
+				MagazzinoTransazionale.clear();
+				creaMessaggioOperazioneEffettuataConSuccesso("Magazzino resettato con successo!");
+			}
+	}
+		
+	private void chiudiTutteLeFinestre() {
+		java.awt.Window win[] = java.awt.Window.getWindows(); 
+		for(int i=0;i<win.length;i++){ 
+			win[i].dispose(); 
+		} 
+	}
+
+
+	public void apriSchermataHome() {
+		chiudiTutteLeFinestre();
+		HomePageFrame = new HomePage(this);
+		HomePageFrame.setVisible(true);	
+	}
+
+
+	public void riempiComboEliminaDaMagazzino(JComboBox<Articolo> articoloBox) {
+		for (Articolo a: MagazzinoTemporaneo.getElencoArticoli()) {
+			articoloBox.addItem(a);
+		}	
+	}
+
+
+	public void rimuoviArticoloDalMagazzino(Articolo articoloSelezionato) throws SQLException {
+		if(MagazzinoTransazionale.getSize()!=0) {
+			MagazzinoTransazionale.remove(articoloSelezionato);
+			MagazzinoTemporaneo.remove(articoloSelezionato);
+			int quantita = MagazzinoDAO.checkQuantitaArticoloMagazzinoSQL(articoloSelezionato);
+			if(quantita>1) {
+				MagazzinoDAO.decrementaQuantitaArticoloMagazzinoDB(articoloSelezionato);
+			}
+			else MagazzinoDAO.eliminaArticoloDalMagazzinoSQL(articoloSelezionato.getId());
 		}
+		EliminaDaMagazzinoFrame.setVisible(false);
+		VetrinaFrame.setVisible(false);
+		HomePageFrame.setVisible(true);
+	}
 
-
-
-		private void CreaLabelArticoloMagazzino(int i, int j, Articolo a) {
-			JLabel articoloLabel = new JLabel(a.toString());
-			articoloLabel.setBounds(j, i+105, 360, 18);
-			MagazzinoFrame.AggiungiInMagazzinoFrame(articoloLabel);
-			SwingUtilities.updateComponentTreeUI(MagazzinoFrame);
+	public void riempiMagazzinoFrame() {
+		int y=15, max=480, x=10; 
+		for(Articolo a: MagazzinoTransazionale.getElencoArticoli()) {
+			if(y>=max){
+				y=15;
+				x=x+255; 
+			}
+			creaLabelArticoloMagazzino(x, y, a);
+			y=y+15;
 		}
+		MagazzinoFrame.setVisible(false);
+		MagazzinoFrame.setVisible(true);
+	}
+
+
+
+	private void creaLabelArticoloMagazzino(int x, int y, Articolo articoloDaMostrare) {
+		JLabel articoloLabel = new JLabel(articoloDaMostrare.toString());
+		articoloLabel.setBounds(x, y+10, 360, 18);
+		MagazzinoFrame.AggiungiInMagazzinoFrame(articoloLabel);
+		SwingUtilities.updateComponentTreeUI(MagazzinoFrame);
+	}
 			
 			
 	
-	
-	
+
 
 	
 }

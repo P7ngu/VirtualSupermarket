@@ -9,6 +9,7 @@ import javax.swing.JLabel;
 import javax.swing.JComboBox;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
 import java.awt.event.ActionEvent;
 
 public class PagamentoFrame extends JFrame {
@@ -76,11 +77,21 @@ public class PagamentoFrame extends JFrame {
 		JButton btnNewButton = new JButton("Invia Pagamento");
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				Controller.effettuaTransazione();
+				try {
+					Controller.effettuaTransazione();
+				} catch (SQLException e1) {
+					Controller.creaMessaggioErroreDuranteOperazione("ERRORE", "RIPROVARE");
+					e1.printStackTrace();
+				}
 				
 			}
 		});
 		btnNewButton.setBounds(272, 226, 147, 29);
 		contentPane.add(btnNewButton);
+		
+		JLabel lblNewLabel_3 = new JLabel("TOTALE = ");
+		lblNewLabel_3.setText("TOTALE="+Controller.eseguiTotale()+"$");
+		lblNewLabel_3.setBounds(21, 226, 210, 24);
+		contentPane.add(lblNewLabel_3);
 	}
 }

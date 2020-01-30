@@ -1,4 +1,5 @@
 public class Articolo {
+	
 	private String name;
 	private String id;
 	private double price;

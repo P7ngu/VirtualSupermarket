@@ -19,6 +19,7 @@ public class EliminaDaMagazzinoFrame extends JFrame {
 	NegozioController Controller;
 
 	public EliminaDaMagazzinoFrame(NegozioController ctrl) {
+		setResizable(false);
 		setAlwaysOnTop(true);
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		Controller = ctrl;
@@ -32,7 +33,7 @@ public class EliminaDaMagazzinoFrame extends JFrame {
 			JComboBox <Articolo> ArticoloBox  = new JComboBox();
 			ArticoloBox.setBounds(100, 46, 211, 27);
 			articoloBox=ArticoloBox;
-			Controller.RiempiComboEliminaDaMagazzino(ArticoloBox);
+			Controller.riempiComboEliminaDaMagazzino(ArticoloBox);
 			contentPanel.add(ArticoloBox);
 			
 		
@@ -61,9 +62,10 @@ public class EliminaDaMagazzinoFrame extends JFrame {
 							
 		
 			try {
-					Controller.RimuoviArticoloDalMagazzino(ArticoloSelezionato);
+					Controller.rimuoviArticoloDalMagazzino(ArticoloSelezionato);
+					Controller.creaMessaggioOperazioneEffettuataConSuccesso("Articolo eliminato dal magazzino");
 			} catch (SQLException e1) {
-					e1.printStackTrace();
+				Controller.creaMessaggioErroreDuranteOperazione("ERRORE", "RIPROVARE");
 			}
 			      
 						}
