@@ -24,10 +24,10 @@ public class Articolo {
 		Colore = colore;
 	}
 
-	public Articolo(String name, String id, String pathFoto, String taglia, String colore) {
+	public Articolo(String name, String id, Double prezzo, String pathFoto, String taglia, String colore) {
 		this.setName(name);
 		this.setId(id);
-		this.setPrice(price);
+		this.setPrice(prezzo);
 		this.setPathFoto(pathFoto);
 		this.setTaglia(taglia);
 		this.setColore(colore);
@@ -53,7 +53,7 @@ public class Articolo {
 		return id;
 	}
 
-	public void setId(String id) {
+	private void setId(String id) {
 		this.id = id;
 	}
 
@@ -70,8 +70,10 @@ public class Articolo {
 		String nome = this.getName();
 		String id = this.getId();
 		double prezzo = this.getPrice();
+		String taglia = this.getTaglia();
+		String colore = this.getColore();
 		
-		return (nome+id+prezzo);
+		return (nome+ " - " +id+ " - " +prezzo+ " - " +taglia+ " - " +colore);
 	}
 
 	public String getPathFoto() {

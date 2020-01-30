@@ -5,7 +5,7 @@ import java.sql.SQLException;
 
 public class ArticoloDAO {
 	
-	private Connection con;
+	private static Connection con;
 	
 	public ArticoloDAO(Connection c){ 
 	con = c;
@@ -30,5 +30,27 @@ public class ArticoloDAO {
 			}
 		return null;
 	}
+	
+	public Articolo InserisciArticoloInMagazzino (Articolo a) throws SQLException{
+		String sql = "INSERT INTO Magazzino VALUES (?, ?, ?, ?, ?, ?, ?)";
+		
+		PreparedStatement inserisciArticolo = con.prepareStatement(sql);
+		inserisciArticolo.setString(1, a.getName());
+		inserisciArticolo.setString(2, a.getId());
+		inserisciArticolo.setLong(3, (long) a.getPrice());
+		inserisciArticolo.setString(4, a.getPathFoto());
+		inserisciArticolo.setString(5, a.getTaglia());
+		inserisciArticolo.setString(6, a.getColore());
+		inserisciArticolo.setLong(7, 1);
+		
+		inserisciArticolo.executeUpdate();
+		
+		return null;
+	}
+
+
+	
+		
+	
 
 }

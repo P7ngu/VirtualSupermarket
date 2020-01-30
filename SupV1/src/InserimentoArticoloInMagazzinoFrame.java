@@ -30,33 +30,11 @@ public class InserimentoArticoloInMagazzinoFrame extends JFrame {
 	private JTextField Nome_textField;
 	private JTextField Codice_textField;
 	private JTextField Prezzo_textField;
-	private SupermercatoController Controller;
+	private NegozioController Controller;
 	private JFileChooser fileChooser;
-//	private JComboBox <String> TagliaBox;
-//	private JComboBox<Integer> QuantitaBox;
-//	private JComboBox <String> ColoreBox;
-	
+	private String pathFoto;
 
-	/**
-	 * Launch the application.
-	 */
-//	public static void main(String[] args) {
-//		EventQueue.invokeLater(new Runnable() {
-//			public void run() {
-//				try {
-//					InserimentoArticolo frame = new InserimentoArticolo();
-//					frame.setVisible(true);
-//				} catch (Exception e) {
-//					e.printStackTrace();
-//				}
-//			}
-//		});
-//	}
-
-	/**
-	 * Create the frame.
-	 */
-	public InserimentoArticoloInMagazzinoFrame(SupermercatoController ctrl) {
+	public InserimentoArticoloInMagazzinoFrame(NegozioController ctrl) {
 		Controller = ctrl;
 		setTitle("Aggiunta Articoli al Magazzino");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -133,16 +111,18 @@ public class InserimentoArticoloInMagazzinoFrame extends JFrame {
 			}
 		});
 		btnNewButton_1.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		btnNewButton_1.setBounds(337, 350, 137, 55);
+		btnNewButton_1.setBounds(315, 350, 159, 35);
 		contentPane.add(btnNewButton_1);
 		
-		JLabel lblNewLabel = new JLabel("New label");
-		lblNewLabel.setIcon(new ImageIcon("/Users/valentinaperotta/Desktop/GFX/magazzino.png"));
+		JLabel lblNewLabel = new JLabel("Magazzino");
+		ImageIcon iconMagazzino = Controller.createImageIcon("magazzino.png", "");
+		lblNewLabel.setIcon(iconMagazzino);
 		lblNewLabel.setBounds(86, 6, 337, 137);
 		contentPane.add(lblNewLabel);
 		
 		JLabel lblNewLabel_1 = new JLabel("New label");
-		lblNewLabel_1.setIcon(new ImageIcon("/Users/valentinaperotta/Desktop/GFX/box.png"));
+		ImageIcon iconScatola = Controller.createImageIcon("box.png", "");
+		lblNewLabel_1.setIcon(iconScatola);
 		lblNewLabel_1.setBounds(263, 58, 268, 204);
 		contentPane.add(lblNewLabel_1);
 		
@@ -155,7 +135,7 @@ public class InserimentoArticoloInMagazzinoFrame extends JFrame {
 		btnSelezionaImmagine.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
-			String pathFoto = 	SelezionaImmagine(fileChooser);
+			pathFoto = 	SelezionaImmagine(fileChooser);
 			}
 		});
 		btnSelezionaImmagine.setBounds(102, 272, 224, 29);
@@ -189,13 +169,13 @@ public class InserimentoArticoloInMagazzinoFrame extends JFrame {
 				QuantitaSelezionata = (int) QuantitaBox.getSelectedItem();
 				System.out.println("Hai selezionato: " + QuantitaSelezionata);
 			 for (int i=0; i<QuantitaSelezionata; i++) {
-				ControllaCorrettezzaPerInserimento(TagliaBox, ColoreBox, SelezionaImmagine(fileChooser));
+				ControllaCorrettezzaPerInserimento(TagliaBox, ColoreBox, pathFoto);
 					
 			}
 			}
 		});
 		btnNewButton.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		btnNewButton.setBounds(31, 350, 137, 55);
+		btnNewButton.setBounds(31, 350, 169, 35);
 		contentPane.add(btnNewButton);
 		
 		
@@ -224,9 +204,7 @@ public class InserimentoArticoloInMagazzinoFrame extends JFrame {
 					String Colore = (String)ColoreBox.getSelectedItem();
 					System.out.println( Taglia + Colore);
 					
-				
-					
-            Controller.AggiungiArticolo( Nome_textField.getText(), Codice_textField.getText(), Prezzo_textField.getText(),
+	  Controller.AggiungiArticoloAlMagazzino( Nome_textField.getText(), Codice_textField.getText(), Prezzo_textField.getText(),
             	path, Taglia, Colore);
 				 
 			}

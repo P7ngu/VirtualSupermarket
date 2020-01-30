@@ -9,14 +9,16 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
 import java.awt.event.ActionEvent;
 import java.awt.Font;
 
 public class AggiungiAlCarrelloFrame extends JFrame {
-	private SupermercatoController Controller;
+	private NegozioController Controller;
 	private final JPanel contentPanel = new JPanel();
+	private JComboBox articoloBox;
 
-	public AggiungiAlCarrelloFrame(SupermercatoController ctrl) {
+	public AggiungiAlCarrelloFrame(NegozioController ctrl) {
 		setFont(new Font(".AppleSystemUIFont", Font.PLAIN, 12));
 		setAlwaysOnTop(true);
 		Controller = ctrl;
@@ -27,11 +29,13 @@ public class AggiungiAlCarrelloFrame extends JFrame {
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 			contentPanel.setLayout(null);
 		
-			JComboBox <String> ArticoloBox  = new JComboBox();
+			JComboBox <Articolo> ArticoloBox  = new JComboBox();
 			ArticoloBox.setBounds(200, 6, 211, 27);
 			Controller.RiempiComboAggiungiAlCarrello(ArticoloBox);
+			articoloBox=ArticoloBox;
 			contentPanel.add(ArticoloBox);
 			
+		
 		
 		{
 			JLabel lblArticolo = new JLabel("Articolo");
@@ -61,14 +65,19 @@ public class AggiungiAlCarrelloFrame extends JFrame {
 				JButton okButton = new JButton("OK");
 				okButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
-						String ArticoloSelezionato;
+						Articolo ArticoloSelezionato;
 						
-						ArticoloSelezionato = (String) ArticoloBox.getSelectedItem();
+						ArticoloSelezionato =  (Articolo) ArticoloBox.getSelectedItem();
 						int QuantitaSelezionata=0;
 						QuantitaSelezionata = (int) comboBox.getSelectedItem();
 						 System.out.println("Hai selezionato la quantità: " + QuantitaSelezionata);
 		
-			   Controller.AggiungiAlCarrello(ArticoloSelezionato, QuantitaSelezionata);
+			   try {
+				Controller.AggiungiAlCarrello(ArticoloSelezionato, QuantitaSelezionata);
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 			          System.out.println("Ho aggiunto al tuo carrello l'elemento " + ArticoloSelezionato);
 					}
 				});
@@ -89,4 +98,10 @@ public class AggiungiAlCarrelloFrame extends JFrame {
 			}
 		}
 	}
+	
+	public void rimuoviArticoloBox(Articolo a){
+		articoloBox.removeItem(a);
+		
+	}
+	
 }

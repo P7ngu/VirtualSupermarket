@@ -13,11 +13,12 @@ import java.awt.event.ActionEvent;
 import java.awt.Window.Type;
 
 public class RimuoviDalCarrelloFrame extends JFrame {
-	private SupermercatoController Controller;
+	private NegozioController Controller;
 	private final JPanel contentPanel = new JPanel();
+	private JComboBox articoloBox;
 
 	
-	public RimuoviDalCarrelloFrame(SupermercatoController ctrl) {
+	public RimuoviDalCarrelloFrame(NegozioController ctrl) {
 		setAlwaysOnTop(true);
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		Controller = ctrl;
@@ -28,8 +29,9 @@ public class RimuoviDalCarrelloFrame extends JFrame {
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 			contentPanel.setLayout(null);
 		
-			JComboBox <String> ArticoloBox  = new JComboBox();
+			JComboBox <Articolo> ArticoloBox  = new JComboBox();
 			ArticoloBox.setBounds(200, 6, 211, 27);
+			articoloBox=ArticoloBox;
 			Controller.RiempiComboRimuoviDalCarrello(ArticoloBox);
 			contentPanel.add(ArticoloBox);
 			
@@ -62,9 +64,8 @@ public class RimuoviDalCarrelloFrame extends JFrame {
 				JButton okButton = new JButton("OK");
 				okButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
-						String ArticoloSelezionato;
 						
-						ArticoloSelezionato = (String) ArticoloBox.getSelectedItem();
+						Articolo ArticoloSelezionato = (Articolo) ArticoloBox.getSelectedItem();
 						int QuantitaSelezionata=0;
 						QuantitaSelezionata = (int) comboBox.getSelectedItem();
 						 System.out.println("Hai selezionato: " + QuantitaSelezionata);
@@ -89,6 +90,10 @@ public class RimuoviDalCarrelloFrame extends JFrame {
 				buttonPane.add(cancelButton);
 			}
 		}
+	}
+	public void rimuoviArticoloBox(Articolo a){
+		articoloBox.removeItem(a);
+		
 	}
 }
 
