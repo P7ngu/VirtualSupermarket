@@ -21,7 +21,7 @@ import javax.swing.JScrollPane;
 
 public class CarrelloFrame extends JFrame {
 
-	static JPanel contentPane;
+	JPanel contentPane;
 	private NegozioController Controller;
 
 	public CarrelloFrame(NegozioController ctrl)  {

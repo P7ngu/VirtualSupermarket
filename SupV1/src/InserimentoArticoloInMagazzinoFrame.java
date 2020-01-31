@@ -182,7 +182,6 @@ public class InserimentoArticoloInMagazzinoFrame extends JFrame {
 	}
 	
 	public String SelezionaImmagine (JFileChooser fileChooser) {
-		
 		fileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
 		int result = fileChooser.showOpenDialog(null);
 		if (result == JFileChooser.APPROVE_OPTION) {

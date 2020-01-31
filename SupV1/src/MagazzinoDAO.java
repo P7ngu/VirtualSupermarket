@@ -8,7 +8,7 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 public class MagazzinoDAO {
-private static Connection connessione;
+private Connection connessione;
 	
 	public MagazzinoDAO(Connection c){ 
 	connessione = c;
@@ -22,7 +22,7 @@ public boolean AggiungiArticoloAlMagazzinoSQL(Articolo ArticoloDaAggiungere) thr
 		return true;
 	}
 	
-public static void creaTabellaMagazzinoSQL() throws Exception {
+public void creaTabellaMagazzinoSQL() throws Exception {
 	try {
 		PreparedStatement create = connessione.prepareStatement("CREATE TABLE IF NOT EXISTS Magazzino (nome varchar(255),"
 				+ "id int NOT NULL AUTO_INCREMENT, prezzo double, pathfoto varchar(200), taglia char(2),"
@@ -69,7 +69,7 @@ public Integer checkQuantitaArticoloMagazzinoSQL (Articolo articoloDaControllare
 }
 
 
-public static void eliminaArticoloDalMagazzinoSQL(String Id) throws SQLException {
+public void eliminaArticoloDalMagazzinoSQL(String Id) throws SQLException {
 	try {
 		ArticoloDAO ArticoloDAO = new ArticoloDAO(connessione);
 		PreparedStatement st = connessione.prepareStatement("DELETE FROM Magazzino WHERE id=?");

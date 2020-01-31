@@ -1,52 +1,26 @@
 
-import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JComponent;
-import javax.swing.JEditorPane;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JOptionPane;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
-import javax.swing.text.JTextComponent;
-
-import javax.swing.text.JTextComponent;
-import java.awt.Color;
-import java.awt.Component;
-
-import javax.swing.UIManager;
 
 public class NegozioController {
-	static Magazzino MagazzinoTransazionale;
-	static Magazzino MagazzinoTemporaneo;
+	 Magazzino MagazzinoTransazionale;
+	 Magazzino MagazzinoTemporaneo;
 	CarrelloUtente CarrelloUtente;
 	CarrelloFrame CarrelloFrame;
-	static HomePage HomePageFrame;
+	HomePage HomePageFrame;
 	MagazzinoFrame MagazzinoFrame;
 	EliminaDaMagazzinoFrame EliminaDaMagazzinoFrame;
 	InserimentoArticoloInMagazzinoFrame InserimentoArticoloInMagazzinoFrame;
@@ -57,7 +31,7 @@ public class NegozioController {
 	static Connection connessione;
 	static MagazzinoDAO MagazzinoDAO;
 	static ArticoloDAO ArticoloDAO;
-	static AcquistoDAO AcquistoDAO;
+	AcquistoDAO AcquistoDAO;
 	
 	
 
@@ -66,13 +40,12 @@ public class NegozioController {
 		MagazzinoTemporaneo = new Magazzino();
 		CarrelloUtente = new CarrelloUtente();
 		
-		connessione = getConnection();
+		connessione = getConnection1();
+		
 		MagazzinoDAO MagazzinoDAO = new MagazzinoDAO(connessione);
 		ArticoloDAO ArticoloDAO = new ArticoloDAO(connessione);
 		AcquistoDAO AcquistoDAO = new AcquistoDAO(connessione);
 		
-		//MagazzinoDAO.creaTabellaMagazzinoSQL();
-		//ArticoloDAO.creaTabellaArticoloSQL();
 		riempiMagazzinoDaDB();
 		
 		
@@ -81,29 +54,38 @@ public class NegozioController {
 		CarrelloFrame = new CarrelloFrame(this);
 		VetrinaFrame = new VetrinaFrame(this);
 		MagazzinoFrame = new MagazzinoFrame(this);
+		InserimentoArticoloInMagazzinoFrame = new InserimentoArticoloInMagazzinoFrame(this);
+		EliminaDaMagazzinoFrame = new EliminaDaMagazzinoFrame (this);
+		MagazzinoFrame = new MagazzinoFrame(this);
+		RimuoviDalCarrelloFrame = new RimuoviDalCarrelloFrame(this);
+		VetrinaFrame= new VetrinaFrame(this);
+		AggiungiAlCarrelloFrame = new AggiungiAlCarrelloFrame(this);
+		
+		HomePageFrame = new HomePage(this);
+		HomePageFrame.setVisible(true);
 		
 		
 	}
 	
 	public static void main(String[] args) throws Exception {
 		NegozioController TheController = new NegozioController();
-		HomePageFrame = new HomePage(TheController);
-		HomePageFrame.setVisible(true);
+//		HomePageFrame = new HomePage(TheController);
+//		HomePageFrame.setVisible(true);
 		MagazzinoDAO = new MagazzinoDAO(connessione);
 		ArticoloDAO = new ArticoloDAO(connessione);
-		InserimentoArticoloInMagazzinoFrame InserimentoArticoloInMagazzinoFrame = new InserimentoArticoloInMagazzinoFrame(TheController);
-		EliminaDaMagazzinoFrame EliminaDaMagazzinoFrame = new EliminaDaMagazzinoFrame (TheController);
-		MagazzinoFrame MagazzinoFrame = new MagazzinoFrame(TheController);
-		RimuoviDalCarrelloFrame RimuoviDalCarrelloFrame = new RimuoviDalCarrelloFrame(TheController);
-		VetrinaFrame VetrinaFrame= new VetrinaFrame(TheController);
-		AggiungiAlCarrelloFrame AggiungiAlCarrelloFrame = new AggiungiAlCarrelloFrame(TheController);
+//		InserimentoArticoloInMagazzinoFrame InserimentoArticoloInMagazzinoFrame = new InserimentoArticoloInMagazzinoFrame(TheController);
+//		EliminaDaMagazzinoFrame EliminaDaMagazzinoFrame = new EliminaDaMagazzinoFrame (TheController);
+//		MagazzinoFrame MagazzinoFrame = new MagazzinoFrame(TheController);
+//		RimuoviDalCarrelloFrame RimuoviDalCarrelloFrame = new RimuoviDalCarrelloFrame(TheController);
+//		VetrinaFrame VetrinaFrame= new VetrinaFrame(TheController);
+//		AggiungiAlCarrelloFrame AggiungiAlCarrelloFrame = new AggiungiAlCarrelloFrame(TheController);
 		
 
 	}
 	
 	
 
-	private static void riempiMagazzinoDaDB() throws SQLException, IOException {
+	private void riempiMagazzinoDaDB() throws SQLException, IOException {
 		ArticoloDAO = new ArticoloDAO(connessione);
 		riempiTabellaArticoloDaDB();
 		String sql = "SELECT* FROM Magazzino";
@@ -123,7 +105,7 @@ public class NegozioController {
 		
 	}
 	
-	private static Articolo trovaDatiArticoloInMagazzino(String id) throws SQLException, IOException {
+	private Articolo trovaDatiArticoloInMagazzino(String id) throws SQLException, IOException {
 		String sqlnest = "SELECT* FROM Articolo where id=?";
 		PreparedStatement getArticoloNest = connessione.prepareStatement(sqlnest);
 		getArticoloNest.setString(1, id);
@@ -142,7 +124,7 @@ public class NegozioController {
 		return null;
 	}
 
-	private static void riempiTabellaArticoloDaDB() throws SQLException, IOException {
+	private void riempiTabellaArticoloDaDB() throws SQLException, IOException {
 		String sqlnest = "SELECT* FROM Articolo";
 		PreparedStatement getArticoloNest = connessione.prepareStatement(sqlnest);
 		ResultSet resultNest = getArticoloNest.executeQuery();
@@ -159,7 +141,7 @@ public class NegozioController {
 	}
 	}
 	
-	public static Connection getConnectionLocale() throws Exception{
+	public Connection getConnectionLocale() throws Exception{
 		try {
 			String driver = "com.mysql.jdbc.Driver";
 			String url = "jdbc:mysql://localhost:3306/giraffe";
@@ -175,7 +157,7 @@ public class NegozioController {
 	}
 	
 
-	public static Connection getConnection() {
+	public Connection getConnection1() {
 		  String dbName = ("sql7317801");
 		  String userName = ("sql7317801");
 		  String password = ("JSfK3lPNgq");
@@ -183,10 +165,9 @@ public class NegozioController {
 		  String port = ("3306");
 		  String jdbcUrl = "jdbc:mysql://" + hostname + ":" +
 		    port + "/" + dbName + "?user=" + userName + "&password=" + password;
-		  // Load the JDBC driver
 		  try {
 		    System.out.println("Loading driver...");
-		    Class.forName("com.mysql.jdbc.Driver");
+		    Class.forName("com.mysql.cj.jdbc.Driver");
 		    System.out.println("Driver loaded!");
 		  } catch (ClassNotFoundException e) {
 		    throw new RuntimeException("Cannot find the driver in the classpath!", e);
@@ -201,28 +182,25 @@ public class NegozioController {
 		return null;
 	}
 	
-	public static Connection getConnection2() throws Exception{
-	     try{ 
-	    	 String driver = "com.mysql.cj.jdbc.Driver";
-	    	 Class.forName(driver);
-	    	 	try{
-	    	 		String url ="jdbc:mysql://sql106.epizy.com:3306/epiz_25056524_progetto";
-	    	 		String username = "epiz_25056524";
-	    	 		String password = "gUHLWkDKOWHE6";
-	    	 		Connection connection = DriverManager.getConnection(url, username ,password);
-	    	 		return connection;
-	    	 	}
-	    	 	catch (SQLException e) {
-	    	 		creaMessaggioErroreDuranteOperazione("CONNESSIONE AL DATABASE FALLITA", "RIPROVARE");
-	    	 		chiudiProgramma();
-	    	 	}
-	     } 
-	     catch(ClassNotFoundException e) {
-	     	creaMessaggioErroreDuranteOperazione("CONNESSIONE AL DATABASE FALLITA", "JDBC DRIVER NON TROVATO");
-	     	chiudiProgramma();
-	     	return null;
-	     } 
-	return null;
+	public Connection getConnection() throws Exception{
+		  String userName = ("udsjzyti");
+		  String password = ("Xgwixw9770_hB0C8XiTyM17hNZY5zANf");
+		  String jdbcUrl ="jdbc:postgresql://manny.db.elephantsql.com:5432/udsjzyti";
+		  try {
+		    System.out.println("Loading driver...");
+		    Class.forName("org.postgresql.Driver");
+		    System.out.println("Driver loaded!");
+		  } catch (ClassNotFoundException e) {
+		    throw new RuntimeException("Cannot find the driver in the classpath!", e);
+		  }
+		  try {
+		   Connection conn = DriverManager.getConnection(jdbcUrl, userName, password);
+		    return conn;
+		  }
+		  catch (Exception e) {
+			  e.printStackTrace();
+		  }
+		return null;
 	}
 		
 
@@ -267,7 +245,7 @@ public class NegozioController {
 		return false;
 	}
 
-	public static void creaMessaggioErroreDuranteOperazione(String testoDaMostrare, String titolo) {
+	public void creaMessaggioErroreDuranteOperazione(String testoDaMostrare, String titolo) {
 		JOptionPane.showMessageDialog(new JFrame(), testoDaMostrare, titolo,
 		        JOptionPane.ERROR_MESSAGE);
 		
@@ -496,7 +474,7 @@ public class NegozioController {
 	}
 	 
 
-	public static void chiudiProgramma() {
+	public void chiudiProgramma() {
 		System.exit(0);	
 	}
 
@@ -587,7 +565,7 @@ public class NegozioController {
 
 
 	public void rimuoviArticoloDalMagazzino(Articolo articoloSelezionato) throws SQLException {
-		for(Articolo a: MagazzinoTransazionale.getElencoArticoli()) System.out.println(MagazzinoTransazionale.getSize());
+		//for(Articolo a: MagazzinoTransazionale.getElencoArticoli()) System.out.println(MagazzinoTransazionale.getSize());
 		if(MagazzinoTransazionale.getSize()!=0) {
 			MagazzinoTransazionale.remove(articoloSelezionato);
 			MagazzinoTemporaneo.remove(articoloSelezionato);
@@ -596,8 +574,7 @@ public class NegozioController {
 				MagazzinoDAO.decrementaQuantitaArticoloMagazzinoDB(articoloSelezionato);
 			}
 			else{
-				MagazzinoDAO.eliminaArticoloDalMagazzinoSQL(articoloSelezionato.getId());
-				
+				MagazzinoDAO.eliminaArticoloDalMagazzinoSQL(articoloSelezionato.getId());	
 			}
 		}
 		EliminaDaMagazzinoFrame.setVisible(false);
