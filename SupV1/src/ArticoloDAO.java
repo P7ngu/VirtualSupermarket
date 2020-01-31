@@ -15,7 +15,7 @@ import java.util.logging.Logger;
 
 public class ArticoloDAO {
 	
-	private static Connection con;
+	private  Connection con;
 	
 	public ArticoloDAO(Connection c){ 
 	con = c;
@@ -24,31 +24,28 @@ public class ArticoloDAO {
 
 	
 	public Articolo getArticoloById (String Id) throws SQLException {
-		String sql = "SELECT * FROM Articolo where Id =?";
-	
+		String sql = "SELECT * FROM Articolo where Id=?";
 		PreparedStatement getArticolo = con.prepareStatement(sql);
 		getArticolo.setString(1, Id);
-		
 		ResultSet result = getArticolo.executeQuery();
 		while(result.next()) {
 			String nome = (result.getString(1));
-			String id = (result.getString(2));
 			Double prezzo = new Double(result.getString(3));
-			Articolo ArticoloTrovato = new Articolo (nome, id, prezzo);
-			
+			String pathfoto= (result.getString(4));
+			String taglia = (result.getString(5));
+			String colore = (result.getString(6));
+			Articolo ArticoloTrovato = new Articolo(nome, Id, prezzo, pathfoto, taglia, colore);
 			return ArticoloTrovato;
 			}
 		return null;
 	}
 	
 	public Articolo InserisciArticoloInMagazzino (Articolo a) throws SQLException{
-		CreaArticolo(a);
-		String sql = "INSERT INTO Magazzino VALUES(?, ?)";
+		String sql = "INSERT INTO Magazzino VALUES (?, ?)";
 		PreparedStatement inserisciArticolo = con.prepareStatement(sql);
 		inserisciArticolo.setString(1, a.getId());
 		inserisciArticolo.setLong(2, 1);
 		inserisciArticolo.executeUpdate();
-		
 		return null;
 	}
 	
@@ -65,9 +62,11 @@ public class ArticoloDAO {
 		inserisciArticolo.executeUpdate();
 		
 		return null;
+		
 	}
 	
 	public  void JdbcWriteImage(String pathfoto, String id) throws SQLException {
+
 		File myFile = new File(pathfoto);
 		 String sql = "INSERT INTO Images VALUES(?, ?)";
 		 PreparedStatement pst = con.prepareStatement(sql); 
@@ -77,6 +76,7 @@ public class ArticoloDAO {
                   pst.executeUpdate();     
             } catch (IOException ex) {
            ex.printStackTrace();
+
             }
         } 
 	
@@ -117,7 +117,7 @@ public class ArticoloDAO {
          pst.executeUpdate();
 	}
 	
-	public static void creaTabellaArticoloSQL() throws Exception {
+	public void creaTabellaArticoloSQL() throws Exception {
 		try {
 			PreparedStatement create = con.prepareStatement("CREATE TABLE IF NOT EXISTS Articolo (nome varchar(255),"
 					+ "id int NOT NULL, prezzo double NOT NULL, pathfoto varchar(200), taglia char(2) NOT NULL,"
@@ -127,6 +127,17 @@ public class ArticoloDAO {
 			e.printStackTrace();
 		}
 		
+	}
+
+
+	public boolean checkImmagine(String codice) throws SQLException {
+		 String query = "SELECT* FROM Images WHERE id=?";
+         PreparedStatement pst = con.prepareStatement(query);
+         pst.setString(1, codice);
+         
+         ResultSet result =  pst.executeQuery();
+         if(result.next()) return true;
+		return false;
 	}
 	
 	

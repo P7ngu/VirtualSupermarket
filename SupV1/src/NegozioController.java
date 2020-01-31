@@ -57,10 +57,11 @@ public class NegozioController {
 	static Connection connessione;
 	static MagazzinoDAO MagazzinoDAO;
 	static ArticoloDAO ArticoloDAO;
+	static AcquistoDAO AcquistoDAO;
 	
 	
 
-	public NegozioController() throws Exception {
+	public NegozioController() throws Exception { 
 		MagazzinoTransazionale = new Magazzino();
 		MagazzinoTemporaneo = new Magazzino();
 		CarrelloUtente = new CarrelloUtente();
@@ -68,12 +69,12 @@ public class NegozioController {
 		connessione = getConnection();
 		MagazzinoDAO MagazzinoDAO = new MagazzinoDAO(connessione);
 		ArticoloDAO ArticoloDAO = new ArticoloDAO(connessione);
+		AcquistoDAO AcquistoDAO = new AcquistoDAO(connessione);
 		
-		MagazzinoDAO.creaTabellaMagazzinoSQL();
-		ArticoloDAO.creaTabellaArticoloSQL();
+		//MagazzinoDAO.creaTabellaMagazzinoSQL();
+		//ArticoloDAO.creaTabellaArticoloSQL();
 		riempiMagazzinoDaDB();
 		
-		MagazzinoTemporaneo = MagazzinoTransazionale;
 		
 		EliminaDaMagazzinoFrame = new EliminaDaMagazzinoFrame(this);
 		AggiungiAlCarrelloFrame = new AggiungiAlCarrelloFrame(this);
@@ -96,6 +97,7 @@ public class NegozioController {
 		RimuoviDalCarrelloFrame RimuoviDalCarrelloFrame = new RimuoviDalCarrelloFrame(TheController);
 		VetrinaFrame VetrinaFrame= new VetrinaFrame(TheController);
 		AggiungiAlCarrelloFrame AggiungiAlCarrelloFrame = new AggiungiAlCarrelloFrame(TheController);
+		
 
 	}
 	
@@ -103,28 +105,59 @@ public class NegozioController {
 
 	private static void riempiMagazzinoDaDB() throws SQLException, IOException {
 		ArticoloDAO = new ArticoloDAO(connessione);
-		String sql = "SELECT * FROM Magazzino";
+		riempiTabellaArticoloDaDB();
+		String sql = "SELECT* FROM Magazzino";
 		PreparedStatement getArticolo = connessione.prepareStatement(sql);
 		ResultSet result = getArticolo.executeQuery();
 		while(result.next()) {
-			Integer quantita = new Integer(result.getString(7));
-			while(quantita>0) {
-				String nome = (result.getString(1));
-				String id = (result.getString(2));
-				Double prezzo = new Double(result.getString(3));
-				String pathfoto = "";
-				String taglia = (result.getString(5));
-				String colore = (result.getString(6));
-				Articolo ArticoloTrovato = new Articolo (nome, id, prezzo, pathfoto, taglia, colore);
-				ArticoloDAO.JdbcReadImage(ArticoloTrovato);
-				MagazzinoTransazionale.add(ArticoloTrovato);
-				MagazzinoTemporaneo.add(ArticoloTrovato);
-				quantita--;
+			Integer quantita = new Integer(result.getString(2));
+			String id = (result.getString(1));
+			while (quantita>0) {
+			Articolo ArticoloTrovato = trovaDatiArticoloInMagazzino(id);
+			MagazzinoTransazionale.add(ArticoloTrovato);
+			MagazzinoTemporaneo.add(ArticoloTrovato);
+			quantita--;
 			}
 		}
+		
+		
+	}
+	
+	private static Articolo trovaDatiArticoloInMagazzino(String id) throws SQLException, IOException {
+		String sqlnest = "SELECT* FROM Articolo where id=?";
+		PreparedStatement getArticoloNest = connessione.prepareStatement(sqlnest);
+		getArticoloNest.setString(1, id);
+		ResultSet resultNest = getArticoloNest.executeQuery();
+		while(resultNest.next()) {
+		String nome = (resultNest.getString(1));
+		//String id = (resultNest.getString(2));
+		Double prezzo = new Double(resultNest.getString(3));
+		String pathfoto = resultNest.getString(4);
+		String taglia = (resultNest.getString(5));
+		String colore = (resultNest.getString(6));
+		Articolo ArticoloTrovato = new Articolo (nome, id, prezzo, pathfoto, taglia, colore);
+		ArticoloDAO.JdbcReadImage(ArticoloTrovato);
+		return ArticoloTrovato;
+		}
+		return null;
 	}
 
-
+	private static void riempiTabellaArticoloDaDB() throws SQLException, IOException {
+		String sqlnest = "SELECT* FROM Articolo";
+		PreparedStatement getArticoloNest = connessione.prepareStatement(sqlnest);
+		ResultSet resultNest = getArticoloNest.executeQuery();
+		while(resultNest.next()) {
+		String nome = (resultNest.getString(1));
+		String id = (resultNest.getString(2));
+		Double prezzo = new Double(resultNest.getString(3));
+		String pathfoto = "";
+		String taglia = (resultNest.getString(5));
+		String colore = (resultNest.getString(6));
+		Articolo ArticoloTrovato = new Articolo (nome, id, prezzo, pathfoto, taglia, colore);
+		ArticoloDAO.JdbcReadImage(ArticoloTrovato);
+		
+	}
+	}
 	
 	public static Connection getConnectionLocale() throws Exception{
 		try {
@@ -142,14 +175,40 @@ public class NegozioController {
 	}
 	
 
-	public static Connection getConnection() throws Exception{
+	public static Connection getConnection() {
+		  String dbName = ("sql7317801");
+		  String userName = ("sql7317801");
+		  String password = ("JSfK3lPNgq");
+		  String hostname = ("sql7.freesqldatabase.com");
+		  String port = ("3306");
+		  String jdbcUrl = "jdbc:mysql://" + hostname + ":" +
+		    port + "/" + dbName + "?user=" + userName + "&password=" + password;
+		  // Load the JDBC driver
+		  try {
+		    System.out.println("Loading driver...");
+		    Class.forName("com.mysql.jdbc.Driver");
+		    System.out.println("Driver loaded!");
+		  } catch (ClassNotFoundException e) {
+		    throw new RuntimeException("Cannot find the driver in the classpath!", e);
+		  }
+		  try {
+		   Connection conn = DriverManager.getConnection(jdbcUrl);
+		    return conn;
+		  }
+		  catch (Exception e) {
+			  e.printStackTrace();
+		  }
+		return null;
+	}
+	
+	public static Connection getConnection2() throws Exception{
 	     try{ 
 	    	 String driver = "com.mysql.cj.jdbc.Driver";
 	    	 Class.forName(driver);
 	    	 	try{
-	    	 		String url ="jdbc:mysql://sql7.freesqldatabase.com:3306/sql7317801";
-	    	 		String username = "sql7317801";
-	    	 		String password = "JSfK3lPNgq";
+	    	 		String url ="jdbc:mysql://sql106.epizy.com:3306/epiz_25056524_progetto";
+	    	 		String username = "epiz_25056524";
+	    	 		String password = "gUHLWkDKOWHE6";
 	    	 		Connection connection = DriverManager.getConnection(url, username ,password);
 	    	 		return connection;
 	    	 	}
@@ -172,30 +231,48 @@ public class NegozioController {
 		Double Prezzo = new Double(prezzo);
 		Articolo ArticoloDaAggiungere = new Articolo(Nome, Codice, Prezzo, fotoPath, Taglia, Colore);
 		try{ 
-			ArticoloDAO.CreaArticolo(ArticoloDaAggiungere);
-			try {
-				if(MagazzinoDAO.checkQuantitaArticoloMagazzinoSQL(ArticoloDaAggiungere)==null 
-						&& (MagazzinoDAO.AggiungiArticoloAlMagazzinoSQL(ArticoloDaAggiungere))) {
+			if(MagazzinoDAO.checkQuantitaArticoloMagazzinoSQL(ArticoloDaAggiungere)==null //L'articolo non è presente in Magazzino
+				&& (!CorrispondenzaValori(ArticoloDaAggiungere)))	 // e non è presente nella tabella Articolo
+					ArticoloDAO.CreaArticolo(ArticoloDaAggiungere); // lo inserisco nella tabella Articolo
+			
+				if(MagazzinoDAO.checkQuantitaArticoloMagazzinoSQL(ArticoloDaAggiungere)==null  //se non è presente in Magazzino
+					&& (MagazzinoDAO.AggiungiArticoloAlMagazzinoSQL(ArticoloDaAggiungere))) { //e lo aggiungo con successo nel database
+					MagazzinoTransazionale.add(ArticoloDaAggiungere); //lo aggiungo anche negli ArrayList
+					MagazzinoTemporaneo.add(ArticoloDaAggiungere);
 					creaMessaggioOperazioneEffettuataConSuccesso("Articoli aggiunti correttamente");
-				} else { 
-					MagazzinoDAO.incrementaQuantitaArticoloMagazzinoDB(ArticoloDaAggiungere);
-					creaMessaggioOperazioneEffettuataConSuccesso("Quantità articolo incrementata di 1!");
+					
+				}else if(CorrispondenzaValori(ArticoloDaAggiungere)) { //altrimenti è già presente in magazzino, e se i valori sono corretti
+							MagazzinoDAO.incrementaQuantitaArticoloMagazzinoDB(ArticoloDaAggiungere); //ne incremento la quantità nel DB
+							creaMessaggioOperazioneEffettuataConSuccesso("Quantità articolo incrementata di 1!");
+							MagazzinoTransazionale.add(ArticoloDaAggiungere); //e lo aggiungo negli ArrayList
+							MagazzinoTemporaneo.add(ArticoloDaAggiungere);
 				}
-				MagazzinoTransazionale.add(ArticoloDaAggiungere);
-			} catch (Exception e) { //catch per creazione articolo nel database
-				creaMessaggioErroreDuranteOperazione("ERRORE: ID DUPLICATO", "RIPROVARE"); 
-			}
+			else creaMessaggioErroreDuranteOperazione("ERRORE: VALORI INESATTI", "RIPROVARE"); 
 		} catch (Exception e) { //catch per inserimento articolo in magazzino
-			creaMessaggioErroreDuranteOperazione("ERRORE: ID NON VALIDO, INSERIRE SOLO NUMERI", "RIPROVARE"); 
+			creaMessaggioErroreDuranteOperazione("ERRORE: ID DUPLICATO", "RIPROVARE"); 
+			e.printStackTrace();
 		}
-		if(fotoPath!=null)ArticoloDAO.JdbcWriteImage(fotoPath, Codice);
+		if(fotoPath!=null) ArticoloDAO.JdbcWriteImage(fotoPath, Codice);
 	}
 		
+	private boolean CorrispondenzaValori(Articolo articoloDaAggiungere) throws SQLException {
+		Articolo ArticoloTrovato = ArticoloDAO.getArticoloById(articoloDaAggiungere.getId());
+			if (ArticoloTrovato!=null &&
+				ArticoloTrovato.getName().equals(articoloDaAggiungere.getName()) &&
+				ArticoloTrovato.getColore().equals(articoloDaAggiungere.getColore()) &&
+				ArticoloTrovato.getPrice() == articoloDaAggiungere.getPrice() &&
+				ArticoloTrovato.getTaglia().equals(articoloDaAggiungere.getTaglia())) {
+			return true;
+		}
+		return false;
+	}
+
 	public static void creaMessaggioErroreDuranteOperazione(String testoDaMostrare, String titolo) {
 		JOptionPane.showMessageDialog(new JFrame(), testoDaMostrare, titolo,
 		        JOptionPane.ERROR_MESSAGE);
 		
 	}
+	
 	public void creaMessaggioOperazioneEffettuataConSuccesso(String testoDaMostrare) {
 		JFrame parent = new JFrame();
 		JOptionPane.showMessageDialog(parent, testoDaMostrare);
@@ -409,6 +486,8 @@ public class NegozioController {
 
 
 	public void effettuaTransazione() throws SQLException {
+		AcquistoDAO AcquistoDAO=new AcquistoDAO(connessione);
+		AcquistoDAO.creaAcquisto(CarrelloUtente.getElencoArticoli());
 		for (Articolo a: CarrelloUtente.getElencoArticoli())
 		rimuoviArticoloDalMagazzino(a);
 		
@@ -416,12 +495,10 @@ public class NegozioController {
 		chiudiProgramma();
 	}
 	 
-	
+
 	public static void chiudiProgramma() {
 		System.exit(0);	
 	}
-
-
 
 
 	protected ImageIcon createImageIcon(String path, String description) {
@@ -510,6 +587,7 @@ public class NegozioController {
 
 
 	public void rimuoviArticoloDalMagazzino(Articolo articoloSelezionato) throws SQLException {
+		for(Articolo a: MagazzinoTransazionale.getElencoArticoli()) System.out.println(MagazzinoTransazionale.getSize());
 		if(MagazzinoTransazionale.getSize()!=0) {
 			MagazzinoTransazionale.remove(articoloSelezionato);
 			MagazzinoTemporaneo.remove(articoloSelezionato);
@@ -517,7 +595,10 @@ public class NegozioController {
 			if(quantita>1) {
 				MagazzinoDAO.decrementaQuantitaArticoloMagazzinoDB(articoloSelezionato);
 			}
-			else MagazzinoDAO.eliminaArticoloDalMagazzinoSQL(articoloSelezionato.getId());
+			else{
+				MagazzinoDAO.eliminaArticoloDalMagazzinoSQL(articoloSelezionato.getId());
+				
+			}
 		}
 		EliminaDaMagazzinoFrame.setVisible(false);
 		VetrinaFrame.setVisible(false);

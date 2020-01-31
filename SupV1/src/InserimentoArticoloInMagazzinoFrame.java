@@ -205,7 +205,7 @@ public class InserimentoArticoloInMagazzinoFrame extends JFrame {
 				 
 			}
 			catch (Exception e) {
-				Controller.creaMessaggioErroreDuranteOperazione("Inserire Valori Validi", "Errore Inserimento");
+				Controller.creaMessaggioErroreDuranteOperazione("Immagine già inserita", "Errore Inserimento");
 				e.printStackTrace();
 				}
 						

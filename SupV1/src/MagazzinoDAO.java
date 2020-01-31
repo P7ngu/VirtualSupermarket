@@ -40,7 +40,6 @@ public void incrementaQuantitaArticoloMagazzinoDB (Articolo articoloSelezionato)
 	String ID = articoloSelezionato.getId();
 	int quantitaPrecedente = checkQuantitaArticoloMagazzinoSQL(articoloSelezionato);
 	String sql = "UPDATE Magazzino SET quantita=? WHERE id = ?";
-	
 	PreparedStatement updateQuantita = connessione.prepareStatement(sql);
 	updateQuantita.setLong(1, (quantitaPrecedente+1));
 	updateQuantita.setString(2, ID);
@@ -50,7 +49,6 @@ public void incrementaQuantitaArticoloMagazzinoDB (Articolo articoloSelezionato)
 public void decrementaQuantitaArticoloMagazzinoDB (Articolo a) throws SQLException {
 	String ID = a.getId();
 	String sql = "UPDATE Magazzino SET quantita=? WHERE id =?";
-	
 	PreparedStatement updateQuantita = connessione.prepareStatement(sql);
 	int quantitaPrecedente = checkQuantitaArticoloMagazzinoSQL(a);
 	updateQuantita.setLong(1, quantitaPrecedente-1);
@@ -59,13 +57,12 @@ public void decrementaQuantitaArticoloMagazzinoDB (Articolo a) throws SQLExcepti
 }
 
 public Integer checkQuantitaArticoloMagazzinoSQL (Articolo articoloDaControllare) throws SQLException {
-	String id = articoloDaControllare.getId();
 	String sql = "SELECT quantita FROM Magazzino WHERE id=?";
 	PreparedStatement getQuantita = connessione.prepareStatement(sql);
-	getQuantita.setString(1, id);
+	getQuantita.setString(1, articoloDaControllare.getId());
 	ResultSet result = getQuantita.executeQuery();
 	while(result.next()) {
-		Integer quantita = new Integer(result.getString(2));
+		Integer quantita = new Integer(result.getString(1));
 		return quantita;
 		}
 	return null;
@@ -75,10 +72,10 @@ public Integer checkQuantitaArticoloMagazzinoSQL (Articolo articoloDaControllare
 public static void eliminaArticoloDalMagazzinoSQL(String Id) throws SQLException {
 	try {
 		ArticoloDAO ArticoloDAO = new ArticoloDAO(connessione);
-		//ArticoloDAO.eliminaArticolo(Id);
-		PreparedStatement st = connessione.prepareStatement("DELETE FROM Magazzino WHERE id = ?");
+		PreparedStatement st = connessione.prepareStatement("DELETE FROM Magazzino WHERE id=?");
 		st.setString(1, Id);
 		st.executeUpdate(); 
+		//ArticoloDAO.eliminaArticolo(Id);
 	}
 	catch(Exception e) {
 		e.printStackTrace();
