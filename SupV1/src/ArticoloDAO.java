@@ -49,7 +49,7 @@ public class ArticoloDAO {
 		PreparedStatement inserisciArticolo = con.prepareStatement(sql);
 		inserisciArticolo.setString(1, a.getName());
 		inserisciArticolo.setString(2, a.getId());
-		inserisciArticolo.setLong(3, (long) a.getPrice());
+		inserisciArticolo.setDouble(3, (double) a.getPrice());
 		inserisciArticolo.setString(4, a.getPathFoto());
 		inserisciArticolo.setString(5, a.getTaglia());
 		inserisciArticolo.setString(6, a.getColore());
