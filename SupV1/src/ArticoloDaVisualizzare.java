@@ -6,6 +6,7 @@ import javax.swing.ImageIcon;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
 import java.awt.event.ActionEvent;
+import javax.swing.SwingConstants;
 
 public class ArticoloDaVisualizzare extends JFrame {
 	
@@ -53,7 +54,7 @@ public void chiudiFrame() {
 }
 public ArticoloDaVisualizzare(Articolo articoloVisualizzato, NegozioController ctrl) {
 	setTitle("Articolo Visualizzato");
-	setBounds(300, 300, 270, 250);
+	setBounds(300, 300, 248, 249);
 	setResizable(false);
 	setAlwaysOnTop(true);
 	Controller=ctrl;
@@ -75,7 +76,8 @@ public ArticoloDaVisualizzare(Articolo articoloVisualizzato, NegozioController c
 	setBottone(btnAggiungiAlCarrello);
 	
 	JLabel ArticoloLabel = new JLabel(articolo.toString());
-	ArticoloLabel.setBounds(32, 123, 253, 16);
+	ArticoloLabel.setHorizontalAlignment(SwingConstants.CENTER);
+	ArticoloLabel.setBounds(0, 134, 248, 16);
 	getContentPane().add(ArticoloLabel);
 	setArticoloLabel(ArticoloLabel);
 	

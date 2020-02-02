@@ -205,7 +205,7 @@ public class NegozioController {
 		
 
 	
-	public void aggiungiArticoloAlMagazzino(String Nome, String Codice, String prezzo, String fotoPath, String Taglia, String Colore) throws SQLException {
+	public void aggiungiArticoloAlMagazzino(String Nome, String Codice, String prezzo, String fotoPath, String Taglia, String Colore, int flag) throws SQLException {
 		Double Prezzo = new Double(prezzo);
 		Articolo ArticoloDaAggiungere = new Articolo(Nome, Codice, Prezzo, fotoPath, Taglia, Colore);
 		try{ 
@@ -221,7 +221,7 @@ public class NegozioController {
 					
 				}else if(CorrispondenzaValori(ArticoloDaAggiungere)) { //altrimenti è già presente in magazzino, e se i valori sono corretti
 							MagazzinoDAO.incrementaQuantitaArticoloMagazzinoDB(ArticoloDaAggiungere); //ne incremento la quantità nel DB
-							creaMessaggioOperazioneEffettuataConSuccesso("Quantità articolo incrementata di 1!");
+							if(flag==0)creaMessaggioOperazioneEffettuataConSuccesso("Quantità articolo incrementata!");
 							MagazzinoTransazionale.add(ArticoloDaAggiungere); //e lo aggiungo negli ArrayList
 							MagazzinoTemporaneo.add(ArticoloDaAggiungere);
 				}
@@ -435,7 +435,7 @@ public class NegozioController {
 		for(Articolo a: MagazzinoTransazionale.getElencoArticoli()) {
 			if(y>=max){
 				y=30;
-				x=x+115; 
+				x=x+120; 
 				}
 			creaArticoloPerVetrina(x, y, a);
 			y=y+150;
@@ -583,11 +583,11 @@ public class NegozioController {
 	}
 
 	public void riempiMagazzinoFrame() {
-		int y=15, max=480, x=10; 
+		int y=15, max=1900, x=10; 
 		for(Articolo a: MagazzinoTransazionale.getElencoArticoli()) {
 			if(y>=max){
 				y=15;
-				x=x+255; 
+				x=x+355; 
 			}
 			creaLabelArticoloMagazzino(x, y, a);
 			y=y+15;
@@ -600,7 +600,7 @@ public class NegozioController {
 
 	private void creaLabelArticoloMagazzino(int x, int y, Articolo articoloDaMostrare) {
 		JLabel articoloLabel = new JLabel(articoloDaMostrare.toString());
-		articoloLabel.setBounds(x, y+10, 360, 18);
+		articoloLabel.setBounds(x, y+10, 350, 18);
 		MagazzinoFrame.AggiungiInMagazzinoFrame(articoloLabel);
 		SwingUtilities.updateComponentTreeUI(MagazzinoFrame);
 	}

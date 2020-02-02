@@ -72,6 +72,8 @@ public class InserimentoArticoloInMagazzinoFrame extends JFrame {
 		QuantitaBox.addItem(3);
 		QuantitaBox.addItem(4);
 		QuantitaBox.addItem(5);
+		QuantitaBox.addItem(10);
+		QuantitaBox.addItem(50);
 		contentPane.add(QuantitaBox);
 		
 		JLabel lblNome = new JLabel("Nome");
@@ -166,11 +168,8 @@ public class InserimentoArticoloInMagazzinoFrame extends JFrame {
 		JButton btnNewButton = new JButton("Aggiungi Articoli");
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				int QuantitaSelezionata=0;
-				QuantitaSelezionata = (int) QuantitaBox.getSelectedItem();
-			 for (int i=0; i<QuantitaSelezionata; i++) {
-				ControllaCorrettezzaPerInserimento(TagliaBox, ColoreBox, pathFoto);		
-			}
+				
+				ControllaCorrettezzaPerInserimento(TagliaBox, ColoreBox, pathFoto, QuantitaBox);		
 			}
 		});
 		btnNewButton.setFont(new Font("Tahoma", Font.PLAIN, 16));
@@ -193,16 +192,21 @@ public class InserimentoArticoloInMagazzinoFrame extends JFrame {
 		return null;
 	}
 	
-	private void ControllaCorrettezzaPerInserimento(JComboBox<String> TagliaBox, JComboBox<String> ColoreBox, String path) {
+	private void ControllaCorrettezzaPerInserimento(JComboBox<String> TagliaBox, JComboBox<String> ColoreBox, String path, JComboBox<Integer> QuantitaBox) {
 		if ((Nome_textField.getText().length()>0)&&(Codice_textField.getText().length()>0)&&(Prezzo_textField.getText().length()>0)){
 				try {
 					String Taglia = (String)TagliaBox.getSelectedItem();
 					String Colore = (String)ColoreBox.getSelectedItem();
 					
-	  Controller.aggiungiArticoloAlMagazzino( Nome_textField.getText(), Codice_textField.getText(), Prezzo_textField.getText(),
-            	path, Taglia, Colore);
+					int QuantitaSelezionata=0;
+					QuantitaSelezionata = (int) QuantitaBox.getSelectedItem();
+				 for (int i=0; i<QuantitaSelezionata; i++) {
+					 int flag = i;
+					 Controller.aggiungiArticoloAlMagazzino(Nome_textField.getText(), Codice_textField.getText(), Prezzo_textField.getText(),
+							 								 path, Taglia, Colore, flag);
 				 
 			}
+				}
 			catch (Exception e) {
 				Controller.creaMessaggioErroreDuranteOperazione("Immagine già inserita", "Errore Inserimento");
 				e.printStackTrace();
@@ -211,5 +215,6 @@ public class InserimentoArticoloInMagazzinoFrame extends JFrame {
 		}
 		else
 			Controller.creaMessaggioErroreDuranteOperazione("Inserire Valori", "Errore Inserimento");
-	}
+		
+}
 }
