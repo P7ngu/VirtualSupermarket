@@ -72,7 +72,6 @@ public class InserimentoArticoloInMagazzinoFrame extends JFrame {
 		QuantitaBox.addItem(3);
 		QuantitaBox.addItem(4);
 		QuantitaBox.addItem(5);
-		QuantitaBox.addItem(10);
 		QuantitaBox.addItem(50);
 		contentPane.add(QuantitaBox);
 		

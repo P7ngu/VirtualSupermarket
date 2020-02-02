@@ -221,7 +221,7 @@ public class NegozioController {
 					
 				}else if(CorrispondenzaValori(ArticoloDaAggiungere)) { //altrimenti è già presente in magazzino, e se i valori sono corretti
 							MagazzinoDAO.incrementaQuantitaArticoloMagazzinoDB(ArticoloDaAggiungere); //ne incremento la quantità nel DB
-							if(flag==0)creaMessaggioOperazioneEffettuataConSuccesso("Quantità articolo incrementata!");
+							if(flag==0)creaMessaggioOperazioneEffettuataConSuccesso("Quantità articolo incrementata!"); //mostra il messaggio solo una volta
 							MagazzinoTransazionale.add(ArticoloDaAggiungere); //e lo aggiungo negli ArrayList
 							MagazzinoTemporaneo.add(ArticoloDaAggiungere);
 				}
@@ -260,7 +260,6 @@ public class NegozioController {
 		while(quantita>0) {
 			if(CarrelloUtente.remove(ArticoloDaRimuovere)) {
 				MagazzinoTemporaneo.add(ArticoloDaRimuovere);
-				aggiornaLabelCarrello();
 				AggiungiAlCarrelloFrame = new AggiungiAlCarrelloFrame(this);
 				quantita--;
 				}
@@ -270,6 +269,7 @@ public class NegozioController {
 				CarrelloFrame.setVisible(true);
 			}	
 		}
+		aggiornaLabelCarrello();
 		RimuoviDalCarrelloFrame = new RimuoviDalCarrelloFrame(this);
 	}
 	
@@ -314,13 +314,13 @@ public class NegozioController {
 	public void aggiungiAlCarrello (Articolo articoloSelezionato, int quantitaSelezionata) throws SQLException{
 		int quantitaDisponibileInMagazzino = MagazzinoDAO.checkQuantitaArticoloMagazzinoSQL(articoloSelezionato);
 		if(quantitaDisponibileInMagazzino >= quantitaSelezionata && MagazzinoTemporaneo.contains(articoloSelezionato)) {
-			while(quantitaSelezionata>0) {
-				CarrelloFrame.setVisible(false);
+			while(quantitaSelezionata>0 && !checkCarrelloPieno()) {
 				aggiungiArticoloAlCarrelloUtente(articoloSelezionato);
-				aggiornaLabelCarrello();
 				quantitaSelezionata--;
 				MagazzinoTemporaneo.remove(articoloSelezionato);
 			}
+			if(checkCarrelloPieno()) creaMessaggioErroreDuranteOperazione("Carrello Pieno!", "Quantità massima inserita");
+			aggiornaLabelCarrello();
 			CarrelloFrame.setVisible(true);
 			AggiungiAlCarrelloFrame.setVisible(false);
 			AggiungiAlCarrelloFrame = new AggiungiAlCarrelloFrame(this);
@@ -329,9 +329,8 @@ public class NegozioController {
 	}
 	
 	public void aggiungiArticoloAlCarrelloUtente (Articolo articoloSelezionato) {
-		if(!checkCarrelloPieno()) {
+		if(!checkCarrelloPieno()) 
 			CarrelloUtente.add(articoloSelezionato);
-		}
 	}
 		
 	public double eseguiTotale () {
@@ -445,7 +444,6 @@ public class NegozioController {
 	
 	public boolean checkCarrelloPieno () {
 		if (CarrelloUtente.getSize() >= 63) {
-			creaMessaggioErroreDuranteOperazione("Carrello Pieno!", "Carrello Pieno!");
 			return true;
 		}
 		return false;
