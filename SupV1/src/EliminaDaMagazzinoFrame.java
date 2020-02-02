@@ -1,5 +1,4 @@
 import java.awt.BorderLayout;
-import java.awt.EventQueue;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -15,7 +14,7 @@ import javax.swing.border.EmptyBorder;
 public class EliminaDaMagazzinoFrame extends JFrame {
 
 	private final JPanel contentPanel = new JPanel();
-	private JComboBox articoloBox;
+	private JComboBox <Articolo> articoloBox;
 	NegozioController Controller;
 
 	public EliminaDaMagazzinoFrame(NegozioController ctrl) {
@@ -30,7 +29,7 @@ public class EliminaDaMagazzinoFrame extends JFrame {
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 			contentPanel.setLayout(null);
 		
-			JComboBox <Articolo> ArticoloBox  = new JComboBox();
+			JComboBox <Articolo> ArticoloBox  = new JComboBox <Articolo>();
 			ArticoloBox.setBounds(100, 46, 211, 27);
 			articoloBox=ArticoloBox;
 			Controller.riempiComboEliminaDaMagazzino(ArticoloBox);

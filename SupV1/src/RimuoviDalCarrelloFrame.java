@@ -2,7 +2,6 @@ import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 
 import javax.swing.JButton;
-import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
@@ -10,12 +9,11 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-import java.awt.Window.Type;
 
 public class RimuoviDalCarrelloFrame extends JFrame {
 	private NegozioController Controller;
 	private final JPanel contentPanel = new JPanel();
-	private JComboBox articoloBox;
+	private JComboBox <Articolo>articoloBox;
 	
 	public void AggiornaFrame() {
 	this.setVisible(false);
@@ -32,7 +30,7 @@ public class RimuoviDalCarrelloFrame extends JFrame {
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 			contentPanel.setLayout(null);
 		
-			JComboBox <Articolo> ArticoloBox  = new JComboBox();
+			JComboBox <Articolo> ArticoloBox  = new JComboBox <Articolo>();
 			ArticoloBox.setBounds(200, 6, 211, 27);
 			articoloBox=ArticoloBox;
 			Controller.riempiComboRimuoviDalCarrello(ArticoloBox);

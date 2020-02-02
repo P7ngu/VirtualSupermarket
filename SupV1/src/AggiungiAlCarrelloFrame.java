@@ -2,7 +2,6 @@ import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 
 import javax.swing.JButton;
-import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
@@ -16,7 +15,7 @@ import java.awt.Font;
 public class AggiungiAlCarrelloFrame extends JFrame {
 	private NegozioController Controller;
 	private final JPanel contentPanel = new JPanel();
-	private JComboBox articoloBox;
+	private JComboBox <Articolo>articoloBox;
 
 	public AggiungiAlCarrelloFrame(NegozioController ctrl) {
 		setResizable(false);
@@ -30,7 +29,7 @@ public class AggiungiAlCarrelloFrame extends JFrame {
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 			contentPanel.setLayout(null);
 		
-			JComboBox <Articolo> ArticoloBox  = new JComboBox();
+			JComboBox <Articolo> ArticoloBox  = new JComboBox <Articolo>();
 			ArticoloBox.setBounds(200, 6, 211, 27);
 			Controller.riempiComboAggiungiAlCarrello(ArticoloBox);
 			articoloBox=ArticoloBox;
