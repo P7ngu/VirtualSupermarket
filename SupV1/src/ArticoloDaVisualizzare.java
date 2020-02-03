@@ -82,7 +82,7 @@ public ArticoloDaVisualizzare(Articolo articoloVisualizzato, NegozioController c
 	
 	JLabel FotoLabel = new JLabel("Nessuna Foto");
 	FotoLabel.setIcon(new ImageIcon(articolo.getPathFoto()));
-	FotoLabel.setBounds(59, 6, 131, 116);
+	FotoLabel.setBounds(73, 22, 100, 100);
 	getContentPane().add(FotoLabel);
 	setFotoLabel(FotoLabel);
 	

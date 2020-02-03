@@ -186,7 +186,7 @@ public class InserimentoArticoloInMagazzinoFrame extends JFrame {
 				try {
 					String Taglia = (String)TagliaBox.getSelectedItem();
 					String Colore = (String)ColoreBox.getSelectedItem();
-					
+				
 					int QuantitaSelezionata=0;
 					QuantitaSelezionata = (int) QuantitaBox.getSelectedItem();
 				 for (int i=0; i<QuantitaSelezionata; i++) {
@@ -195,6 +195,8 @@ public class InserimentoArticoloInMagazzinoFrame extends JFrame {
 							 								 path, Taglia, Colore, flag);
 				 
 			}
+				 if(path!=null) Controller.setFoto(path, Codice_textField.getText());
+					
 				}
 			catch (Exception e) {
 				Controller.creaMessaggioErroreDuranteOperazione("Immagine già inserita", "Errore Inserimento");

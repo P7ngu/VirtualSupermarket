@@ -35,12 +35,13 @@ public class NegozioController {
 	
 	
 
-	public NegozioController() throws Exception { 
+	public NegozioController() throws Exception {
+		
 		MagazzinoTransazionale = new Magazzino();
 		MagazzinoTemporaneo = new Magazzino();
 		CarrelloUtente = new CarrelloUtente();
 		
-		connessione = getConnection1();
+		connessione = getConnectionLocale();
 		
 		MagazzinoDAO MagazzinoDAO = new MagazzinoDAO(connessione);
 		ArticoloDAO ArticoloDAO = new ArticoloDAO(connessione);
@@ -69,6 +70,7 @@ public class NegozioController {
 	
 	public static void main(String[] args) throws Exception {
 		NegozioController TheController = new NegozioController();
+		
 //		HomePageFrame = new HomePage(TheController);
 //		HomePageFrame.setVisible(true);
 		MagazzinoDAO = new MagazzinoDAO(connessione);
@@ -230,9 +232,16 @@ public class NegozioController {
 			creaMessaggioErroreDuranteOperazione("ERRORE: ID DUPLICATO", "RIPROVARE"); 
 			e.printStackTrace();
 		}
-		if(fotoPath!=null) ArticoloDAO.JdbcWriteImage(fotoPath, Codice);
 	}
 		
+	public void setFoto (String path, String Codice) throws SQLException {
+		if (!ArticoloDAO.checkImmagine(Codice))
+		ArticoloDAO.JdbcWriteImage(path, Codice);
+		else {
+			creaMessaggioErroreDuranteOperazione("Foto già inserita per l'articolo selezionato!", "Errore");
+		}
+	}
+	
 	private boolean CorrispondenzaValori(Articolo articoloDaAggiungere) throws SQLException {
 		Articolo ArticoloTrovato = ArticoloDAO.getArticoloById(articoloDaAggiungere.getId());
 			if (ArticoloTrovato!=null &&
@@ -563,7 +572,6 @@ public class NegozioController {
 
 
 	public void rimuoviArticoloDalMagazzino(Articolo articoloSelezionato) throws SQLException {
-		//for(Articolo a: MagazzinoTransazionale.getElencoArticoli()) System.out.println(MagazzinoTransazionale.getSize());
 		if(MagazzinoTransazionale.getSize()!=0) {
 			MagazzinoTransazionale.remove(articoloSelezionato);
 			MagazzinoTemporaneo.remove(articoloSelezionato);
