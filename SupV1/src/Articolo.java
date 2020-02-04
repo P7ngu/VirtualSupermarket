@@ -74,7 +74,7 @@ public class Articolo {
 		String taglia = this.getTaglia();
 		String colore = this.getColore();
 		
-		return (nome+ " - " +id+ " - " +prezzo+ " - " +taglia+ " - " +colore);
+		return (nome+ " - ID: " +id+ " - " +prezzo+ "$ - " +taglia+ " - " +colore);
 	}
 
 	public String getPathFoto() {

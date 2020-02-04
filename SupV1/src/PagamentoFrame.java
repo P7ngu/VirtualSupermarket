@@ -4,6 +4,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.JTextField;
 import javax.swing.JLabel;
 import javax.swing.JComboBox;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
@@ -90,5 +91,11 @@ public class PagamentoFrame extends JFrame {
 		lblNewLabel_3.setText("TOTALE="+Controller.eseguiTotale()+"$");
 		lblNewLabel_3.setBounds(21, 226, 210, 24);
 		contentPane.add(lblNewLabel_3);
+		
+		JLabel lblNewLabel_4 = new JLabel("New label");
+		ImageIcon icon = Controller.createImageIcon("scampay.png", "");
+		lblNewLabel_4.setIcon(icon);
+		lblNewLabel_4.setBounds(125, 6, 191, 53);
+		contentPane.add(lblNewLabel_4);
 	}
 }
