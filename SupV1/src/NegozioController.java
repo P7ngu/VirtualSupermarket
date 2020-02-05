@@ -584,7 +584,7 @@ public class NegozioController {
 			if(quantita>1) {
 				MagazzinoDAO.decrementaQuantitaArticoloMagazzinoDB(articoloSelezionato);
 			}
-			else{
+			else {
 				MagazzinoDAO.eliminaArticoloDalMagazzinoSQL(articoloSelezionato.getId());	
 			}
 		}
