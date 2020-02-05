@@ -71,7 +71,7 @@ public class NegozioController {
 	public static void main(String[] args) throws Exception {
 		NegozioController TheController = new NegozioController();
 		
-//		HomePageFrame = new HomePage(TheController);
+//		HomePageFrame = new HomePage(TheController);  
 //		HomePageFrame.setVisible(true);
 		MagazzinoDAO = new MagazzinoDAO(connessione);
 		ArticoloDAO = new ArticoloDAO(connessione);
@@ -212,7 +212,7 @@ public class NegozioController {
 		Articolo ArticoloDaAggiungere = new Articolo(Nome, Codice, Prezzo, fotoPath, Taglia, Colore);
 		try{ 
 			if(MagazzinoDAO.checkQuantitaArticoloMagazzinoSQL(ArticoloDaAggiungere)==null //L'articolo non è presente in Magazzino
-				&& (!CorrispondenzaValori(ArticoloDaAggiungere)))	 // e non è presente nella tabella Articolo
+				&& (!CorrispondenzaValori(ArticoloDaAggiungere)))	 // e non è presente nella tabella Articolo, fallisce il primo IF
 					ArticoloDAO.CreaArticolo(ArticoloDaAggiungere); // lo inserisco nella tabella Articolo
 			
 				if(MagazzinoDAO.checkQuantitaArticoloMagazzinoSQL(ArticoloDaAggiungere)==null  //se non è presente in Magazzino
@@ -242,9 +242,14 @@ public class NegozioController {
 		}
 	}
 	
+	private boolean checkPresenzaArticoloNelDB (Articolo ArticoloDaControllare) {
+		if (ArticoloDaControllare!= null) return true;
+		return false;
+	}
+	
 	private boolean CorrispondenzaValori(Articolo articoloDaAggiungere) throws SQLException {
 		Articolo ArticoloTrovato = ArticoloDAO.getArticoloById(articoloDaAggiungere.getId());
-			if (ArticoloTrovato!=null &&
+			if (checkPresenzaArticoloNelDB(ArticoloTrovato) &&
 				ArticoloTrovato.getName().equals(articoloDaAggiungere.getName()) &&
 				ArticoloTrovato.getColore().equals(articoloDaAggiungere.getColore()) &&
 				ArticoloTrovato.getPrice() == articoloDaAggiungere.getPrice() &&
@@ -266,7 +271,7 @@ public class NegozioController {
 	}
 	
 	public void rimuoviArticoliDalCarrello (Articolo ArticoloDaRimuovere, int quantita) {
-		while(quantita>0) {
+		while(quantita>0 && CarrelloUtente.contains(ArticoloDaRimuovere)) {
 			if(CarrelloUtente.remove(ArticoloDaRimuovere)) {
 				MagazzinoTemporaneo.add(ArticoloDaRimuovere);
 				AggiungiAlCarrelloFrame = new AggiungiAlCarrelloFrame(this);
