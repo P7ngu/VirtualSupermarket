@@ -18,9 +18,11 @@ public class MagazzinoFrame extends JFrame {
 		Controller=ctrl;
 		contentPane = new JPanel();
 		contentPane.setPreferredSize(new Dimension(800,2000));
+		
 		JScrollPane scrollFrame = new JScrollPane(contentPane);
 		contentPane.setAutoscrolls(true);
 		scrollFrame.setPreferredSize(new Dimension(800,300));
+		
 		getContentPane().add(scrollFrame);
 		setResizable(false);
 		setTitle("Magazzino");

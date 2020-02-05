@@ -172,35 +172,36 @@ public class InserimentoArticoloInMagazzinoFrame extends JFrame {
 	public String SelezionaImmagine (JFileChooser fileChooser) {
 		fileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
 		int result = fileChooser.showOpenDialog(null);
+		
 		if (result == JFileChooser.APPROVE_OPTION) {
 		    File selectedFile = fileChooser.getSelectedFile();
-		    
 		    return selectedFile.getAbsolutePath();
-		   
 		}
 		return null;
 	}
 	
 	private void ControllaCorrettezzaPerInserimento(JComboBox<String> TagliaBox, JComboBox<String> ColoreBox, String path, JComboBox<Integer> QuantitaBox) {
-		if ((Nome_textField.getText().length()>0)&&(Codice_textField.getText().length()>0)&&(Prezzo_textField.getText().length()>0)){
+		if ((Nome_textField.getText().length()>0) && (Codice_textField.getText().length()>0) && (Prezzo_textField.getText().length()>0)){
 				try {
 					String Taglia = (String)TagliaBox.getSelectedItem();
 					String Colore = (String)ColoreBox.getSelectedItem();
 				
 					int QuantitaSelezionata=0;
 					QuantitaSelezionata = (int) QuantitaBox.getSelectedItem();
-				 for (int i=0; i<QuantitaSelezionata; i++) {
+					
+					for (int i=0; i<QuantitaSelezionata; i++) {
 					 int flag = i;
 					 Controller.aggiungiArticoloAlMagazzino(Nome_textField.getText(), Codice_textField.getText(), Prezzo_textField.getText(),
 							 								 path, Taglia, Colore, flag);
 				 
-			}
-				 if(path!=null) Controller.setFoto(path, Codice_textField.getText());
+					}
 					
-				}
-			catch (Exception e) {
-				Controller.creaMessaggioErroreDuranteOperazione("Immagine già inserita", "Errore Inserimento");
-				e.printStackTrace();
+				 if(path!=null) Controller.setFoto(path, Codice_textField.getText());
+				 }
+				
+				catch (Exception e) {
+					Controller.creaMessaggioErroreDuranteOperazione("Immagine già inserita", "Errore Inserimento");
+					e.printStackTrace();
 				}
 						
 		}
