@@ -63,11 +63,8 @@ public class HomePage extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					Controller.apriSchermataMagazzino();
-				} catch (SQLException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
+				} catch (SQLException | IOException e1) {
+					Controller.creaMessaggioErroreDuranteOperazione("Errore durante l'apertura del magazzino", "Errore");
 					e1.printStackTrace();
 				}
 			}
