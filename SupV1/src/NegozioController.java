@@ -215,9 +215,7 @@ public class NegozioController {
 				}else if(CorrispondenzaValori(ArticoloDaAggiungere)) { //altrimenti è già presente in magazzino, e se i valori sono corretti
 							MagazzinoDAO.incrementaQuantitaArticoloMagazzinoDB(ArticoloDaAggiungere); //ne incremento la quantità nel DB
 							if(flag==0)creaMessaggioOperazioneEffettuataConSuccesso("Quantità articolo incrementata!"); //mostra il messaggio solo una volta
-							System.out.println(MagazzinoDAO.checkQuantitaArticoloMagazzinoSQL(ArticoloDaAggiungere));
 							ArticoloDaAggiungere.setQuantita(MagazzinoDAO.checkQuantitaArticoloMagazzinoSQL(ArticoloDaAggiungere)+ 1);
-							System.out.println(ArticoloDaAggiungere.getQuantita());
 				}
 			else creaMessaggioErroreDuranteOperazione("ERRORE: VALORI INESATTI", "RIPROVARE"); 	
 				MagazzinoTransazionale.add(ArticoloDaAggiungere);
