@@ -70,17 +70,8 @@ public class NegozioController {
 	
 	public static void main(String[] args) throws Exception {
 		NegozioController TheController = new NegozioController();
-		
-//		HomePageFrame = new HomePage(TheController);  
-//		HomePageFrame.setVisible(true);
 		MagazzinoDAO = new MagazzinoDAO(connessione);
 		ArticoloDAO = new ArticoloDAO(connessione);
-//		InserimentoArticoloInMagazzinoFrame InserimentoArticoloInMagazzinoFrame = new InserimentoArticoloInMagazzinoFrame(TheController);
-//		EliminaDaMagazzinoFrame EliminaDaMagazzinoFrame = new EliminaDaMagazzinoFrame (TheController);
-//		MagazzinoFrame MagazzinoFrame = new MagazzinoFrame(TheController);
-//		RimuoviDalCarrelloFrame RimuoviDalCarrelloFrame = new RimuoviDalCarrelloFrame(TheController);
-//		VetrinaFrame VetrinaFrame= new VetrinaFrame(TheController);
-//		AggiungiAlCarrelloFrame AggiungiAlCarrelloFrame = new AggiungiAlCarrelloFrame(TheController);
 		
 
 	}
@@ -96,12 +87,14 @@ public class NegozioController {
 		while(result.next()) {
 			Integer quantita = new Integer(result.getString(2));
 			String id = (result.getString(1));
-			while (quantita>0) {
 			Articolo ArticoloTrovato = trovaDatiArticoloInMagazzino(id);
+			ArticoloTrovato.setQuantita(quantita);
+			
+			if(quantita>0) {
 			MagazzinoTransazionale.add(ArticoloTrovato);
 			MagazzinoTemporaneo.add(ArticoloTrovato);
-			quantita--;
 			}
+			
 		}
 		
 		
@@ -114,7 +107,6 @@ public class NegozioController {
 		ResultSet resultNest = getArticoloNest.executeQuery();
 		while(resultNest.next()) {
 		String nome = (resultNest.getString(1));
-		//String id = (resultNest.getString(2));
 		Double prezzo = new Double(resultNest.getString(3));
 		String pathfoto = resultNest.getString(4);
 		String taglia = (resultNest.getString(5));
@@ -217,18 +209,22 @@ public class NegozioController {
 			
 				if(MagazzinoDAO.checkQuantitaArticoloMagazzinoSQL(ArticoloDaAggiungere)==null  //se non è presente in Magazzino
 					&& (MagazzinoDAO.AggiungiArticoloAlMagazzinoSQL(ArticoloDaAggiungere))) { //e lo aggiungo con successo nel database
-					MagazzinoTransazionale.add(ArticoloDaAggiungere); //lo aggiungo anche negli ArrayList
-					MagazzinoTemporaneo.add(ArticoloDaAggiungere);
+					ArticoloDaAggiungere.setQuantita(1);
 					creaMessaggioOperazioneEffettuataConSuccesso("Articoli aggiunti correttamente");
 					
 				}else if(CorrispondenzaValori(ArticoloDaAggiungere)) { //altrimenti è già presente in magazzino, e se i valori sono corretti
 							MagazzinoDAO.incrementaQuantitaArticoloMagazzinoDB(ArticoloDaAggiungere); //ne incremento la quantità nel DB
 							if(flag==0)creaMessaggioOperazioneEffettuataConSuccesso("Quantità articolo incrementata!"); //mostra il messaggio solo una volta
-							MagazzinoTransazionale.add(ArticoloDaAggiungere); //e lo aggiungo negli ArrayList
-							MagazzinoTemporaneo.add(ArticoloDaAggiungere);
+							System.out.println(MagazzinoDAO.checkQuantitaArticoloMagazzinoSQL(ArticoloDaAggiungere));
+							ArticoloDaAggiungere.setQuantita(MagazzinoDAO.checkQuantitaArticoloMagazzinoSQL(ArticoloDaAggiungere)+ 1);
+							System.out.println(ArticoloDaAggiungere.getQuantita());
 				}
-			else creaMessaggioErroreDuranteOperazione("ERRORE: VALORI INESATTI", "RIPROVARE"); 
+			else creaMessaggioErroreDuranteOperazione("ERRORE: VALORI INESATTI", "RIPROVARE"); 	
+				MagazzinoTransazionale.add(ArticoloDaAggiungere);
+				MagazzinoTemporaneo.add(ArticoloDaAggiungere);
+				
 		} catch (Exception e) { //catch per inserimento articolo in magazzino
+			if(flag==0)
 			creaMessaggioErroreDuranteOperazione("ERRORE: ID DUPLICATO", "RIPROVARE"); 
 			e.printStackTrace();
 		}
@@ -273,7 +269,7 @@ public class NegozioController {
 	public void rimuoviArticoliDalCarrello (Articolo ArticoloDaRimuovere, int quantita) {
 		while(quantita>0 && CarrelloUtente.contains(ArticoloDaRimuovere)) {
 			if(CarrelloUtente.remove(ArticoloDaRimuovere)) {
-				MagazzinoTemporaneo.add(ArticoloDaRimuovere);
+				ArticoloDaRimuovere.setQuantita(ArticoloDaRimuovere.getQuantita() + 1);
 				AggiungiAlCarrelloFrame = new AggiungiAlCarrelloFrame(this);
 				quantita--;
 				}
@@ -327,11 +323,11 @@ public class NegozioController {
 	
 	public void aggiungiAlCarrello (Articolo articoloSelezionato, int quantitaSelezionata) throws SQLException{
 		int quantitaDisponibileInMagazzino = MagazzinoDAO.checkQuantitaArticoloMagazzinoSQL(articoloSelezionato);
-		if(quantitaDisponibileInMagazzino >= quantitaSelezionata && MagazzinoTemporaneo.contains(articoloSelezionato)) {
+		if(quantitaDisponibileInMagazzino >= quantitaSelezionata && articoloSelezionato.getQuantita()>0 ) {
 			while(quantitaSelezionata>0 && !checkCarrelloPieno()) {
 				aggiungiArticoloAlCarrelloUtente(articoloSelezionato);
 				quantitaSelezionata--;
-				MagazzinoTemporaneo.remove(articoloSelezionato);
+				articoloSelezionato.setQuantita(articoloSelezionato.getQuantita() - 1);
 			}
 			if(checkCarrelloPieno()) creaMessaggioErroreDuranteOperazione("Carrello Pieno!", "Quantità massima inserita");
 			aggiornaLabelCarrello();
@@ -478,6 +474,7 @@ public class NegozioController {
 	public void effettuaTransazione() throws SQLException {
 		AcquistoDAO AcquistoDAO=new AcquistoDAO(connessione);
 		AcquistoDAO.creaAcquisto(CarrelloUtente.getElencoArticoli());
+		
 		for (Articolo a: CarrelloUtente.getElencoArticoli())
 		rimuoviArticoloDalMagazzino(a);
 		
@@ -515,13 +512,18 @@ public class NegozioController {
 	}
 
 
-	public void apriSchermataMagazzino() {
+	public void apriSchermataMagazzino() throws SQLException, IOException {
 		if(MagazzinoTransazionale.getSize()==0) 
 			creaMessaggioErroreDuranteOperazione("Magazzino vuoto!", "Magazzino vuoto!");
 			else {
 				chiudiTutteLeFinestre();
-				MagazzinoFrame = new MagazzinoFrame(this);
+				
+				MagazzinoTransazionale.clear();
+				MagazzinoTemporaneo.clear();
+				
+				riempiMagazzinoDaDB();
 				riempiMagazzinoFrame();
+				
 				MagazzinoFrame.setVisible(true);
 			}
 	}
@@ -577,23 +579,17 @@ public class NegozioController {
 
 
 	public void rimuoviArticoloDalMagazzino(Articolo articoloSelezionato) throws SQLException {
-		if(MagazzinoTransazionale.getSize()!=0) {
-			MagazzinoTransazionale.remove(articoloSelezionato);
-			MagazzinoTemporaneo.remove(articoloSelezionato);
-			int quantita = MagazzinoDAO.checkQuantitaArticoloMagazzinoSQL(articoloSelezionato);
-			if(quantita>1) {
-				MagazzinoDAO.decrementaQuantitaArticoloMagazzinoDB(articoloSelezionato);
-			}
-			else {
-				MagazzinoDAO.eliminaArticoloDalMagazzinoSQL(articoloSelezionato.getId());	
-			}
-		}
-		EliminaDaMagazzinoFrame.setVisible(false);
-		VetrinaFrame.setVisible(false);
-		HomePageFrame.setVisible(true);
+			articoloSelezionato.setQuantita(articoloSelezionato.getQuantita() - 1);
+			if (articoloSelezionato.getQuantita() == 0) MagazzinoDAO.eliminaArticoloDalMagazzinoSQL(articoloSelezionato.getId());
+			else MagazzinoDAO.decrementaQuantitaArticoloMagazzinoDB(articoloSelezionato);
+			
+			EliminaDaMagazzinoFrame.setVisible(false);
+			VetrinaFrame.setVisible(false);
+			HomePageFrame.setVisible(true);
 	}
 
 	public void riempiMagazzinoFrame() {
+		MagazzinoFrame = new MagazzinoFrame(this);
 		int y=15, max=1900, x=10; 
 		for(Articolo a: MagazzinoTransazionale.getElencoArticoli()) {
 			if(y>=max){
@@ -610,7 +606,7 @@ public class NegozioController {
 
 
 	private void creaLabelArticoloMagazzino(int x, int y, Articolo articoloDaMostrare) {
-		JLabel articoloLabel = new JLabel(articoloDaMostrare.toString());
+		JLabel articoloLabel = new JLabel(articoloDaMostrare.StampaPerMagazzino());
 		articoloLabel.setBounds(x, y+10, 350, 18);
 		MagazzinoFrame.AggiungiInMagazzinoFrame(articoloLabel);
 		SwingUtilities.updateComponentTreeUI(MagazzinoFrame);

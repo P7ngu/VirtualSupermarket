@@ -1,5 +1,6 @@
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.sql.SQLException;
 
 import javax.swing.JFrame;
@@ -60,7 +61,15 @@ public class HomePage extends JFrame {
 		JButton visualizzaMagazzinobtn = new JButton("");
 		visualizzaMagazzinobtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				Controller.apriSchermataMagazzino();
+				try {
+					Controller.apriSchermataMagazzino();
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 		});
 		ImageIcon iconVisualizzaMagazzino = Controller.createImageIcon("visualizzamagazzino2.png", "");

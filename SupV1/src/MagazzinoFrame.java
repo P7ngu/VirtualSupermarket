@@ -3,6 +3,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
@@ -10,6 +11,7 @@ import java.awt.event.ActionEvent;
 public class MagazzinoFrame extends JFrame {
 
 	JPanel contentPane;
+	JScrollPane scrollFrame;
 	NegozioController Controller;
 	
 	public MagazzinoFrame(NegozioController ctrl) {
@@ -17,11 +19,13 @@ public class MagazzinoFrame extends JFrame {
 		this.setBounds(100, 100, 1300, 800);
 		Controller=ctrl;
 		contentPane = new JPanel();
-		contentPane.setPreferredSize(new Dimension(800,2000));
+		contentPane.setPreferredSize(new Dimension(800,1300));
 		
-		JScrollPane scrollFrame = new JScrollPane(contentPane);
+		scrollFrame = new JScrollPane(contentPane);
 		contentPane.setAutoscrolls(true);
+		
 		scrollFrame.setPreferredSize(new Dimension(800,300));
+		scrollFrame.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 		
 		getContentPane().add(scrollFrame);
 		setResizable(false);
@@ -43,6 +47,8 @@ public class MagazzinoFrame extends JFrame {
 	
 	public void AggiungiInMagazzinoFrame(JLabel articoloLabel) {
 		contentPane.add(articoloLabel);
+		
 	}
+	
 
 }

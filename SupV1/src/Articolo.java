@@ -6,6 +6,7 @@ public class Articolo {
 	private String pathFoto;
 	private String Taglia;
 	private String Colore;
+	private int quantita;
 	
 	
 	
@@ -85,5 +86,23 @@ public class Articolo {
 		this.pathFoto = pathFoto;
 	}
 
+	public int getQuantita() {
+		return quantita;
+	}
+
+	public void setQuantita(int quantita) {
+		this.quantita = quantita;
+	}
+
+	public String StampaPerMagazzino() {
+		String nome = this.getName();
+		String id = this.getId();
+		double prezzo = this.getPrice();
+		String taglia = this.getTaglia();
+		String colore = this.getColore();
+		int quantita = this.getQuantita();
+		return (nome+ " - ID: " +id+ " - " +prezzo+ "$ - " +taglia+ " - " +colore + " - Quantità: " +quantita);
+	
+	}
 
 }
