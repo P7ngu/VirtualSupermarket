@@ -82,8 +82,8 @@ public class ArticoloDAO {
 	             ResultSet rs = pst.executeQuery();
 	       
 	             if(rs.next()){
-	            Blob b=rs.getBlob(1);
-	             byte barr[]=b.getBytes(1,(int)b.length());
+	           // Blob b=rs.getBlob(1);
+	             byte barr[]=rs.getBytes(1);
 	             
 	             String	url="./"+articoloDiCuiImpostareFoto.getId()+".jpg"; 
 	             
