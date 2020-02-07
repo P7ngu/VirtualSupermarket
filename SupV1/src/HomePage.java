@@ -49,7 +49,11 @@ public class HomePage extends JFrame {
 		JButton visualizzaCarrellobtn = new JButton("");
 		visualizzaCarrellobtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				Controller.apriSchermataCarrello();
+				try {
+					Controller.apriSchermataCarrello();
+				} catch (Exception e1) {
+					Controller.creaMessaggioErroreDuranteOperazione("ERRORE!", "ERRORE");
+				}
 			}
 		});
 		ImageIcon visualizzaCarrelloicon = Controller.createImageIcon("visualizzacarrello2.png", "");

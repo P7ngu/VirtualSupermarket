@@ -41,7 +41,7 @@ public class NegozioController {
 		MagazzinoTemporaneo = new Magazzino();
 		CarrelloUtente = new CarrelloUtente();
 		
-		connessione = getConnection();
+		connessione = getConnectionLocale();
 		
 		MagazzinoDAO MagazzinoDAO = new MagazzinoDAO(connessione);
 		ArticoloDAO ArticoloDAO = new ArticoloDAO(connessione);
@@ -204,8 +204,11 @@ public class NegozioController {
 		Articolo ArticoloDaAggiungere = new Articolo(Nome, Codice, Prezzo, fotoPath, Taglia, Colore);
 		try{ 
 			if(MagazzinoDAO.checkQuantitaArticoloMagazzinoSQL(ArticoloDaAggiungere)==null //L'articolo non è presente in Magazzino
-				&& (!CorrispondenzaValori(ArticoloDaAggiungere)))	 // e non è presente nella tabella Articolo, fallisce il primo IF
+				&& (!CorrispondenzaValori(ArticoloDaAggiungere))) {	 // e non è presente nella tabella Articolo, fallisce il primo IF
 					ArticoloDAO.CreaArticolo(ArticoloDaAggiungere); // lo inserisco nella tabella Articolo
+					MagazzinoTransazionale.add(ArticoloDaAggiungere);
+					MagazzinoTemporaneo.add(ArticoloDaAggiungere);
+			}
 			
 				if(MagazzinoDAO.checkQuantitaArticoloMagazzinoSQL(ArticoloDaAggiungere)==null  //se non è presente in Magazzino
 					&& (MagazzinoDAO.AggiungiArticoloAlMagazzinoSQL(ArticoloDaAggiungere))) { //e lo aggiungo con successo nel database
@@ -216,12 +219,11 @@ public class NegozioController {
 							MagazzinoDAO.incrementaQuantitaArticoloMagazzinoDB(ArticoloDaAggiungere); //ne incremento la quantità nel DB
 							if(flag==0)creaMessaggioOperazioneEffettuataConSuccesso("Quantità articolo incrementata!"); //mostra il messaggio solo una volta
 							ArticoloDaAggiungere.setQuantita(MagazzinoDAO.checkQuantitaArticoloMagazzinoSQL(ArticoloDaAggiungere)+ 1);
+							MagazzinoTransazionale.add(ArticoloDaAggiungere);
+							MagazzinoTemporaneo.add(ArticoloDaAggiungere);
 				}
-			else 
-				if (flag==0) creaMessaggioErroreDuranteOperazione("ERRORE: VALORI INESATTI", "RIPROVARE");
-			
-				MagazzinoTransazionale.add(ArticoloDaAggiungere);
-				MagazzinoTemporaneo.add(ArticoloDaAggiungere);
+			else creaMessaggioErroreDuranteOperazione("ERRORE: VALORI INESATTI", "RIPROVARE"); 	
+				
 				
 		} catch (Exception e) { //catch per inserimento articolo in magazzino
 			if(flag==0)
@@ -234,7 +236,7 @@ public class NegozioController {
 		if (!ArticoloDAO.checkImmagine(Codice))
 		ArticoloDAO.JdbcWriteImage(path, Codice);
 		else {
-			 creaMessaggioErroreDuranteOperazione("Foto già inserita per l'articolo selezionato!", "Errore");
+			creaMessaggioErroreDuranteOperazione("Foto già inserita per l'articolo selezionato!", "Errore");
 		}
 	}
 	
@@ -502,7 +504,12 @@ public class NegozioController {
 	}
 
 
-	public void apriSchermataCarrello() {
+	public void apriSchermataCarrello() throws SQLException, IOException {
+		MagazzinoTransazionale.clear();
+		MagazzinoTemporaneo.clear();
+		
+		riempiMagazzinoDaDB();
+		riempiMagazzinoFrame();
 		if(MagazzinoTransazionale.getSize()!=0) {
 			chiudiTutteLeFinestre();
 			CarrelloFrame = new CarrelloFrame(this);
