@@ -41,7 +41,7 @@ public class NegozioController {
 		MagazzinoTemporaneo = new Magazzino();
 		CarrelloUtente = new CarrelloUtente();
 		
-		connessione = getConnectionLocale();
+		connessione = getConnection();
 		
 		MagazzinoDAO MagazzinoDAO = new MagazzinoDAO(connessione);
 		ArticoloDAO ArticoloDAO = new ArticoloDAO(connessione);
@@ -72,8 +72,6 @@ public class NegozioController {
 		NegozioController TheController = new NegozioController();
 		MagazzinoDAO = new MagazzinoDAO(connessione);
 		ArticoloDAO = new ArticoloDAO(connessione);
-		
-
 	}
 	
 	
@@ -222,7 +220,7 @@ public class NegozioController {
 							MagazzinoTransazionale.add(ArticoloDaAggiungere);
 							MagazzinoTemporaneo.add(ArticoloDaAggiungere);
 				}
-			else creaMessaggioErroreDuranteOperazione("ERRORE: VALORI INESATTI", "RIPROVARE"); 	
+			else if(flag==0) creaMessaggioErroreDuranteOperazione("ERRORE: VALORI INESATTI", "RIPROVARE"); 	
 				
 				
 		} catch (Exception e) { //catch per inserimento articolo in magazzino
