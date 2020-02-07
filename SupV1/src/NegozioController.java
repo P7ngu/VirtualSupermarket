@@ -137,15 +137,15 @@ public class NegozioController {
 	
 	public Connection getConnectionLocale() throws Exception{
 		try {
-			String driver = "com.mysql.jdbc.Driver";
+			String driver = "com.mysql.cj.jdbc.Driver";
 			String url = "jdbc:mysql://localhost:3306/giraffe";
 			String username = "root";
 			String password = "password";
 			Class.forName(driver);
 			Connection conn = DriverManager.getConnection(url, username, password);
-			System.out.println ("connected");
+			creaMessaggioOperazioneEffettuataConSuccesso("Accesso al Database effettuato!");
 			return conn;
-		} catch (Exception e) { System.out.println(e); }
+		} catch (Exception e) { creaMessaggioErroreDuranteOperazione("Impossibile accedere al Database", "Riprovare"); }
 		return null;
 		
 	}
@@ -425,7 +425,7 @@ public class NegozioController {
 	public void creaArticoloPerVetrina(int x, int y, Articolo articoloCliccato) {
 		ArticoloDaVisualizzare ArticoloVisualizzato = new ArticoloDaVisualizzare (articoloCliccato, this);
 		JLabel fotoLabel = ArticoloVisualizzato.getFotoLabel();
-		JLabel articoloLabel = new JLabel(articoloCliccato.getName()+"-"+ articoloCliccato.getTaglia() +"-"+
+		JLabel articoloLabel = new JLabel(articoloCliccato.getId()+"-"+ articoloCliccato.getTaglia() +"-"+
 			articoloCliccato.getPrice()+"$");
 		JButton BottoneAggiungi = ArticoloVisualizzato.getBottone();
 		fotoLabel.setBounds(x, y, 100, 100);
@@ -588,11 +588,11 @@ public class NegozioController {
 
 	public void riempiMagazzinoFrame() {
 		MagazzinoFrame = new MagazzinoFrame(this);
-		int y=15, max=1900, x=10; 
+		int y=20, max=1200, x=10; 
 		for(Articolo a: MagazzinoTransazionale.getElencoArticoli()) {
 			if(y>=max){
-				y=15;
-				x=x+355; 
+				y=20;
+				x=x+375; 
 			}
 			creaLabelArticoloMagazzino(x, y, a);
 			y=y+15;

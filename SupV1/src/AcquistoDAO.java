@@ -17,41 +17,44 @@ public AcquistoDAO(Connection conn) {
 public void creaAcquisto(ArrayList <Articolo> CarrelloUtente) throws SQLException {
 	Integer codiceAcquisto = CreaAcquistoDB();
 	for (Articolo a: CarrelloUtente) {
-	if (checkQuantitaArticoloAcquistato(a)==null) {
+	if (checkQuantitaArticoloAcquistato(a, codiceAcquisto) == null) {
 		InserisciArticoloInAcquisto(a, codiceAcquisto);
-	} else {
-		incrementaQuantitaArticoloAcquistatoDB(a);
+	} else if (checkQuantitaArticoloAcquistato(a, codiceAcquisto)!= null) {
+		incrementaQuantitaArticoloAcquistatoDB(a, codiceAcquisto);
 	}
 	}
 }
 
-public void incrementaQuantitaArticoloAcquistatoDB (Articolo articoloSelezionato) throws SQLException {
+public void incrementaQuantitaArticoloAcquistatoDB (Articolo articoloSelezionato, Integer codiceAcquisto) throws SQLException {
 	String ID = articoloSelezionato.getId();
-	int quantitaPrecedente = checkQuantitaArticoloAcquistato(articoloSelezionato);
-	String sql = "UPDATE ComposizioneAcquisto SET quantita=? WHERE idArticolo = ?";
+	int quantitaPrecedente = checkQuantitaArticoloAcquistato(articoloSelezionato, codiceAcquisto);
+	String sql = "UPDATE ComposizioneAcquisto SET quantita=? WHERE idArticolo = ? AND codiceAcquisto=?";
 	PreparedStatement updateQuantita = connessione.prepareStatement(sql);
 	updateQuantita.setLong(1, (quantitaPrecedente+1));
 	updateQuantita.setString(2, ID);
+	updateQuantita.setLong(3,  codiceAcquisto);
 	updateQuantita.executeUpdate();
 }
 
-public void decrementaQuantitaArticoloAcquistatoDB (Articolo a) throws SQLException {
+public void decrementaQuantitaArticoloAcquistatoDB (Articolo a, Integer codiceAcquisto) throws SQLException {
 	String ID = a.getId();
 	String sql = "UPDATE ComposizioneAcquisto SET quantita=? WHERE idArticolo =?";
 	PreparedStatement updateQuantita = connessione.prepareStatement(sql);
-	int quantitaPrecedente = checkQuantitaArticoloAcquistato(a);
+	int quantitaPrecedente = checkQuantitaArticoloAcquistato(a, codiceAcquisto);
 	updateQuantita.setLong(1, quantitaPrecedente-1);
 	updateQuantita.setString(2, ID);
 	updateQuantita.executeUpdate();
 }
 
-public Integer checkQuantitaArticoloAcquistato (Articolo articoloDaControllare) throws SQLException {
-	String sql = "SELECT quantita FROM ComposizioneAcquisto WHERE idArticolo=?";
+public Integer checkQuantitaArticoloAcquistato (Articolo articoloDaControllare, Integer codiceAcquisto) throws SQLException {
+	String sql = "SELECT quantita FROM ComposizioneAcquisto WHERE idArticolo=? AND codiceAcquisto=?";
 	PreparedStatement getQuantita = connessione.prepareStatement(sql);
 	getQuantita.setString(1, articoloDaControllare.getId());
+	getQuantita.setLong(2, codiceAcquisto);
 	ResultSet result = getQuantita.executeQuery();
 	while(result.next()) {
 		Integer quantita = new Integer(result.getString(1));
+		System.out.println(quantita);
 		return quantita;
 		}
 	return null;
@@ -62,7 +65,7 @@ public Integer generaCodiceAcquisto() throws SQLException {
 	PreparedStatement getCodice = connessione.prepareStatement(sql);
 	ResultSet result = getCodice.executeQuery();
 	while (result.next()) {
-		Codici.add("C");
+		Codici.add(result.getString(1));
 	}
 	int i = 1;
 	for (String c: Codici) {
