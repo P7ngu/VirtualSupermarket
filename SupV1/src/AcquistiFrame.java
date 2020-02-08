@@ -26,9 +26,9 @@ public class AcquistiFrame extends JFrame {
 	Connection Connessione;
 
 
-	public AcquistiFrame(NegozioController ctrl, Connection con) throws SQLException, Exception {
+	public AcquistiFrame(NegozioController ctrl) throws SQLException, Exception {
 		controller = ctrl;
-		Connessione = con;
+		Connessione = controller.returnConn();
 		setResizable(false);
 		setTitle("Storico Acquisti");
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);

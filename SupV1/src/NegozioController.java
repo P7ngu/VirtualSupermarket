@@ -53,7 +53,7 @@ public class NegozioController {
 		
 		riempiMagazzinoDaDB();
 		
-		AcquistiFrame = new AcquistiFrame(this, connessione);
+		AcquistiFrame = new AcquistiFrame(this);
 		
 		
 		EliminaDaMagazzinoFrame = new EliminaDaMagazzinoFrame(this);
