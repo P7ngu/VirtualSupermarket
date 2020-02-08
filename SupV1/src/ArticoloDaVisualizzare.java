@@ -53,7 +53,7 @@ public void chiudiFrame() {
 }
 public ArticoloDaVisualizzare(Articolo articoloVisualizzato, NegozioController ctrl) {
 	setTitle("Articolo Visualizzato");
-	setBounds(300, 300, 248, 249);
+	setBounds(300, 300, 319, 243);
 	setResizable(false);
 	setAlwaysOnTop(true);
 	Controller=ctrl;
@@ -76,13 +76,13 @@ public ArticoloDaVisualizzare(Articolo articoloVisualizzato, NegozioController c
 	
 	JLabel ArticoloLabel = new JLabel(articolo.toString());
 	ArticoloLabel.setHorizontalAlignment(SwingConstants.CENTER);
-	ArticoloLabel.setBounds(0, 134, 248, 16);
+	ArticoloLabel.setBounds(0, 134, 319, 16);
 	getContentPane().add(ArticoloLabel);
 	setArticoloLabel(ArticoloLabel);
 	
 	JLabel FotoLabel = new JLabel("Nessuna Foto");
 	FotoLabel.setIcon(new ImageIcon(articolo.getPathFoto()));
-	FotoLabel.setBounds(73, 22, 100, 100);
+	FotoLabel.setBounds(111, 22, 100, 100);
 	getContentPane().add(FotoLabel);
 	setFotoLabel(FotoLabel);
 	
@@ -93,7 +93,7 @@ public ArticoloDaVisualizzare(Articolo articoloVisualizzato, NegozioController c
 			chiudiFrame();
 		}
 	});
-	btnRimuovi.setBounds(42, 179, 169, 29);
+	btnRimuovi.setBounds(77, 177, 169, 29);
 	getContentPane().add(btnRimuovi);
 	
 }

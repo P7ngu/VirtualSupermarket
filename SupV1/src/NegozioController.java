@@ -207,25 +207,22 @@ public class NegozioController {
 					MagazzinoTransazionale.add(ArticoloDaAggiungere);
 					MagazzinoTemporaneo.add(ArticoloDaAggiungere);
 			}
-			
-				if(MagazzinoDAO.checkQuantitaArticoloMagazzinoSQL(ArticoloDaAggiungere)==null  //se non è presente in Magazzino
+			if(MagazzinoDAO.checkQuantitaArticoloMagazzinoSQL(ArticoloDaAggiungere)==null  //se non è presente in Magazzino
 					&& (MagazzinoDAO.AggiungiArticoloAlMagazzinoSQL(ArticoloDaAggiungere))) { //e lo aggiungo con successo nel database
 					ArticoloDaAggiungere.setQuantita(1);
 					creaMessaggioOperazioneEffettuataConSuccesso("Articoli aggiunti correttamente");
 					
-				}else if(CorrispondenzaValori(ArticoloDaAggiungere)) { //altrimenti è già presente in magazzino, e se i valori sono corretti
-							MagazzinoDAO.incrementaQuantitaArticoloMagazzinoDB(ArticoloDaAggiungere); //ne incremento la quantità nel DB
-							if(flag==0)creaMessaggioOperazioneEffettuataConSuccesso("Quantità articolo incrementata!"); //mostra il messaggio solo una volta
-							ArticoloDaAggiungere.setQuantita(MagazzinoDAO.checkQuantitaArticoloMagazzinoSQL(ArticoloDaAggiungere)+ 1);
-							MagazzinoTransazionale.add(ArticoloDaAggiungere);
-							MagazzinoTemporaneo.add(ArticoloDaAggiungere);
+			}else if(CorrispondenzaValori(ArticoloDaAggiungere)) { //altrimenti è già presente in magazzino, e se i valori sono corretti
+						MagazzinoDAO.incrementaQuantitaArticoloMagazzinoDB(ArticoloDaAggiungere); //ne incremento la quantità nel DB
+						if(flag==0)creaMessaggioOperazioneEffettuataConSuccesso("Quantità articolo incrementata!"); //mostra il messaggio solo una volta
+						ArticoloDaAggiungere.setQuantita(MagazzinoDAO.checkQuantitaArticoloMagazzinoSQL(ArticoloDaAggiungere)+ 1);
+						MagazzinoTransazionale.add(ArticoloDaAggiungere);
+						MagazzinoTemporaneo.add(ArticoloDaAggiungere);
 				}
 			else if(flag==0) creaMessaggioErroreDuranteOperazione("ERRORE: VALORI INESATTI", "RIPROVARE"); 	
-				
-				
-		} catch (Exception e) { //catch per inserimento articolo in magazzino
-			if(flag==0)
-			creaMessaggioErroreDuranteOperazione("ERRORE: ID DUPLICATO", "RIPROVARE"); 
+			
+		}catch (Exception e) { //catch per inserimento articolo in magazzino
+			if(flag==0) creaMessaggioErroreDuranteOperazione("ERRORE: ID DUPLICATO", "RIPROVARE"); 
 			e.printStackTrace();
 		}
 	}
@@ -406,13 +403,13 @@ public class NegozioController {
 		LabelPrezzo.setBounds(x+80, y, 360, 18);
 		
 		CarrelloFrame.contentPane.add(LabelPrezzo);
-		creaPulsanteVisualizzaArticolo(x, y, a);
+		creaPulsanteVisualizzaArticoloPerCarrello(x, y, a);
 		
 		SwingUtilities.updateComponentTreeUI(CarrelloFrame);
 		
 	}
 	
-	public void creaPulsanteVisualizzaArticolo(int x, int y,Articolo articoloCliccato){
+	public void creaPulsanteVisualizzaArticoloPerCarrello(int x, int y,Articolo articoloCliccato){
 		JButton btnVisualizzaArticolo = new JButton("Visualizza");
 		ArticoloDaVisualizzare articoloVisualizzato = new ArticoloDaVisualizzare(articoloCliccato, this);
 		btnVisualizzaArticolo.addActionListener(new ActionListener() {
@@ -503,11 +500,6 @@ public class NegozioController {
 
 
 	public void apriSchermataCarrello() throws SQLException, IOException {
-		MagazzinoTransazionale.clear();
-		MagazzinoTemporaneo.clear();
-		
-		riempiMagazzinoDaDB();
-		riempiMagazzinoFrame();
 		if(MagazzinoTransazionale.getSize()!=0) {
 			chiudiTutteLeFinestre();
 			CarrelloFrame = new CarrelloFrame(this);
@@ -516,19 +508,20 @@ public class NegozioController {
 		else creaMessaggioErroreDuranteOperazione("Il magazzino è vuoto, inserire un articolo", "Riprovare");
 	}
 
-
+	public void aggiornaMagazzino() throws SQLException, IOException {
+		MagazzinoTransazionale.clear();
+		MagazzinoTemporaneo.clear();
+		
+		riempiMagazzinoDaDB();
+		riempiMagazzinoFrame();
+	}
+	
 	public void apriSchermataMagazzino() throws SQLException, IOException {
 		if(MagazzinoTransazionale.getSize()==0) 
 			creaMessaggioErroreDuranteOperazione("Magazzino vuoto!", "Magazzino vuoto!");
 			else {
 				chiudiTutteLeFinestre();
-				
-				MagazzinoTransazionale.clear();
-				MagazzinoTemporaneo.clear();
-				
-				riempiMagazzinoDaDB();
-				riempiMagazzinoFrame();
-				
+				aggiornaMagazzino();
 				MagazzinoFrame.setVisible(true);
 			}
 	}
@@ -595,11 +588,11 @@ public class NegozioController {
 
 	public void riempiMagazzinoFrame() {
 		MagazzinoFrame = new MagazzinoFrame(this);
-		int y=20, max=1200, x=10; 
+		int y=20, max=1200, x=10;
 		for(Articolo a: MagazzinoTransazionale.getElencoArticoli()) {
 			if(y>=max){
 				y=20;
-				x=x+375; 
+				x=x+675; 
 			}
 			creaLabelArticoloMagazzino(x, y, a);
 			y=y+15;
@@ -612,9 +605,22 @@ public class NegozioController {
 
 	private void creaLabelArticoloMagazzino(int x, int y, Articolo articoloDaMostrare) {
 		JLabel articoloLabel = new JLabel(articoloDaMostrare.StampaPerMagazzino());
-		articoloLabel.setBounds(x, y+10, 350, 18);
+		articoloLabel.setBounds(x, y+10, 390, 18);
 		MagazzinoFrame.AggiungiInMagazzinoFrame(articoloLabel);
+		creaPulsanteVisualizzaArticoloPerMagazzino(x, y, articoloDaMostrare);
 		SwingUtilities.updateComponentTreeUI(MagazzinoFrame);
+	}
+	
+	public void creaPulsanteVisualizzaArticoloPerMagazzino(int x, int y, Articolo articoloCliccato){
+		JButton btnVisualizzaArticolo = new JButton("Visualizza");
+		ArticoloDaVisualizzare articoloVisualizzato = new ArticoloDaVisualizzare(articoloCliccato, this);
+		btnVisualizzaArticolo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				articoloVisualizzato.setVisible(true);
+			}
+		});
+		btnVisualizzaArticolo.setBounds(x+393, y+11, 130, 15);
+		MagazzinoFrame.contentPane.add(btnVisualizzaArticolo);
 	}
 			
 			

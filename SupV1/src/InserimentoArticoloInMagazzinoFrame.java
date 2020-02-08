@@ -181,32 +181,31 @@ public class InserimentoArticoloInMagazzinoFrame extends JFrame {
 	}
 	
 	private void ControllaCorrettezzaPerInserimento(JComboBox<String> TagliaBox, JComboBox<String> ColoreBox, String path, JComboBox<Integer> QuantitaBox) {
-		if ((Nome_textField.getText().length()>0) && (Codice_textField.getText().length()>0) && (Prezzo_textField.getText().length()>0)){
+		int lunghezzaNome = Nome_textField.getText().length();
+		int lunghezzaCodice = Codice_textField.getText().length();
+		int lunghezzaPrezzo = Prezzo_textField.getText().length();
+		if (lunghezzaNome>10) Controller.creaMessaggioErroreDuranteOperazione("ERRORE: NOME TROPPO LUNGO, MASSIMO CARATTERI=10", "RIPROVARE");
+		if (lunghezzaPrezzo>7) Controller.creaMessaggioErroreDuranteOperazione("ERRORE: ID TROPPO LUNGO, MASSIMO CARATTERI=7", "RIPROVARE");
+		
+		if ((lunghezzaNome>0 && lunghezzaNome<10) && (lunghezzaCodice>0 && lunghezzaCodice<7) && (lunghezzaPrezzo>0)){
 				try {
 					String Taglia = (String)TagliaBox.getSelectedItem();
 					String Colore = (String)ColoreBox.getSelectedItem();
 				
-					int QuantitaSelezionata=0;
-					QuantitaSelezionata = (int) QuantitaBox.getSelectedItem();
-					
+					int QuantitaSelezionata = (int) QuantitaBox.getSelectedItem();
+
 					for (int i=0; i<QuantitaSelezionata; i++) {
 					 int flag = i;
 					 Controller.aggiungiArticoloAlMagazzino(Nome_textField.getText(), Codice_textField.getText(), Prezzo_textField.getText(),
 							 								 path, Taglia, Colore, flag);
-				 
 					}
-					
-				 if(path!=null) Controller.setFoto(path, Codice_textField.getText());
-				 }
-				
-				catch (Exception e) {
+					if(path!=null) Controller.setFoto(path, Codice_textField.getText());
+				 	} catch (Exception e) {
 					Controller.creaMessaggioErroreDuranteOperazione("Immagine già inserita", "Errore Inserimento");
-					e.printStackTrace();
 				}
-						
-		}
-		else
+		} else if (lunghezzaCodice == 0 || lunghezzaNome == 0 || lunghezzaPrezzo == 0)
 			Controller.creaMessaggioErroreDuranteOperazione("Inserire Valori", "Errore Inserimento");
 		
-}
+	}
+	
 }

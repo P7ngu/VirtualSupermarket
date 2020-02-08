@@ -101,7 +101,7 @@ public class Articolo {
 		String taglia = this.getTaglia();
 		String colore = this.getColore();
 		int quantita = this.getQuantita();
-		return (nome+ " - ID: " +id+ " - " +prezzo+ "$ - " +taglia+ " - " +colore + " - Quantità: " +quantita);
+		return (nome+ " - ID: " +id+ " - " +taglia+ " - " +colore + " - Quantità: " +quantita);
 	
 	}
 
