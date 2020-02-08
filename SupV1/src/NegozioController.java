@@ -580,6 +580,20 @@ public class NegozioController {
 		
 	}
 
+	public void resettaDatabase() throws SQLException {
+		PreparedStatement st = connessione.prepareStatement("DELETE FROM Magazzino");
+		st.executeUpdate(); 
+		PreparedStatement st1 = connessione.prepareStatement("DELETE FROM Images");
+		st1.executeUpdate();
+		PreparedStatement st2 = connessione.prepareStatement("DELETE FROM ComposizioneAcquisto");
+		st2.executeUpdate();
+		PreparedStatement st3 = connessione.prepareStatement("DELETE FROM Acquisto");
+		st3.executeUpdate();
+		PreparedStatement st4 = connessione.prepareStatement("DELETE FROM Articolo");
+		st4.executeUpdate();
+		creaMessaggioOperazioneEffettuataConSuccesso("Database resettato!");
+	}
+
 
 	
 			

@@ -166,9 +166,20 @@ public class HomePage extends JFrame {
 		buttonVisualizzaAcquisti.setBounds(587, 218, 170, 120);
 		contentPane.add(buttonVisualizzaAcquisti);
 		
-		JButton button_1 = new JButton("");
-		button_1.setBackground(Color.WHITE);
-		button_1.setBounds(587, 392, 170, 120);
-		contentPane.add(button_1);
+		JButton resetbutton_1 = new JButton("");
+		ImageIcon iconResDB = Controller.createImageIcon("resettadb.png", "");
+		resetbutton_1.setIcon(iconResDB);
+		resetbutton_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					Controller.resettaDatabase();
+				} catch (SQLException e1) {
+					Controller.creaMessaggioErroreDuranteOperazione("Errore durante il reset", "ERRORE");
+				}
+			}
+		});
+		resetbutton_1.setBackground(Color.WHITE);
+		resetbutton_1.setBounds(587, 392, 170, 120);
+		contentPane.add(resetbutton_1);
 	}
 }
