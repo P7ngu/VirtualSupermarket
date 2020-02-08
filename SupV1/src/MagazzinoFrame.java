@@ -31,7 +31,7 @@ public class MagazzinoFrame extends JFrame {
 		
 		contentPane = new JPanel();
 
-		scrollPane=new JScrollPane(contentPane, 
+		scrollPane = new JScrollPane(contentPane, 
 				   ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,  
 				   ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		scrollPane.setAutoscrolls(true);
