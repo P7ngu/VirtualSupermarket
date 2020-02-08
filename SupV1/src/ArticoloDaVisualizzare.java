@@ -86,15 +86,7 @@ public ArticoloDaVisualizzare(Articolo articoloVisualizzato, NegozioController c
 	getContentPane().add(FotoLabel);
 	setFotoLabel(FotoLabel);
 	
-	JButton btnRimuovi = new JButton("Rimuovi");
-	btnRimuovi.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent e) {
-			Controller.rimuoviArticoliDalCarrello(articolo,1);
-			chiudiFrame();
-		}
-	});
-	btnRimuovi.setBounds(77, 177, 169, 29);
-	getContentPane().add(btnRimuovi);
+
 	
 }
 }

@@ -42,7 +42,7 @@ public class NegozioController {
 		MagazzinoTemporaneo = new Magazzino();
 		CarrelloUtente = new CarrelloUtente();
 		
-		connessione = getConnection();
+		connessione = getConnectionLocale();
 		
 		MagazzinoDAO MagazzinoDAO = new MagazzinoDAO(connessione);
 		ArticoloDAO ArticoloDAO = new ArticoloDAO(connessione);
@@ -139,8 +139,8 @@ public class NegozioController {
 	public Connection getConnectionLocale() throws Exception{
 		try {
 			String driver = "com.mysql.cj.jdbc.Driver";
-			String url = "jdbc:mysql://localhost:3306/giraffe";
-			String username = "root";
+			String url = "jdbc:postgresql://localhost:5432/Giraffe";
+			String username = "postgres";
 			String password = "password";
 			Class.forName(driver);
 			Connection conn = DriverManager.getConnection(url, username, password);
@@ -152,30 +152,6 @@ public class NegozioController {
 	}
 	
 
-	public Connection getConnection1() {
-		  String dbName = ("sql7317801");
-		  String userName = ("sql7317801");
-		  String password = ("JSfK3lPNgq");
-		  String hostname = ("sql7.freesqldatabase.com");
-		  String port = ("3306");
-		  String jdbcUrl = "jdbc:mysql://" + hostname + ":" +
-		    port + "/" + dbName + "?user=" + userName + "&password=" + password;
-		  try {
-		    System.out.println("Loading driver...");
-		    Class.forName("com.mysql.cj.jdbc.Driver");
-		    System.out.println("Driver loaded!");
-		  } catch (ClassNotFoundException e) {
-		    throw new RuntimeException("Cannot find the driver in the classpath!", e);
-		  }
-		  try {
-		   Connection conn = DriverManager.getConnection(jdbcUrl);
-		    return conn;
-		  }
-		  catch (Exception e) {
-			  e.printStackTrace();
-		  }
-		return null;
-	}
 	
 	public Connection getConnection() throws Exception{
 		  String userName = ("udsjzyti");
@@ -581,6 +557,7 @@ public class NegozioController {
 
 
 	public void rimuoviArticoloDalMagazzino(Articolo articoloSelezionato) throws SQLException {
+			if(articoloSelezionato.getQuantita()>0)
 			articoloSelezionato.setQuantita(articoloSelezionato.getQuantita() - 1);
 			if (articoloSelezionato.getQuantita() == 0) MagazzinoDAO.eliminaArticoloDalMagazzinoSQL(articoloSelezionato.getId());
 			else MagazzinoDAO.decrementaQuantitaArticoloMagazzinoDB(articoloSelezionato);
@@ -592,24 +569,26 @@ public class NegozioController {
 
 	public void riempiMagazzinoFrame() {
 		MagazzinoFrame = new MagazzinoFrame(this);
-		int y=20, max=1200, x=10;
+		int y=30, x=40;
+		creaEtichettaVuota();
 		for(Articolo a: MagazzinoTransazionale.getElencoArticoli()) {
-			if(y>=max){
-				y=20;
-				x=x+675; 
-			}
+			y=y+25;
 			creaLabelArticoloMagazzino(x, y, a);
-			y=y+15;
 		}
 		MagazzinoFrame.setVisible(false);
 		MagazzinoFrame.setVisible(true);
 	}
 
 
-
+	private void creaEtichettaVuota() {
+	JLabel j = new JLabel("Elenco Articoli:");
+	j.setBounds(140, 15, 390, 18);
+	MagazzinoFrame.AggiungiInMagazzinoFrame(j);
+	
+	}
 	private void creaLabelArticoloMagazzino(int x, int y, Articolo articoloDaMostrare) {
 		JLabel articoloLabel = new JLabel(articoloDaMostrare.StampaPerMagazzino());
-		articoloLabel.setBounds(x, y+10, 390, 18);
+		articoloLabel.setBounds(x+10, y+150, 390, 18);
 		MagazzinoFrame.AggiungiInMagazzinoFrame(articoloLabel);
 		creaPulsanteVisualizzaArticoloPerMagazzino(x, y, articoloDaMostrare);
 		SwingUtilities.updateComponentTreeUI(MagazzinoFrame);
@@ -623,7 +602,7 @@ public class NegozioController {
 				articoloVisualizzato.setVisible(true);
 			}
 		});
-		btnVisualizzaArticolo.setBounds(x+393, y+11, 130, 15);
+		btnVisualizzaArticolo.setBounds(x+10, y+390, 400, 150);
 		MagazzinoFrame.contentPane.add(btnVisualizzaArticolo);
 	}
 			
