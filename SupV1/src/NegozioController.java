@@ -7,11 +7,14 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
@@ -78,6 +81,49 @@ public class NegozioController {
 	}
 	
 	
+	public Connection getConnectionLocale() throws Exception{
+		try {
+			String driver = "com.mysql.cj.jdbc.Driver";
+			String url = "jdbc:postgresql://localhost:5432/Giraffe";
+			String username = "postgres";
+			String password = "password";
+			Class.forName(driver);
+			Connection conn = DriverManager.getConnection(url, username, password);
+			creaMessaggioOperazioneEffettuataConSuccesso("Accesso al Database effettuato!");
+			return conn;
+		} catch (Exception e) { creaMessaggioErroreDuranteOperazione("Impossibile accedere al Database", "Riprovare"); }
+		return null;
+		
+	}
+	
+
+	
+	public Connection getConnection() throws Exception{
+		  String userName = ("udsjzyti");
+		  String password = ("Xgwixw9770_hB0C8XiTyM17hNZY5zANf");
+		  String jdbcUrl ="jdbc:postgresql://manny.db.elephantsql.com:5432/udsjzyti";
+		  try {
+		    System.out.println("Loading driver...");
+		    Class.forName("org.postgresql.Driver");
+		    System.out.println("Driver loaded!");
+		  } catch (ClassNotFoundException e) {
+		    throw new RuntimeException("Cannot find the driver in the classpath!", e);
+		  }
+		  try {
+		   Connection conn = DriverManager.getConnection(jdbcUrl, userName, password);
+		    return conn;
+		  }
+		  catch (Exception e) {
+			  e.printStackTrace();
+		  }
+		return null;
+	}
+		
+	
+	public Connection returnConn() {
+		return this.connessione;
+	}
+	
 
 	private void riempiMagazzinoDaDB() throws SQLException, IOException {
 		ArticoloDAO = new ArticoloDAO(connessione);
@@ -135,45 +181,7 @@ public class NegozioController {
 		
 	}
 	}
-	
-	public Connection getConnectionLocale() throws Exception{
-		try {
-			String driver = "com.mysql.cj.jdbc.Driver";
-			String url = "jdbc:postgresql://localhost:5432/Giraffe";
-			String username = "postgres";
-			String password = "password";
-			Class.forName(driver);
-			Connection conn = DriverManager.getConnection(url, username, password);
-			creaMessaggioOperazioneEffettuataConSuccesso("Accesso al Database effettuato!");
-			return conn;
-		} catch (Exception e) { creaMessaggioErroreDuranteOperazione("Impossibile accedere al Database", "Riprovare"); }
-		return null;
-		
-	}
-	
 
-	
-	public Connection getConnection() throws Exception{
-		  String userName = ("udsjzyti");
-		  String password = ("Xgwixw9770_hB0C8XiTyM17hNZY5zANf");
-		  String jdbcUrl ="jdbc:postgresql://manny.db.elephantsql.com:5432/udsjzyti";
-		  try {
-		    System.out.println("Loading driver...");
-		    Class.forName("org.postgresql.Driver");
-		    System.out.println("Driver loaded!");
-		  } catch (ClassNotFoundException e) {
-		    throw new RuntimeException("Cannot find the driver in the classpath!", e);
-		  }
-		  try {
-		   Connection conn = DriverManager.getConnection(jdbcUrl, userName, password);
-		    return conn;
-		  }
-		  catch (Exception e) {
-			  e.printStackTrace();
-		  }
-		return null;
-	}
-		
 
 	
 	public void aggiungiArticoloAlMagazzino(String Nome, String Codice, String prezzo, String fotoPath, String Taglia, String Colore, int flag) throws SQLException {
@@ -488,7 +496,7 @@ public class NegozioController {
 		else creaMessaggioErroreDuranteOperazione("Il magazzino è vuoto, inserire un articolo", "Riprovare");
 	}
 
-	public void aggiornaMagazzino() throws SQLException, IOException {
+	public void aggiornaMagazzino() throws Exception {
 		MagazzinoTransazionale.clear();
 		MagazzinoTemporaneo.clear();
 		
@@ -496,7 +504,7 @@ public class NegozioController {
 		riempiMagazzinoFrame();
 	}
 	
-	public void apriSchermataMagazzino() throws SQLException, IOException {
+	public void apriSchermataMagazzino() throws Exception {
 		if(MagazzinoTransazionale.getSize()==0) 
 			creaMessaggioErroreDuranteOperazione("Magazzino vuoto!", "Magazzino vuoto!");
 			else {
@@ -567,45 +575,13 @@ public class NegozioController {
 			HomePageFrame.setVisible(true);
 	}
 
-	public void riempiMagazzinoFrame() {
+	public void riempiMagazzinoFrame() throws SQLException, Exception {
 		MagazzinoFrame = new MagazzinoFrame(this);
-		int y=30, x=40;
-		creaEtichettaVuota();
-		for(Articolo a: MagazzinoTransazionale.getElencoArticoli()) {
-			y=y+25;
-			creaLabelArticoloMagazzino(x, y, a);
-		}
-		MagazzinoFrame.setVisible(false);
-		MagazzinoFrame.setVisible(true);
+		
 	}
 
 
-	private void creaEtichettaVuota() {
-	JLabel j = new JLabel("Elenco Articoli:");
-	j.setBounds(140, 15, 390, 18);
-	MagazzinoFrame.AggiungiInMagazzinoFrame(j);
 	
-	}
-	private void creaLabelArticoloMagazzino(int x, int y, Articolo articoloDaMostrare) {
-		JLabel articoloLabel = new JLabel(articoloDaMostrare.StampaPerMagazzino());
-		articoloLabel.setBounds(x+10, y+150, 390, 18);
-		MagazzinoFrame.AggiungiInMagazzinoFrame(articoloLabel);
-		creaPulsanteVisualizzaArticoloPerMagazzino(x, y, articoloDaMostrare);
-		SwingUtilities.updateComponentTreeUI(MagazzinoFrame);
-	}
-	
-	public void creaPulsanteVisualizzaArticoloPerMagazzino(int x, int y, Articolo articoloCliccato){
-		JButton btnVisualizzaArticolo = new JButton("Visualizza");
-		ArticoloDaVisualizzare articoloVisualizzato = new ArticoloDaVisualizzare(articoloCliccato, this);
-		btnVisualizzaArticolo.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				articoloVisualizzato.setVisible(true);
-			}
-		});
-		btnVisualizzaArticolo.setBounds(x+10, y+390, 400, 150);
-		MagazzinoFrame.contentPane.add(btnVisualizzaArticolo);
-	}
-			
 			
 	
 

@@ -48,21 +48,14 @@ public class AcquistiFrame extends JFrame {
 	
  
 	
-	public static DefaultTableModel buildTableModel(ResultSet rs)
-	        throws SQLException {
-	  
-
-	    java.sql.ResultSetMetaData metaData = rs.getMetaData();
-
-	    // names of columns
+	public static DefaultTableModel buildTableModel(ResultSet rs) throws SQLException{
+		java.sql.ResultSetMetaData metaData = rs.getMetaData();
 	    Vector<String> columnNames = new Vector<String>();
 	    int columnCount = metaData.getColumnCount();
 	    for (int column = 1; column <= columnCount; column++) {
 	       columnNames.add(metaData.getColumnName(column));
 	    }
-	   
-
-	    // data of the table
+	
 	    Vector<Vector<Object>> data = new Vector<Vector<Object>>();
 	    while (rs.next()) {
 	        Vector<Object> vector = new Vector<Object>();
@@ -80,7 +73,7 @@ public class AcquistiFrame extends JFrame {
 	    };
 
 
-}
+	}
 	
 	
 
