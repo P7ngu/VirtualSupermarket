@@ -27,6 +27,7 @@ public class NegozioController {
 	AggiungiAlCarrelloFrame AggiungiAlCarrelloFrame;
 	RimuoviDalCarrelloFrame RimuoviDalCarrelloFrame;
 	VetrinaFrame VetrinaFrame;
+	AcquistiFrame AcquistiFrame;
 	PagamentoFrame PagamentoFrame;
 	static Connection connessione;
 	static MagazzinoDAO MagazzinoDAO;
@@ -48,6 +49,8 @@ public class NegozioController {
 		AcquistoDAO AcquistoDAO = new AcquistoDAO(connessione);
 		
 		riempiMagazzinoDaDB();
+		
+		AcquistiFrame = new AcquistiFrame(this, connessione);
 		
 		
 		EliminaDaMagazzinoFrame = new EliminaDaMagazzinoFrame(this);
@@ -290,6 +293,7 @@ public class NegozioController {
 		
 	public void riempiComboAggiungiAlCarrello (JComboBox<Articolo> articoloBox) {
 		for (Articolo a: MagazzinoTemporaneo.getElencoArticoli()) {
+			if(a.getQuantita()>0)
 			articoloBox.addItem(a);
 		}		
 	}

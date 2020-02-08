@@ -9,5 +9,6 @@
 	</classpathentry>
 	<classpathentry kind="lib" path="/Users/valentinaperotta/Desktop/mysql-connector-java-8.0.18.jar"/>
 	<classpathentry kind="lib" path="/Users/valentinaperotta/Desktop/postgresql-42.2.9.jar"/>
+	<classpathentry kind="lib" path="/Users/valentinaperotta/Desktop/rs2xml.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -76,7 +76,7 @@ public class HomePage extends JFrame {
 		ImageIcon iconVisualizzaMagazzino = Controller.createImageIcon("visualizzamagazzino2.png", "");
 		visualizzaMagazzinobtn.setIcon(iconVisualizzaMagazzino);
 		visualizzaMagazzinobtn.setBackground(Color.WHITE);
-		visualizzaMagazzinobtn.setBounds(479, 218, 170, 120);
+		visualizzaMagazzinobtn.setBounds(405, 218, 170, 120);
 		contentPane.add(visualizzaMagazzinobtn);
 		
 		JButton resettaMagazzinobtn = new JButton("");
@@ -92,7 +92,7 @@ public class HomePage extends JFrame {
 		ImageIcon iconResettaMagazzino = Controller.createImageIcon("resettamagazzino2.png", "");
 		resettaMagazzinobtn.setIcon(iconResettaMagazzino);
 		resettaMagazzinobtn.setBackground(Color.WHITE);
-		resettaMagazzinobtn.setBounds(739, 218, 170, 120);
+		resettaMagazzinobtn.setBounds(769, 218, 170, 120);
 		contentPane.add(resettaMagazzinobtn);
 		
 		JButton aggiungiAMagazzinobtn = new JButton("");
@@ -104,7 +104,7 @@ public class HomePage extends JFrame {
 		ImageIcon iconAggiungiMagazzino = Controller.createImageIcon("aggiungiamagazzino2.png", "");
 		aggiungiAMagazzinobtn.setIcon(iconAggiungiMagazzino);
 		aggiungiAMagazzinobtn.setBackground(Color.WHITE);
-		aggiungiAMagazzinobtn.setBounds(479, 392, 170, 120);
+		aggiungiAMagazzinobtn.setBounds(405, 392, 170, 120);
 		contentPane.add(aggiungiAMagazzinobtn);
 		
 		JButton eliminaDaMagazzinobtn = new JButton("");
@@ -116,41 +116,58 @@ public class HomePage extends JFrame {
 		ImageIcon iconEliminaDaMag = Controller.createImageIcon("eliminadamagazzino1.png", "");
 		eliminaDaMagazzinobtn.setIcon(iconEliminaDaMag);
 		eliminaDaMagazzinobtn.setBackground(Color.WHITE);
-		eliminaDaMagazzinobtn.setBounds(739, 392, 170, 120);
+		eliminaDaMagazzinobtn.setBounds(769, 392, 170, 120);
 		contentPane.add(eliminaDaMagazzinobtn);
 		
-		JLabel lblNewLabel_1 = new JLabel("New label");
+		JLabel lblNewLabel_1 = new JLabel("Pannello");
 		ImageIcon iconPannelloUt = Controller.createImageIcon("pannelloutente1.png", "");
 		lblNewLabel_1.setIcon(iconPannelloUt);
 		lblNewLabel_1.setBounds(-12, 95, 310, 91);
 		contentPane.add(lblNewLabel_1);
 		
-		JLabel label = new JLabel("New label");
+		JLabel lblPannello = new JLabel("Pannello");
 		ImageIcon iconPannelloAdm = Controller.createImageIcon("pannelloadmin.png", "");
-		label.setIcon(iconPannelloAdm);
-		label.setBounds(529, 95, 310, 91);
-		contentPane.add(label);
+		lblPannello.setIcon(iconPannelloAdm);
+		lblPannello.setBounds(514, 95, 310, 91);
+		contentPane.add(lblPannello);
 		
-		JLabel lblNewLabel_2 = new JLabel("New label");
+		JLabel lblNewLabel_2 = new JLabel("barra");
 		ImageIcon iconBarra = Controller.createImageIcon("barra1.png", "");
 		lblNewLabel_2.setIcon(iconBarra);
 		lblNewLabel_2.setBounds(-23, 83, 128, 452);
 		contentPane.add(lblNewLabel_2);
 		
-		JLabel label_1 = new JLabel("New label");
-		label_1.setIcon(iconBarra);
-		label_1.setBounds(235, 83, 93, 452);
-		contentPane.add(label_1);
+		JLabel lblBarra_2 = new JLabel("barra");
+		lblBarra_2.setIcon(iconBarra);
+		lblBarra_2.setBounds(235, 83, 93, 452);
+		contentPane.add(lblBarra_2);
 		
-		JLabel label_3 = new JLabel("New label");
+		JLabel lblBarra = new JLabel("barra");
 		ImageIcon iconBarraRossaVerticale = Controller.createImageIcon("barrarossaverticale.png", "");
-		label_3.setIcon(iconBarraRossaVerticale);
-		label_3.setBounds(374, 83, 93, 452);
-		contentPane.add(label_3);
+		lblBarra.setIcon(iconBarraRossaVerticale);
+		lblBarra.setBounds(328, 83, 93, 452);
+		contentPane.add(lblBarra);
 		
-		JLabel label_4 = new JLabel("New label");
-		label_4.setIcon(iconBarraRossaVerticale);
-		label_4.setBounds(921, 83, 93, 452);
-		contentPane.add(label_4);
+		JLabel lblBarra_1 = new JLabel("barra");
+		lblBarra_1.setIcon(iconBarraRossaVerticale);
+		lblBarra_1.setBounds(921, 83, 93, 452);
+		contentPane.add(lblBarra_1);
+		
+		JButton buttonVisualizzaAcquisti = new JButton("");
+		buttonVisualizzaAcquisti.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Controller.AcquistiFrame.setVisible(true);
+			}
+		});
+		ImageIcon iconVisAcquisti = Controller.createImageIcon("visualizzaacquisti.png", "");
+		buttonVisualizzaAcquisti.setIcon(iconVisAcquisti);
+		buttonVisualizzaAcquisti.setBackground(Color.WHITE);
+		buttonVisualizzaAcquisti.setBounds(587, 218, 170, 120);
+		contentPane.add(buttonVisualizzaAcquisti);
+		
+		JButton button_1 = new JButton("");
+		button_1.setBackground(Color.WHITE);
+		button_1.setBounds(587, 392, 170, 120);
+		contentPane.add(button_1);
 	}
 }
