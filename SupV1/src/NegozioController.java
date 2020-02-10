@@ -557,8 +557,10 @@ public class NegozioController {
 	}
 
 
-	public void riempiComboEliminaDaMagazzino(JComboBox<Articolo> articoloBox) {
-		for (Articolo a: MagazzinoTemporaneo.getElencoArticoli()) {
+	public void riempiComboEliminaDaMagazzino(JComboBox<Articolo> articoloBox) throws Exception {
+		aggiornaMagazzino();
+		for (Articolo a: MagazzinoTransazionale.getElencoArticoli()) {
+			if(a.getQuantita()>0)
 			articoloBox.addItem(a);
 		}	
 	}
