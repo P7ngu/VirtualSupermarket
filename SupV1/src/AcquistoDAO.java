@@ -54,7 +54,6 @@ public Integer checkQuantitaArticoloAcquistato (Articolo articoloDaControllare, 
 	ResultSet result = getQuantita.executeQuery();
 	while(result.next()) {
 		Integer quantita = new Integer(result.getString(1));
-		System.out.println(quantita);
 		return quantita;
 		}
 	return null;
