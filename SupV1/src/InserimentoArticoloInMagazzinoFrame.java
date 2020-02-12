@@ -187,9 +187,10 @@ public class InserimentoArticoloInMagazzinoFrame extends JFrame {
 		int lunghezzaCodice = Codice_textField.getText().length();
 		int lunghezzaPrezzo = Prezzo_textField.getText().length();
 		if (lunghezzaNome>10) Controller.creaMessaggioErroreDuranteOperazione("ERRORE: NOME TROPPO LUNGO, MASSIMO CARATTERI=10", "RIPROVARE");
-		if (lunghezzaPrezzo>7) Controller.creaMessaggioErroreDuranteOperazione("ERRORE: ID TROPPO LUNGO, MASSIMO CARATTERI=7", "RIPROVARE");
+		if (lunghezzaCodice>7) Controller.creaMessaggioErroreDuranteOperazione("ERRORE: ID TROPPO LUNGO, MASSIMO CARATTERI=7", "RIPROVARE");
+		if (lunghezzaPrezzo>5) Controller.creaMessaggioErroreDuranteOperazione("ERRORE: PREZZO CONTIENE TROPPI CARATTERI, MAX=5", "RIPROVARE");
 		
-		if ((lunghezzaNome>0 && lunghezzaNome<10) && (lunghezzaCodice>0 && lunghezzaCodice<7) && (lunghezzaPrezzo>0)){
+		if ((lunghezzaNome>0 && lunghezzaNome<=10) && (lunghezzaCodice>0 && lunghezzaCodice<=7) && (lunghezzaPrezzo>0 && lunghezzaPrezzo<6)){
 				try {
 					String Taglia = (String)TagliaBox.getSelectedItem();
 					String Colore = (String)ColoreBox.getSelectedItem();

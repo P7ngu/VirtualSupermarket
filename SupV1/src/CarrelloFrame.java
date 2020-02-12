@@ -7,6 +7,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JLabel;
 import javax.swing.ImageIcon;
+import javax.swing.SwingConstants;
 
 public class CarrelloFrame extends JFrame {
 
@@ -45,7 +46,8 @@ public class CarrelloFrame extends JFrame {
 		
 		
 		  JLabel Totale = new JLabel("New label");
-		  Totale.setBounds(731, 568, 120, 16);
+		  Totale.setHorizontalAlignment(SwingConstants.TRAILING);
+		  Totale.setBounds(645, 568, 166, 16);
 		  double Total = Controller.eseguiTotale();
 		  Totale.setText("Totale: " + Total);
 		  contentPane.add(Totale);

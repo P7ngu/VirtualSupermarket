@@ -191,7 +191,7 @@ public class NegozioController {
 			if(MagazzinoDAO.checkQuantitaArticoloMagazzinoSQL(ArticoloDaAggiungere)==null //L'articolo non è presente in Magazzino
 				&& (!CorrispondenzaValori(ArticoloDaAggiungere))) {	 // e non è presente nella tabella Articolo, fallisce il primo IF
 					ArticoloDAO.CreaArticolo(ArticoloDaAggiungere); // lo inserisco nella tabella Articolo
-					setFoto(fotoPath, Codice);
+					if(fotoPath!=null) setFoto(fotoPath, Codice);
 					MagazzinoTransazionale.add(ArticoloDaAggiungere);
 					MagazzinoTemporaneo.add(ArticoloDaAggiungere);
 			}
@@ -349,7 +349,7 @@ public class NegozioController {
 				x=x+300; 
 			}
 			creaLabelArticoloCarrello (x, y, a);
-			y=y+17;
+			y=y+18;
 		}
 		aggiornaFrameCarrello();
 	}
@@ -407,7 +407,7 @@ public class NegozioController {
 				articoloVisualizzato.setVisible(true);
 			}
 		});
-		btnVisualizzaArticolo.setBounds(x+147, y+2, 130, 15);
+		btnVisualizzaArticolo.setBounds(x+149, y+2, 130, 15);
 		CarrelloFrame.contentPane.add(btnVisualizzaArticolo);
 	}
 	
@@ -418,7 +418,7 @@ public class NegozioController {
 			articoloCliccato.getPrice()+"$");
 		JButton BottoneAggiungi = ArticoloVisualizzato.getBottone();
 		fotoLabel.setBounds(x, y, 100, 100);
-		articoloLabel.setBounds(x, y+105, 360, 18);
+		articoloLabel.setBounds(x, y+105, 110, 18);
 		BottoneAggiungi.setBounds(x, y+125, 100, 15);
 		VetrinaFrame.aggiungiInVetrina(fotoLabel, articoloLabel, BottoneAggiungi);
 		
