@@ -310,7 +310,7 @@ public class NegozioController {
 	
 	public void aggiungiAlCarrello (Articolo articoloSelezionato, int quantitaSelezionata) throws SQLException{
 		int quantitaDisponibileInMagazzino = MagazzinoDAO.checkQuantitaArticoloMagazzinoSQL(articoloSelezionato);
-		if(quantitaDisponibileInMagazzino >= quantitaSelezionata && articoloSelezionato.getQuantita()>0 ) {
+		if(quantitaDisponibileInMagazzino >= quantitaSelezionata && articoloSelezionato.getQuantita()>0 && quantitaSelezionata<= articoloSelezionato.getQuantita()) {
 			while(quantitaSelezionata>0 && !checkCarrelloPieno()) {
 				aggiungiArticoloAlCarrelloUtente(articoloSelezionato);
 				quantitaSelezionata--;
@@ -571,7 +571,7 @@ public class NegozioController {
 	public void rimuoviArticoloDalMagazzino(Articolo articoloSelezionato) throws SQLException {
 			if(articoloSelezionato.getQuantita()>0)
 			articoloSelezionato.setQuantita(articoloSelezionato.getQuantita() - 1);
-			if (articoloSelezionato.getQuantita() == 0) MagazzinoDAO.eliminaArticoloDalMagazzinoSQL(articoloSelezionato.getId());
+			if (articoloSelezionato.getQuantita() <= 0) MagazzinoDAO.eliminaArticoloDalMagazzinoSQL(articoloSelezionato.getId());
 			else MagazzinoDAO.decrementaQuantitaArticoloMagazzinoDB(articoloSelezionato);
 			
 			EliminaDaMagazzinoFrame.setVisible(false);

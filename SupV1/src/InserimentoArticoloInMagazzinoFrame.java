@@ -13,6 +13,7 @@ import java.awt.event.ActionEvent;
 
 import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
+import javax.swing.SwingConstants;
 
 public class InserimentoArticoloInMagazzinoFrame extends JFrame {
 
@@ -29,7 +30,7 @@ public class InserimentoArticoloInMagazzinoFrame extends JFrame {
 		setAlwaysOnTop(true);
 		Controller = ctrl;
 		setTitle("Aggiunta Articoli al Magazzino");
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 514, 433);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -119,8 +120,9 @@ public class InserimentoArticoloInMagazzinoFrame extends JFrame {
 		lblNewLabel_1.setBounds(263, 58, 268, 204);
 		contentPane.add(lblNewLabel_1);
 		
-		JLabel lblNewLabel_2 = new JLabel("NB: Il codice del prodotto dev'essere composto di soli numeri");
-		lblNewLabel_2.setBounds(41, 322, 467, 16);
+		JLabel lblNewLabel_2 = new JLabel("NB: L'immagine va inserita una volta sola e non sarà sovrascritta.");
+		lblNewLabel_2.setHorizontalAlignment(SwingConstants.LEFT);
+		lblNewLabel_2.setBounds(43, 313, 431, 16);
 		contentPane.add(lblNewLabel_2);
 		JFileChooser fileChooser = new JFileChooser();
 		
