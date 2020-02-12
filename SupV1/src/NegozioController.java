@@ -179,18 +179,19 @@ public class NegozioController {
 		Articolo ArticoloTrovato = new Articolo (nome, id, prezzo, pathfoto, taglia, colore);
 		ArticoloDAO.JdbcReadImage(ArticoloTrovato);
 		
-	}
+		}
 	}
 
 
 	
 	public void aggiungiArticoloAlMagazzino(String Nome, String Codice, String prezzo, String fotoPath, String Taglia, String Colore, int flag) throws SQLException {
 		Double Prezzo = new Double(prezzo);
-		Articolo ArticoloDaAggiungere = new Articolo(Nome, Codice, Prezzo, fotoPath, Taglia, Colore);
+		Articolo ArticoloDaAggiungere = new Articolo(Nome, Codice, Prezzo, "null", Taglia, Colore);
 		try{ 
 			if(MagazzinoDAO.checkQuantitaArticoloMagazzinoSQL(ArticoloDaAggiungere)==null //L'articolo non è presente in Magazzino
 				&& (!CorrispondenzaValori(ArticoloDaAggiungere))) {	 // e non è presente nella tabella Articolo, fallisce il primo IF
 					ArticoloDAO.CreaArticolo(ArticoloDaAggiungere); // lo inserisco nella tabella Articolo
+					setFoto(fotoPath, Codice);
 					MagazzinoTransazionale.add(ArticoloDaAggiungere);
 					MagazzinoTemporaneo.add(ArticoloDaAggiungere);
 			}
@@ -199,7 +200,8 @@ public class NegozioController {
 					ArticoloDaAggiungere.setQuantita(1);
 					creaMessaggioOperazioneEffettuataConSuccesso("Articoli aggiunti correttamente");
 					
-			}else if(CorrispondenzaValori(ArticoloDaAggiungere)) { //altrimenti è già presente in magazzino, e se i valori sono corretti
+			}
+			else if(CorrispondenzaValori(ArticoloDaAggiungere)) { //altrimenti è già presente in magazzino, e se i valori sono corretti
 						MagazzinoDAO.incrementaQuantitaArticoloMagazzinoDB(ArticoloDaAggiungere); //ne incremento la quantità nel DB
 						if(flag==0)creaMessaggioOperazioneEffettuataConSuccesso("Quantità articolo incrementata!"); //mostra il messaggio solo una volta
 						ArticoloDaAggiungere.setQuantita(MagazzinoDAO.checkQuantitaArticoloMagazzinoSQL(ArticoloDaAggiungere)+ 1);
@@ -207,18 +209,18 @@ public class NegozioController {
 						MagazzinoTemporaneo.add(ArticoloDaAggiungere);
 				}
 			else if(flag==0) creaMessaggioErroreDuranteOperazione("ERRORE: VALORI INESATTI", "RIPROVARE"); 	
-			
+			aggiornaMagazzino();
 		}catch (Exception e) { //catch per inserimento articolo in magazzino
 			if(flag==0) creaMessaggioErroreDuranteOperazione("ERRORE: ID DUPLICATO", "RIPROVARE"); 
 			e.printStackTrace();
 		}
 	}
 		
-	public void setFoto (String path, String Codice) throws SQLException {
+	public void setFoto (String path, String Codice) throws SQLException, IOException {
 		if (!ArticoloDAO.checkImmagine(Codice))
 		ArticoloDAO.JdbcWriteImage(path, Codice);
 		else {
-			creaMessaggioErroreDuranteOperazione("Foto già inserita per l'articolo selezionato!", "Errore");
+			ArticoloDAO.JdbcReadImage(ArticoloDAO.getArticoloById(Codice));
 		}
 	}
 	
