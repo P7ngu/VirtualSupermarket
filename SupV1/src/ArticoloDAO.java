@@ -77,24 +77,17 @@ public class ArticoloDAO {
 	
 	public void JdbcReadImage(Articolo articoloDiCuiImpostareFoto) throws SQLException, IOException{
 		 String query = "SELECT Logo FROM Images WHERE id=? LIMIT 1";
-	             PreparedStatement pst = con.prepareStatement(query);
-	             pst.setString(1, articoloDiCuiImpostareFoto.getId());
-	             ResultSet rs = pst.executeQuery();
-	       
-	             if(rs.next()){
-	          //  Blob b=rs.getBlob(1);
-	            // byte barr[]=b.getBytes(1,(int)b.length());
-	            	 byte barr[]=rs.getBytes(1);
-	             
-	             String	url="./"+articoloDiCuiImpostareFoto.getId()+".jpg"; 
-	             
-	             FileOutputStream fout = new FileOutputStream(url); 
-	             
-	             articoloDiCuiImpostareFoto.setPathFoto(url);
-	             
-	             fout.write(barr);                
-	             fout.close();  
-	             }
+	     PreparedStatement pst = con.prepareStatement(query);
+	     pst.setString(1, articoloDiCuiImpostareFoto.getId());
+	     ResultSet rs = pst.executeQuery();
+	     if(rs.next()){
+	    	 byte barr[]=rs.getBytes(1);
+	         String	url="./"+articoloDiCuiImpostareFoto.getId()+".jpg"; 
+	         FileOutputStream fout = new FileOutputStream(url); 
+	         articoloDiCuiImpostareFoto.setPathFoto(url);
+	         fout.write(barr);                
+	         fout.close();  
+	      }
 	  
 	}
 	
@@ -106,24 +99,13 @@ public class ArticoloDAO {
 	}
 
 	public void eliminaArticolo(String id) throws SQLException {
-		cancellaFotoRelativaAdArticolo(id);
+		 cancellaFotoRelativaAdArticolo(id);
 		 String query = "DELETE FROM Articolo WHERE id=?";
          PreparedStatement pst = con.prepareStatement(query);
          pst.setString(1, id);
          pst.executeUpdate();
 	}
 	
-	public void creaTabellaArticoloSQL() throws Exception {
-		try {
-			PreparedStatement create = con.prepareStatement("CREATE TABLE IF NOT EXISTS Articolo (nome varchar(255),"
-					+ "id int NOT NULL, prezzo double NOT NULL, pathfoto varchar(200), taglia char(2) NOT NULL,"
-					+ "colore varchar(10) NOT NULL)");
-			create.executeUpdate();	
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-	}
 
 
 	public boolean checkImmagine(String codice) throws SQLException {
@@ -133,7 +115,7 @@ public class ArticoloDAO {
          
          ResultSet result =  pst.executeQuery();
          if(result.next()) return true;
-		return false;
+		 return false;
 	}
 	
 	

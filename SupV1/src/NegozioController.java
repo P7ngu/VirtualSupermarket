@@ -103,9 +103,7 @@ public class NegozioController {
 		  String password = ("Xgwixw9770_hB0C8XiTyM17hNZY5zANf");
 		  String jdbcUrl ="jdbc:postgresql://manny.db.elephantsql.com:5432/udsjzyti";
 		  try {
-		    System.out.println("Loading driver...");
 		    Class.forName("org.postgresql.Driver");
-		    System.out.println("Driver loaded!");
 		  } catch (ClassNotFoundException e) {
 		    throw new RuntimeException("Cannot find the driver in the classpath!", e);
 		  }
@@ -138,8 +136,8 @@ public class NegozioController {
 			ArticoloTrovato.setQuantita(quantita);
 			
 			if(quantita>0) {
-			MagazzinoTransazionale.add(ArticoloTrovato);
-			MagazzinoTemporaneo.add(ArticoloTrovato);
+				MagazzinoTransazionale.add(ArticoloTrovato);
+				MagazzinoTemporaneo.add(ArticoloTrovato);
 			}
 			
 		}
@@ -196,17 +194,16 @@ public class NegozioController {
 					MagazzinoTemporaneo.add(ArticoloDaAggiungere);
 			}
 			if(MagazzinoDAO.checkQuantitaArticoloMagazzinoSQL(ArticoloDaAggiungere)==null  //se non è presente in Magazzino
-					&& (MagazzinoDAO.AggiungiArticoloAlMagazzinoSQL(ArticoloDaAggiungere))) { //e lo aggiungo con successo nel database
+					&& (MagazzinoDAO.AggiungiArticoloAlMagazzinoSQL(ArticoloDaAggiungere))){ //e lo aggiungo con successo nel database
 					ArticoloDaAggiungere.setQuantita(1);
 					creaMessaggioOperazioneEffettuataConSuccesso("Articoli aggiunti correttamente");
-					
-			}
+			} 
 			else if(CorrispondenzaValori(ArticoloDaAggiungere)) { //altrimenti è già presente in magazzino, e se i valori sono corretti
-						MagazzinoDAO.incrementaQuantitaArticoloMagazzinoDB(ArticoloDaAggiungere); //ne incremento la quantità nel DB
-						if(flag==0)creaMessaggioOperazioneEffettuataConSuccesso("Quantità articolo incrementata!"); //mostra il messaggio solo una volta
-						ArticoloDaAggiungere.setQuantita(MagazzinoDAO.checkQuantitaArticoloMagazzinoSQL(ArticoloDaAggiungere)+ 1);
-						MagazzinoTransazionale.add(ArticoloDaAggiungere);
-						MagazzinoTemporaneo.add(ArticoloDaAggiungere);
+					MagazzinoDAO.incrementaQuantitaArticoloMagazzinoDB(ArticoloDaAggiungere); //ne incremento la quantità nel DB
+					if(flag==0)creaMessaggioOperazioneEffettuataConSuccesso("Quantità articolo incrementata!"); //mostra il messaggio solo una volta
+					ArticoloDaAggiungere.setQuantita(MagazzinoDAO.checkQuantitaArticoloMagazzinoSQL(ArticoloDaAggiungere)+ 1);
+					MagazzinoTransazionale.add(ArticoloDaAggiungere);
+					MagazzinoTemporaneo.add(ArticoloDaAggiungere);
 				}
 			else if(flag==0) creaMessaggioErroreDuranteOperazione("ERRORE: VALORI INESATTI", "RIPROVARE"); 	
 			aggiornaMagazzino();

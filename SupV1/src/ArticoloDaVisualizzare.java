@@ -53,7 +53,7 @@ public void chiudiFrame() {
 }
 public ArticoloDaVisualizzare(Articolo articoloVisualizzato, NegozioController ctrl) {
 	setTitle("Articolo Visualizzato");
-	setBounds(300, 300, 319, 243);
+	setBounds(300, 300, 413, 255);
 	setResizable(false);
 	setAlwaysOnTop(true);
 	Controller=ctrl;
@@ -76,13 +76,13 @@ public ArticoloDaVisualizzare(Articolo articoloVisualizzato, NegozioController c
 	
 	JLabel ArticoloLabel = new JLabel(articolo.toString());
 	ArticoloLabel.setHorizontalAlignment(SwingConstants.CENTER);
-	ArticoloLabel.setBounds(0, 134, 319, 16);
+	ArticoloLabel.setBounds(0, 134, 413, 16);
 	getContentPane().add(ArticoloLabel);
 	setArticoloLabel(ArticoloLabel);
 	
 	JLabel FotoLabel = new JLabel("Nessuna Foto");
 	FotoLabel.setIcon(new ImageIcon(articolo.getPathFoto()));
-	FotoLabel.setBounds(111, 22, 100, 100);
+	FotoLabel.setBounds(158, 20, 100, 100);
 	getContentPane().add(FotoLabel);
 	setFotoLabel(FotoLabel);
 	

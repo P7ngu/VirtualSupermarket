@@ -54,7 +54,8 @@ public class AggiungiAlCarrelloFrame extends JFrame {
 		 comboBox.addItem(2);
 		 comboBox.addItem(3);
 		 comboBox.addItem(4);
-		 comboBox.addItem(50);
+		 comboBox.addItem(5);
+		 comboBox.addItem(10);
 
 		contentPanel.add(comboBox);
 		{

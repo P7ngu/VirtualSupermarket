@@ -76,19 +76,16 @@ public class EliminaDaMagazzinoFrame extends JFrame {
 					okButton.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent e) {
 							Articolo ArticoloSelezionato = (Articolo) ArticoloBox.getSelectedItem();
-							
-		
-			try {
-				int QuantitaSelezionata = (int) QuantitaBox.getSelectedItem();
-					for (int i=0; i<QuantitaSelezionata; i++) {
-						int flag=i;
-						Controller.rimuoviArticoloDalMagazzino(ArticoloSelezionato);
-						if(flag==0) Controller.creaMessaggioOperazioneEffettuataConSuccesso("Articolo eliminato dal magazzino");
-			
-					}
-			} catch (SQLException e1) {
+					try {
+						int QuantitaSelezionata = (int) QuantitaBox.getSelectedItem();
+						for (int i=0; i<QuantitaSelezionata; i++) {
+							int flag=i;
+							Controller.rimuoviArticoloDalMagazzino(ArticoloSelezionato);
+							if(flag==0) Controller.creaMessaggioOperazioneEffettuataConSuccesso("Articolo eliminato dal magazzino");
+						}
+					} catch (SQLException e1) {
 				Controller.creaMessaggioErroreDuranteOperazione("ERRORE", "RIPROVARE");
-			}
+					}
 			      
 						}
 					});

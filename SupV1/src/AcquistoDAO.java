@@ -88,7 +88,6 @@ public Integer CreaAcquistoDB() throws SQLException{
 }
 
 public Articolo InserisciArticoloInAcquisto (Articolo a, Integer codiceAcquisto) throws SQLException{
-	
 	String sql = "INSERT INTO ComposizioneAcquisto (codiceAcquisto, idArticolo, quantita) VALUES (?, ?, ?)";
 	PreparedStatement inserisciComposizioneAcquisto = connessione.prepareStatement(sql);
 	inserisciComposizioneAcquisto.setLong(1, codiceAcquisto);

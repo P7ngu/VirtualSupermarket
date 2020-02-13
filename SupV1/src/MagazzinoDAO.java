@@ -18,19 +18,6 @@ public boolean AggiungiArticoloAlMagazzinoSQL(Articolo ArticoloDaAggiungere) thr
 		return true;
 	}
 	
-public void creaTabellaMagazzinoSQL() throws Exception {
-	try {
-		PreparedStatement create = connessione.prepareStatement("CREATE TABLE IF NOT EXISTS Magazzino (nome varchar(255),"
-				+ "id int NOT NULL AUTO_INCREMENT, prezzo double, pathfoto varchar(200), taglia char(2),"
-				+ "colore varchar(10), quantita int NOT NULL, PRIMARY KEY (id))");
-		create.executeUpdate();	
-	} catch (Exception e) {
-		e.printStackTrace();
-	}
-	
-}
-
-
 
 public void incrementaQuantitaArticoloMagazzinoDB (Articolo articoloSelezionato) throws SQLException {
 	String ID = articoloSelezionato.getId();
@@ -71,7 +58,6 @@ public void eliminaArticoloDalMagazzinoSQL(String Id) throws SQLException {
 		PreparedStatement st = connessione.prepareStatement("DELETE FROM Magazzino WHERE id=?");
 		st.setString(1, Id);
 		st.executeUpdate(); 
-		//ArticoloDAO.eliminaArticolo(Id);
 	}
 	catch(Exception e) {
 		e.printStackTrace();
