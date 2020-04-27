@@ -83,7 +83,7 @@ public class NegozioController {
 	
 	public Connection getConnectionLocale() throws Exception{
 		try {
-			String driver = "com.mysql.cj.jdbc.Driver";
+			String driver = "org.postgresql.Driver";
 			String url = "jdbc:postgresql://localhost:5432/Giraffe";
 			String username = "postgres";
 			String password = "password";

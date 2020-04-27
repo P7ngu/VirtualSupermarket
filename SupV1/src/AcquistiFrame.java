@@ -13,8 +13,6 @@ import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
-import com.mysql.cj.jdbc.result.ResultSetMetaData;
-
 import javax.swing.BoxLayout;
 import javax.swing.JTable;
 

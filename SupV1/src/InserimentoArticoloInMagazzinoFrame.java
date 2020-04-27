@@ -27,7 +27,6 @@ public class InserimentoArticoloInMagazzinoFrame extends JFrame {
 
 	public InserimentoArticoloInMagazzinoFrame(NegozioController ctrl) {
 		setResizable(false);
-		setAlwaysOnTop(true);
 		Controller = ctrl;
 		setTitle("Aggiunta Articoli al Magazzino");
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
