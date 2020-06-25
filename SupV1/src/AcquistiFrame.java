@@ -1,5 +1,7 @@
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -14,7 +16,9 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
 import javax.swing.BoxLayout;
+import javax.swing.JButton;
 import javax.swing.JTable;
+import java.awt.Color;
 
 public class AcquistiFrame extends JFrame {
 
@@ -34,12 +38,23 @@ public class AcquistiFrame extends JFrame {
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
-		contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.X_AXIS));
 		
 		  ResultSet rs = controller.riempiTabellaAcquistiFrame();
+		  contentPane.setLayout(null);
 		  JTable table = new JTable(buildTableModel(rs));
+		  table.setForeground(Color.BLACK);
 		  table.setFillsViewportHeight(true);
-		 contentPane.add(new JScrollPane(table));
+		 JScrollPane scrollPane = new JScrollPane(table);
+		 scrollPane.setBounds(124, 6, 679, 527);
+		 JButton btnNewButton = new JButton("Home");
+		  btnNewButton.addActionListener(new ActionListener() {
+		  	public void actionPerformed(ActionEvent e) {
+		  		controller.apriSchermataHome();
+		  	}
+		  });
+		  btnNewButton.setBounds(6, 36, 82, 29);
+		  contentPane.add(btnNewButton);
+		 contentPane.add(scrollPane);
 
 	}
 	

@@ -66,6 +66,7 @@ public class MagazzinoFrame extends JFrame {
 		  contentPane.add(btnNewButton);
 		  
 		  JTable table = new JTable(buildTableModel(rs));
+		  table.setForeground(Color.BLACK);
 		  table.setFillsViewportHeight(true);
 		  JScrollPane scrollPane_1 = new JScrollPane(table);
 		  scrollPane_1.setBounds(100, 20, 635, 404);
