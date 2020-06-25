@@ -439,6 +439,10 @@ public class NegozioController {
 		aggiornaFrameVetrina();
 	}
 	
+	public void riempiCarrelloFrame() {
+
+	}
+	
 	public boolean checkCarrelloPieno () {
 		if (CarrelloUtente.getSize() >= 63) {
 			return true;
@@ -493,6 +497,7 @@ public class NegozioController {
 		if(MagazzinoTransazionale.getSize()!=0) {
 			chiudiTutteLeFinestre();
 			CarrelloFrame = new CarrelloFrame(this);
+			aggiornaLabelCarrello();
 			CarrelloFrame.setVisible(true);
 		}
 		else creaMessaggioErroreDuranteOperazione("Il magazzino è vuoto, inserire un articolo", "Riprovare");

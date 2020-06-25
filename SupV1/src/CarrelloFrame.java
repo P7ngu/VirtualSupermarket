@@ -70,6 +70,15 @@ public class CarrelloFrame extends JFrame {
 		btnNewButton.setIcon(pagaImg);
 		contentPane.add(btnNewButton);
 		
+		JButton HomeBotton = new JButton("Home");
+		HomeBotton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Controller.apriSchermataHome();
+			}
+		});
+		HomeBotton.setBounds(560, 563, 117, 29);
+		contentPane.add(HomeBotton);
+		
 		
 		JLabel lblNewLabel = new JLabel("Elenco articoli: ");
 		 lblNewLabel.setBounds(40, 34, 365, 185);
