@@ -23,9 +23,6 @@ public class LoginUtenteFrame extends JFrame {
 	private NegozioController Controller;
 
 
-	/**
-	 * Create the frame.
-	 */
 	public LoginUtenteFrame(NegozioController ctrl) {
 		setResizable(false);
 		Controller = ctrl;
@@ -82,7 +79,6 @@ public class LoginUtenteFrame extends JFrame {
 				try {
 					ControllaCorrettezzaPerRegistrazione();
 				} catch (SQLException e1) {
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
 			}

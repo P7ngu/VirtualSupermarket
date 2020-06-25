@@ -37,6 +37,7 @@ public class NegozioController {
 	static MagazzinoDAO MagazzinoDAO;
 	static ArticoloDAO ArticoloDAO;
 	AcquistoDAO AcquistoDAO;
+	String utente;
 	
 	
 
@@ -459,7 +460,7 @@ public class NegozioController {
 
 	public void effettuaTransazione() throws SQLException {
 		AcquistoDAO AcquistoDAO=new AcquistoDAO(connessione);
-		AcquistoDAO.creaAcquisto(CarrelloUtente.getElencoArticoli());
+		AcquistoDAO.creaAcquisto(CarrelloUtente.getElencoArticoli(), utente);
 		
 		for (Articolo a: CarrelloUtente.getElencoArticoli())
 		rimuoviArticoloDalMagazzino(a);
@@ -613,6 +614,7 @@ public void verificaDatiUtente(String nomeUtente, String password) throws SQLExc
 	UtenteDAO UtenteDAO=new UtenteDAO(connessione);
 	if(UtenteDAO.VerificaDatiUtente(nomeUtente, password)) {
 		creaMessaggioOperazioneEffettuataConSuccesso("Accesso effettuato con successo!");
+		this.utente=nomeUtente;
 		apriSchermataHome();
 	}
 	else creaMessaggioErroreDuranteOperazione("Dati non corretti", "ERRORE");
@@ -625,6 +627,7 @@ public void CreaUtente(String nomeUtente, String password) {
 	try {
 		if(UtenteDAO.CreaUtenteDB(nomeUtente, password)) {
 			creaMessaggioOperazioneEffettuataConSuccesso("Registrazione effettuata con successo!");
+			this.utente=nomeUtente;
 			apriSchermataHome();
 		}
 		else creaMessaggioErroreDuranteOperazione("Dati non corretti", "ERRORE");

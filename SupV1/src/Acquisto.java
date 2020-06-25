@@ -5,12 +5,14 @@ private Date data;
 private String idArticolo;
 private int quantita;
 private int codiceAcquisto;
+private String utente;
 
-public Acquisto(Date data, String id, int quantita, int codiceAcquisto) {
+public Acquisto(Date data, String id, int quantita, int codiceAcquisto, String utente) {
 	this.setData(data);
 	this.setIdArticolo(id);
 	this.setQuantita(quantita);
 	this.setCodiceAcquisto(codiceAcquisto);
+	this.setUtente(utente);
 }
 public Date getData() {
 	return data;
@@ -35,6 +37,12 @@ public int getCodiceAcquisto() {
 }
 public void setCodiceAcquisto(int codiceAcquisto) {
 	this.codiceAcquisto = codiceAcquisto;
+}
+public String getUtente() {
+	return utente;
+}
+public void setUtente(String utente) {
+	this.utente = utente;
 }
 }
 

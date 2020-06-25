@@ -15,8 +15,8 @@ public AcquistoDAO(Connection conn) {
 	Codici  = new ArrayList <String>();
 }
 
-public void creaAcquisto(ArrayList <Articolo> CarrelloUtente) throws SQLException {
-	Integer codiceAcquisto = CreaAcquistoDB();
+public void creaAcquisto(ArrayList <Articolo> CarrelloUtente, String utente) throws SQLException {
+	Integer codiceAcquisto = CreaAcquistoDB(utente);
 	for (Articolo a: CarrelloUtente) {
 	if (checkQuantitaArticoloAcquistato(a, codiceAcquisto) == null) {
 		InserisciArticoloInAcquisto(a, codiceAcquisto);
@@ -77,13 +77,14 @@ public Integer generaCodiceAcquisto() throws SQLException {
 
 
 
-public Integer CreaAcquistoDB() throws SQLException{
-	String sql = "INSERT INTO Acquisto (data, codiceAcquisto) VALUES (?, ?)";
+public Integer CreaAcquistoDB(String utente) throws SQLException{
+	String sql = "INSERT INTO Acquisto (data, codiceAcquisto, utente) VALUES (?, ?, ?)";
 	PreparedStatement inserisciArticolo = connessione.prepareStatement(sql);
 	LocalDate date = java.time.LocalDate.now();
 	inserisciArticolo.setString(1, date.toString());
 	Integer codiceAcquisto = generaCodiceAcquisto();
 	inserisciArticolo.setLong(2, codiceAcquisto);
+	inserisciArticolo.setString(3, utente);
 	inserisciArticolo.executeUpdate();
 	return codiceAcquisto;
 }
