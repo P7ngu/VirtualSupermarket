@@ -83,7 +83,7 @@ public class NegozioController {
 	
 	public Connection getConnectionLocale() throws Exception{
 		try {
-			String driver = "org.postgresql.Driver";
+			String driver = "com.mysql.cj.jdbc.Driver";
 			String url = "jdbc:postgresql://localhost:5432/Giraffe";
 			String username = "postgres";
 			String password = "password";
@@ -595,17 +595,7 @@ public class NegozioController {
 		creaMessaggioOperazioneEffettuataConSuccesso("Database resettato!");
 	}
 
-public ResultSet riempiTabellaMagazzinoFrame() throws SQLException {
-	MagazzinoDAO = new MagazzinoDAO(connessione);
-	ResultSet rs = MagazzinoDAO.RiempiTabellaMagazzino();
-	return rs;
-}
 
-public ResultSet riempiTabellaAcquistiFrame() throws SQLException {
-	AcquistoDAO = new AcquistoDAO(connessione);
-	ResultSet rs = AcquistoDAO.RiempiTabellaAcquisti();
-	return rs;
-}
 	
 			
 	

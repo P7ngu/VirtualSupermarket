@@ -2,7 +2,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 
 public class MagazzinoDAO {
 private Connection connessione;
@@ -66,10 +65,5 @@ public void eliminaArticoloDalMagazzinoSQL(String Id) throws SQLException {
 	}
 
 
-public ResultSet RiempiTabellaMagazzino() throws SQLException {
-	Statement stmt = connessione.createStatement();
-	 ResultSet rs = stmt.executeQuery("select * from Magazzino  NATURAL JOIN Articolo");
-	 return rs;
-}
 
 }

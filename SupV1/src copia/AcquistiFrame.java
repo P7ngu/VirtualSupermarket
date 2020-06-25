@@ -13,6 +13,8 @@ import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
+import com.mysql.cj.jdbc.result.ResultSetMetaData;
+
 import javax.swing.BoxLayout;
 import javax.swing.JTable;
 
@@ -36,7 +38,8 @@ public class AcquistiFrame extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.X_AXIS));
 		
-		  ResultSet rs = controller.riempiTabellaAcquistiFrame();
+		 Statement stmt = Connessione.createStatement();
+		  ResultSet rs = stmt.executeQuery("select * from ComposizioneAcquisto as c natural join acquisto as a");
 		  JTable table = new JTable(buildTableModel(rs));
 		  table.setFillsViewportHeight(true);
 		 contentPane.add(new JScrollPane(table));

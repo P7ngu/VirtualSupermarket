@@ -132,7 +132,7 @@ public class HomePage extends JFrame {
 		lblPannello.setBounds(514, 95, 310, 91);
 		contentPane.add(lblPannello);
 		
-		JLabel lblNewLabel_2 = new JLabel("");
+		JLabel lblNewLabel_2 = new JLabel("barra");
 		ImageIcon iconBarra = Controller.createImageIcon("barra1.png", "");
 		lblNewLabel_2.setIcon(iconBarra);
 		lblNewLabel_2.setBounds(-23, 83, 128, 452);

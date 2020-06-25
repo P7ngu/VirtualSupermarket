@@ -2,7 +2,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
@@ -96,12 +95,6 @@ public Articolo InserisciArticoloInAcquisto (Articolo a, Integer codiceAcquisto)
 	inserisciComposizioneAcquisto.setLong(3, 1);
 	inserisciComposizioneAcquisto.executeUpdate();
 	return null;
-}
-
-public ResultSet RiempiTabellaAcquisti() throws SQLException {
-	Statement stmt = connessione.createStatement();
-	  ResultSet rs = stmt.executeQuery("select * from ComposizioneAcquisto as c natural join acquisto as a");
-	 return rs;
 }
 
 }

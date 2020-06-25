@@ -53,7 +53,8 @@ public class MagazzinoFrame extends JFrame {
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		
-		ResultSet rs = Controller.riempiTabellaMagazzinoFrame();
+		 Statement stmt = Connessione.createStatement();
+		 ResultSet rs = stmt.executeQuery("select * from Magazzino  NATURAL JOIN Articolo");
 		 contentPane.setLayout(null);
 		  
 		  JButton btnNewButton = new JButton("Home");
