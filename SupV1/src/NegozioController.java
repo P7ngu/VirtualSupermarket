@@ -32,6 +32,7 @@ public class NegozioController {
 	VetrinaFrame VetrinaFrame;
 	AcquistiFrame AcquistiFrame;
 	PagamentoFrame PagamentoFrame;
+	LoginUtenteFrame LoginUtenteFrame;
 	static Connection connessione;
 	static MagazzinoDAO MagazzinoDAO;
 	static ArticoloDAO ArticoloDAO;
@@ -46,6 +47,7 @@ public class NegozioController {
 		CarrelloUtente = new CarrelloUtente();
 		
 		connessione = getConnectionLocale();
+		LoginUtenteFrame LoginUtenteFrame = new LoginUtenteFrame(this);
 		
 		MagazzinoDAO MagazzinoDAO = new MagazzinoDAO(connessione);
 		ArticoloDAO ArticoloDAO = new ArticoloDAO(connessione);
@@ -69,7 +71,7 @@ public class NegozioController {
 		AggiungiAlCarrelloFrame = new AggiungiAlCarrelloFrame(this);
 		
 		HomePageFrame = new HomePage(this);
-		HomePageFrame.setVisible(true);
+		LoginUtenteFrame.setVisible(true);
 		
 		
 	}
@@ -605,6 +607,32 @@ public ResultSet riempiTabellaAcquistiFrame() throws SQLException {
 	AcquistoDAO = new AcquistoDAO(connessione);
 	ResultSet rs = AcquistoDAO.RiempiTabellaAcquisti();
 	return rs;
+}
+
+public void verificaDatiUtente(String nomeUtente, String password) throws SQLException {
+	UtenteDAO UtenteDAO=new UtenteDAO(connessione);
+	if(UtenteDAO.VerificaDatiUtente(nomeUtente, password)) {
+		creaMessaggioOperazioneEffettuataConSuccesso("Accesso effettuato con successo!");
+		apriSchermataHome();
+	}
+	else creaMessaggioErroreDuranteOperazione("Dati non corretti", "ERRORE");
+		
+	
+}
+
+public void CreaUtente(String nomeUtente, String password) {
+	UtenteDAO UtenteDAO = new UtenteDAO(connessione);
+	try {
+		if(UtenteDAO.CreaUtenteDB(nomeUtente, password)) {
+			creaMessaggioOperazioneEffettuataConSuccesso("Registrazione effettuata con successo!");
+			apriSchermataHome();
+		}
+		else creaMessaggioErroreDuranteOperazione("Dati non corretti", "ERRORE");
+	} catch (SQLException e) {
+		creaMessaggioErroreDuranteOperazione("Registrazione fallita, cambiare nome utente", "ERRORE");
+		e.printStackTrace();
+	}
+	
 }
 	
 			
