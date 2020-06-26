@@ -174,7 +174,7 @@ public class NegozioController {
 		String nome = (resultNest.getString(1));
 		String id = (resultNest.getString(2));
 		Double prezzo = new Double(resultNest.getString(3));
-		String pathfoto = "";
+		String pathfoto = resultNest.getString(4);
 		String taglia = (resultNest.getString(5));
 		String colore = (resultNest.getString(6));
 		Articolo ArticoloTrovato = new Articolo (nome, id, prezzo, pathfoto, taglia, colore);
@@ -470,7 +470,8 @@ public class NegozioController {
 		rimuoviArticoloDalMagazzino(a);
 		
 		creaMessaggioOperazioneEffettuataConSuccesso("Pagamento effettuato!");
-		chiudiProgramma();
+		//chiudiProgramma();
+		apriSchermataHome();
 	}
 	 
 
@@ -537,6 +538,10 @@ public class NegozioController {
 			}	
 	}
 	
+	public void apriSchermataAcquisti() throws SQLException, Exception {
+				AcquistiFrame = new AcquistiFrame(this);
+				AcquistiFrame.setVisible(true);	
+	}
 		
 	public void cancellaDatiMagazzino() throws SQLException {
 		if(MagazzinoTransazionale.getSize()==0) creaMessaggioErroreDuranteOperazione("Magazzino vuoto!", "Magazzino vuoto!");

@@ -157,7 +157,11 @@ public class HomePage extends JFrame {
 		JButton buttonVisualizzaAcquisti = new JButton("");
 		buttonVisualizzaAcquisti.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				Controller.AcquistiFrame.setVisible(true);
+				try {
+					Controller.apriSchermataAcquisti();
+				} catch (Exception e1) {
+					e1.printStackTrace();
+				}
 			}
 		});
 		ImageIcon iconVisAcquisti = Controller.createImageIcon("visualizzaacquisti.png", "");
