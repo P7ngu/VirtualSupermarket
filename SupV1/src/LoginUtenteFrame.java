@@ -95,15 +95,15 @@ public class LoginUtenteFrame extends JFrame {
 		int lunghezzaNome = Nome_textField.getText().length();
 		int lunghezzaPassword = Password_textField.getText().length();
 		
-		if ((lunghezzaNome>0 && lunghezzaNome<=10) && (lunghezzaPassword>0 && lunghezzaPassword<=7)){
+		if((lunghezzaNome>0 && lunghezzaNome<=10) && (lunghezzaPassword>0 && lunghezzaPassword<=7)){
 			try{
 				Controller.verificaDatiUtente(Nome_textField.getText(), Password_textField.getText());
 			} catch (Exception e) {
 				Controller.creaMessaggioErroreDuranteOperazione("Nome utente già inserito", "Errore");
 			}
 				
-		} else if (lunghezzaPassword == 0 || lunghezzaNome == 0)
-			Controller.creaMessaggioErroreDuranteOperazione("Inserire Valori", "Errore Inserimento");
+		} else
+			Controller.creaMessaggioErroreDuranteOperazione("Inserire Valori Corretti", "Errore Inserimento");
 		
 	}
 	
@@ -114,8 +114,8 @@ public class LoginUtenteFrame extends JFrame {
 		if ((lunghezzaNome>0 && lunghezzaNome<=20) && (lunghezzaPassword>0 && lunghezzaPassword<=10)){
 			Controller.CreaUtente(Nome_textField.getText(), Password_textField.getText());
 				
-		} else if (lunghezzaPassword == 0 || lunghezzaNome == 0)
-			Controller.creaMessaggioErroreDuranteOperazione("Inserire Valori", "Errore Inserimento");
+		} else
+			Controller.creaMessaggioErroreDuranteOperazione("Inserire Valori Corretti", "Errore Inserimento");
 		
 	}
 }

@@ -641,8 +641,8 @@ public void CreaUtente(String nomeUtente, String password) {
 			apriSchermataHome();
 		}
 		else creaMessaggioErroreDuranteOperazione("Dati non corretti", "ERRORE");
-	} catch (SQLException e) {
-		creaMessaggioErroreDuranteOperazione("Registrazione fallita, cambiare nome utente", "ERRORE");
+	} catch (Exception e) {
+		creaMessaggioErroreDuranteOperazione("Registrazione fallita, inserire dati corretti", "ERRORE");
 		e.printStackTrace();
 	}
 	
