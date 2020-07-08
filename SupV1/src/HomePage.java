@@ -31,8 +31,17 @@ public class HomePage extends JFrame {
 		
 		JLabel lblNewLabel = new JLabel("");
 		ImageIcon icon = Controller.createImageIcon("welcome.png", "");
+		
+		JButton btnLogout = new JButton("Logout");
+		btnLogout.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Controller.logoutUtente();
+			}
+		});
+		btnLogout.setBounds(868, 6, 117, 29);
+		contentPane.add(btnLogout);
 		lblNewLabel.setIcon(icon);
-		lblNewLabel.setBounds(39, 0, 946, 101);
+		lblNewLabel.setBounds(39, 6, 946, 101);
 		contentPane.add(lblNewLabel);
 		
 		JButton visualizzaVetrinabtn = new JButton("");

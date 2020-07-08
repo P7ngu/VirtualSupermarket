@@ -647,6 +647,17 @@ public void CreaUtente(String nomeUtente, String password) {
 	}
 	
 }
+
+public void logoutUtente() {
+	chiudiTutteLeFinestre();
+	try {
+		main(null);
+	} catch (Exception e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+	
+}
 	
 			
 	
