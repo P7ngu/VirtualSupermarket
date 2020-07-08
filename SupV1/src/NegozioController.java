@@ -653,8 +653,8 @@ public void logoutUtente() {
 	try {
 		main(null);
 	} catch (Exception e) {
-		// TODO Auto-generated catch block
 		e.printStackTrace();
+		creaMessaggioErroreDuranteOperazione("Errore, riprovare", "Errore");
 	}
 	
 }
